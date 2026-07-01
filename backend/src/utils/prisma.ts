@@ -1,10 +1,11 @@
-import path from 'path'
 import { PrismaClient } from '@prisma/client'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { PrismaLibSQL } from '@prisma/adapter-libsql'
+import { createClient } from '@libsql/client'
 
-const url = process.env.DATABASE_URL || `file:${path.resolve(__dirname, '../../dev.db')}`
+const url = process.env.DATABASE_URL || 'file:./dev.db'
 const authToken = process.env.TURSO_AUTH_TOKEN
 
-const adapter = new PrismaLibSql({ url, authToken })
+const client = createClient({ url, authToken })
+const adapter = new PrismaLibSQL(client)
 
 export const prisma = new PrismaClient({ adapter } as any)
