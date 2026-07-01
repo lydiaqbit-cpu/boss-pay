@@ -1,0 +1,66 @@
+{
+  "pages": [
+    {
+      "path": "pages/home/index",
+      "style": { "navigationBarTitleText": "工作台", "navigationBarBackgroundColor": "#ffffff" }
+    },
+    {
+      "path": "pages/auth/login",
+      "style": { "navigationBarTitleText": "登录", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/auth/register",
+      "style": { "navigationBarTitleText": "注册", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/packages/index",
+      "style": { "navigationBarTitleText": "套餐管理" }
+    },
+    {
+      "path": "pages/packages/edit",
+      "style": { "navigationBarTitleText": "编辑套餐" }
+    },
+    {
+      "path": "pages/pay/cashier",
+      "style": { "navigationBarTitleText": "老板请付费", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/pay/qrcode",
+      "style": { "navigationBarTitleText": "扫码付款", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/pay/success",
+      "style": { "navigationBarTitleText": "付款成功", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/orders/index",
+      "style": { "navigationBarTitleText": "收款记录" }
+    }
+  ],
+  "tabBar": {
+    "color": "rgba(255,255,255,0.4)",
+    "selectedColor": "#FFD85C",
+    "backgroundColor": "#0d0d1a",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "工作台",
+        "iconPath": "static/tab-home.svg",
+        "selectedIconPath": "static/tab-home-active.svg"
+      },
+      {
+        "pagePath": "pages/orders/index",
+        "text": "收款记录",
+        "iconPath": "static/tab-orders.svg",
+        "selectedIconPath": "static/tab-orders-active.svg"
+      }
+    ],
+    "midButton": {}
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#0d0d1a",
+    "backgroundColor": "#0d0d1a"
+  }
+}
