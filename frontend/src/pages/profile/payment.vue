@@ -119,45 +119,45 @@ async function handleSave() {
 </script>
 
 <style lang="scss">
-page { background: #EDF2EC; }
+page { background: #F2EBE0; }
 .page { min-height: 100vh; padding: 24rpx 24rpx 120rpx; }
 
 .method-card {
-  background: #fff; border-radius: 20rpx; padding: 28rpx;
-  margin-bottom: 20rpx; border: 1rpx solid #D4E4D0;
-  box-shadow: 0 2rpx 10rpx rgba(26,46,26,0.07);
+  background: #fff; border-radius: 8rpx; padding: 28rpx;
+  margin-bottom: 20rpx; border: 1rpx solid #D4C4A8;
+  box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07);
   transition: border-color 0.2s;
 }
-.method-card.is-default { border-color: #3A6B38; border-width: 2rpx; }
+.method-card.is-default { border-color: #C0392B; border-width: 2rpx; }
 
 .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20rpx; }
 .card-title-row { display: flex; align-items: center; gap: 12rpx; }
 .method-icon { font-size: 36rpx; }
-.method-name { font-size: 30rpx; font-weight: 700; color: #1A2E1A; }
-.status-dot { font-size: 20rpx; color: #3A6B38; background: #E0EED8; padding: 4rpx 14rpx; border-radius: 20rpx; }
-.default-btn { font-size: 22rpx; color: #7A9A78; border: 1rpx solid #C8DCC4; border-radius: 30rpx; padding: 8rpx 20rpx; }
-.default-btn.active { color: #8A6A2A; border-color: #C8A84A; background: #FDF8EC; }
+.method-name { font-size: 30rpx; font-weight: 700; color: #1E1A14; }
+.status-dot { font-size: 20rpx; color: #8B3A2A; background: #F5EDE0; padding: 4rpx 14rpx; border-radius: 4rpx; border: 1rpx solid #D4C4A8; }
+.default-btn { font-size: 22rpx; color: #8B7355; border: 1rpx solid #D4C4A8; border-radius: 4rpx; padding: 8rpx 20rpx; }
+.default-btn.active { color: #8B3A2A; border-color: #C0392B; background: #FDF5EE; }
 
 .qr-upload { display: flex; justify-content: center; margin-bottom: 16rpx; }
-.qr-preview { width: 260rpx; height: 260rpx; border-radius: 12rpx; background: #F2F7F0; }
+.qr-preview { width: 260rpx; height: 260rpx; border-radius: 6rpx; background: #FAF6F0; }
 .qr-placeholder {
-  width: 260rpx; height: 260rpx; border-radius: 16rpx;
-  border: 2rpx dashed #C0D4BC;
+  width: 260rpx; height: 260rpx; border-radius: 6rpx;
+  border: 2rpx dashed #D4C4A8;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12rpx;
-  background: #F2F7F0;
+  background: #FAF6F0;
 }
-.qr-plus { font-size: 64rpx; color: #C0D4BC; line-height: 1; }
-.qr-hint { font-size: 24rpx; color: #7A9A78; }
-.field-tip { font-size: 22rpx; color: #A0B89E; display: block; text-align: center; }
-.reupload-tip { font-size: 22rpx; color: #3A6B38; display: block; text-align: center; margin-top: 10rpx; }
+.qr-plus { font-size: 64rpx; color: #D4C4A8; line-height: 1; }
+.qr-hint { font-size: 24rpx; color: #8B7355; }
+.field-tip { font-size: 22rpx; color: #C4A882; display: block; text-align: center; }
+.reupload-tip { font-size: 22rpx; color: #8B3A2A; display: block; text-align: center; margin-top: 10rpx; }
 
 .btn-save {
   width: 100%; height: 100rpx;
-  background: linear-gradient(135deg, #3A6B38, #1A2E1A);
-  color: #fff; border-radius: 50rpx; font-size: 32rpx; font-weight: 800; border: none;
-  box-shadow: 0 8rpx 24rpx rgba(26,46,26,0.25); margin-bottom: 24rpx;
+  background: #1E1A14;
+  color: #F2EBE0; border-radius: 8rpx; font-size: 32rpx; font-weight: 800; border: none;
+  margin-bottom: 24rpx; letter-spacing: 2rpx;
 }
 
-.tip-card { background: #E8F2E4; border-radius: 16rpx; padding: 20rpx 24rpx; border: 1rpx solid #C0D4BC; }
-.tip-text { font-size: 24rpx; color: #4A6A48; line-height: 1.7; }
+.tip-card { background: #FAF6F0; border-radius: 8rpx; padding: 20rpx 24rpx; border: 1rpx solid #D4C4A8; }
+.tip-text { font-size: 24rpx; color: #6B5040; line-height: 1.7; }
 </style>
