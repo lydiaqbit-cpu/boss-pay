@@ -79,10 +79,10 @@
     <!-- 未设置收款方式提醒 -->
     <view v-if="!hasPaymentMethod" class="setup-banner" @click="toPaymentSetting">
       <view class="setup-left">
-        <text class="setup-icon">💳</text>
+        <text class="setup-icon">🫙</text>
         <view>
-          <text class="setup-title">先设置收款方式</text>
-          <text class="setup-sub">设置微信/支付宝/银行卡后才能生成收款链接</text>
+          <text class="setup-title">老板的钱还在他口袋里！</text>
+          <text class="setup-sub">设置收款码，让它乖乖转移到你这来 👉</text>
         </view>
       </view>
       <text class="setup-arrow">›</text>
