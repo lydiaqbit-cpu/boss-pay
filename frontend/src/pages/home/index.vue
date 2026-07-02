@@ -67,8 +67,20 @@
       <text class="n-close">✕</text>
     </view>
 
-    <!-- 收款链接 -->
-    <view class="section-card link-card">
+    <!-- 未设置收款方式提醒 -->
+    <view v-if="!hasPaymentMethod" class="setup-banner" @click="toPaymentSetting">
+      <view class="setup-left">
+        <text class="setup-icon">💳</text>
+        <view>
+          <text class="setup-title">先设置收款方式</text>
+          <text class="setup-sub">设置微信/支付宝/银行卡后才能生成收款链接</text>
+        </view>
+      </view>
+      <text class="setup-arrow">›</text>
+    </view>
+
+    <!-- 收款链接（设置了收款方式才显示） -->
+    <view v-if="hasPaymentMethod" class="section-card link-card">
       <view class="link-header">
         <text class="link-title">我的收款链接</text>
         <text class="link-tip-badge">发给老板</text>
@@ -137,7 +149,14 @@ const packages = ref<any[]>([])
 const orders = ref<any[]>([])
 const latestNotify = ref<string | null>(null)
 const copied = ref(false)
+const paymentInfo = ref<any>(null)
 let ws: UniApp.SocketTask | null = null
+
+const hasPaymentMethod = computed(() => {
+  const p = paymentInfo.value
+  if (!p) return false
+  return !!(p.wechatQrUrl || p.alipayAccount || p.bankCard)
+})
 
 interface MoneyBurst { id: number; x: number; y: number }
 const moneyBursts = ref<MoneyBurst[]>([])
@@ -173,7 +192,7 @@ function triggerMoneyBurst() {
 
 onMounted(async () => {
   await userStore.fetchMe()
-  await Promise.all([loadPackages(), loadOrders()])
+  await Promise.all([loadPackages(), loadOrders(), loadPaymentInfo()])
   connectWS()
 })
 
@@ -185,6 +204,10 @@ async function loadPackages() {
 
 async function loadOrders() {
   try { orders.value = await get<any[]>('/pay/orders') } catch {}
+}
+
+async function loadPaymentInfo() {
+  try { paymentInfo.value = await get<any>('/user/payment') } catch {}
 }
 
 function connectWS() {
@@ -276,6 +299,18 @@ page { background: #F5EAD8; }
 .stat-val.orange { color: #FF9F43; }
 .stat-key { font-size: 20rpx; color: rgba(255,255,255,0.5); margin-top: 6rpx; display: block; }
 .stat-divider { width: 1rpx; height: 48rpx; background: rgba(255,255,255,0.15); }
+
+.setup-banner {
+  margin: 20rpx 28rpx 0;
+  background: linear-gradient(135deg, rgba(201,136,61,0.15), rgba(184,119,42,0.1));
+  border: 1rpx solid rgba(201,136,61,0.4); border-radius: 20rpx;
+  padding: 28rpx 24rpx; display: flex; align-items: center; gap: 16rpx;
+}
+.setup-left { display: flex; align-items: center; gap: 20rpx; flex: 1; }
+.setup-icon { font-size: 44rpx; flex-shrink: 0; }
+.setup-title { font-size: 28rpx; font-weight: 700; color: #FFD85C; display: block; }
+.setup-sub { font-size: 22rpx; color: rgba(255,216,92,0.6); margin-top: 6rpx; display: block; }
+.setup-arrow { font-size: 40rpx; color: rgba(255,216,92,0.5); }
 
 .pending-banner {
   margin: 20rpx 28rpx 0; background: rgba(255,159,67,0.12);
