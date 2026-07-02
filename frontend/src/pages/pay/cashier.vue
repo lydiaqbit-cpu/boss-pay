@@ -75,40 +75,13 @@
         <text class="humor-tip">转账备注"{{ selectedPkg?.name }}"，老板有情有义 😇</text>
       </view>
 
-      <!-- 支付宝 -->
-      <view v-if="activeTab === 'alipay'" class="account-panel">
-        <view class="account-row" @click="copy(pageData.user?.alipayAccount)">
-          <view class="account-left">
-            <text class="account-field">账号</text>
-            <text class="account-val">{{ pageData.user?.alipayAccount }}</text>
-          </view>
-          <view class="copy-chip"><text>复制</text></view>
+      <!-- 支付宝收款码 -->
+      <view v-if="activeTab === 'alipay'" class="qr-panel">
+        <view class="qr-box">
+          <image :src="pageData.user?.alipayQrUrl" class="qr-img" mode="aspectFit"/>
         </view>
-        <view class="account-row">
-          <text class="account-field">姓名</text>
-          <text class="account-val">{{ pageData.user?.alipayName }}</text>
-        </view>
-        <text class="humor-tip">转完别忘了备注，让 TA 知道是你付的 💙</text>
-      </view>
-
-      <!-- 银行卡 -->
-      <view v-if="activeTab === 'bank'" class="account-panel">
-        <view class="bank-card-visual">
-          <text class="bank-card-num">{{ formatCard(pageData.user?.bankCard) }}</text>
-          <text class="bank-card-bank">{{ pageData.user?.bankName }}</text>
-        </view>
-        <view class="account-row" @click="copy(pageData.user?.bankCard)">
-          <view class="account-left">
-            <text class="account-field">卡号</text>
-            <text class="account-val">{{ formatCard(pageData.user?.bankCard) }}</text>
-          </view>
-          <view class="copy-chip"><text>复制</text></view>
-        </view>
-        <view class="account-row">
-          <text class="account-field">持卡人</text>
-          <text class="account-val">{{ pageData.user?.bankHolder }}</text>
-        </view>
-        <text class="humor-tip">转完截图发给 TA，感情维系靠证据 🏦</text>
+        <text class="scan-tip">📱 长按识别二维码扫码付款</text>
+        <text class="humor-tip">转账备注"{{ selectedPkg?.name }}"，老板仁义 💙</text>
       </view>
 
       <!-- 老板填写 -->
@@ -167,11 +140,9 @@ function initTab(u: any) {
   if (!u) return
   const def = u.defaultPaymentMethod
   if (def === 'wechat' && u.wechatQrUrl) { activeTab.value = 'wechat'; return }
-  if (def === 'alipay' && u.alipayAccount) { activeTab.value = 'alipay'; return }
-  if (def === 'bank' && u.bankCard) { activeTab.value = 'bank'; return }
+  if (def === 'alipay' && u.alipayQrUrl) { activeTab.value = 'alipay'; return }
   if (u.wechatQrUrl) activeTab.value = 'wechat'
-  else if (u.alipayAccount) activeTab.value = 'alipay'
-  else if (u.bankCard) activeTab.value = 'bank'
+  else if (u.alipayQrUrl) activeTab.value = 'alipay'
 }
 
 const displayPackages = computed(() =>
@@ -187,8 +158,7 @@ const availableTabs = computed(() => {
   if (!u) return []
   const tabs: any[] = []
   if (u.wechatQrUrl) tabs.push({ key: 'wechat', label: '微信', icon: '💚', isDefault: def.value === 'wechat' })
-  if (u.alipayAccount) tabs.push({ key: 'alipay', label: '支付宝', icon: '💙', isDefault: def.value === 'alipay' })
-  if (u.bankCard) tabs.push({ key: 'bank', label: '银行卡', icon: '🏦', isDefault: def.value === 'bank' })
+  if (u.alipayQrUrl) tabs.push({ key: 'alipay', label: '支付宝', icon: '💙', isDefault: def.value === 'alipay' })
   return tabs
 })
 
@@ -196,11 +166,6 @@ const hasPayment = computed(() => availableTabs.value.length > 0)
 
 function copy(text: string) {
   uni.setClipboardData({ data: text, success: () => uni.showToast({ title: '已复制', icon: 'success' }) })
-}
-
-function formatCard(card: string) {
-  if (!card) return ''
-  return card.replace(/(\d{4})(?=\d)/g, '$1 ')
 }
 
 async function handleBossPaid() {
@@ -315,12 +280,6 @@ page { background: #f4f4f8; }
 
 /* 账号面板 */
 .account-panel { padding: 0 28rpx; }
-.bank-card-visual {
-  background: linear-gradient(135deg, #3D2010, #5C3218);
-  border-radius: 16rpx; padding: 28rpx; margin: 20rpx 0;
-}
-.bank-card-num { font-size: 28rpx; color: #fff; letter-spacing: 6rpx; display: block; font-weight: 700; }
-.bank-card-bank { font-size: 22rpx; color: rgba(255,255,255,0.6); margin-top: 8rpx; display: block; }
 .account-row {
   display: flex; align-items: center; padding: 22rpx 0;
   border-bottom: 1rpx solid #f5f5f5;

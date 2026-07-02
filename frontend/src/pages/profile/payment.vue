@@ -19,7 +19,7 @@
         </view>
       </view>
 
-      <view class="qr-upload" @click="uploadWechatQr">
+      <view class="qr-upload" @click="uploadQr('wechat')">
         <image v-if="form.wechatQrUrl" :src="form.wechatQrUrl" class="qr-preview" mode="aspectFit"/>
         <view v-else class="qr-placeholder">
           <text class="qr-plus">＋</text>
@@ -27,19 +27,19 @@
         </view>
       </view>
       <text class="field-tip">微信 → 收付款 → 二维码收款 → 保存图片</text>
-      <text v-if="form.wechatQrUrl" class="reupload-tip" @click="uploadWechatQr">重新上传</text>
+      <text v-if="form.wechatQrUrl" class="reupload-tip" @click="uploadQr('wechat')">重新上传</text>
     </view>
 
-    <!-- 支付宝 -->
+    <!-- 支付宝收款码 -->
     <view class="method-card" :class="{ 'is-default': form.defaultPaymentMethod === 'alipay' }">
       <view class="card-header">
         <view class="card-title-row">
           <text class="method-icon">💙</text>
-          <text class="method-name">支付宝</text>
-          <text v-if="form.alipayAccount" class="status-dot">已设置</text>
+          <text class="method-name">支付宝收款码</text>
+          <text v-if="form.alipayQrUrl" class="status-dot">已设置</text>
         </view>
         <view
-          v-if="form.alipayAccount"
+          v-if="form.alipayQrUrl"
           class="default-btn"
           :class="{ active: form.defaultPaymentMethod === 'alipay' }"
           @click="setDefault('alipay')"
@@ -47,45 +47,16 @@
           <text>{{ form.defaultPaymentMethod === 'alipay' ? '⭐ 默认' : '设为默认' }}</text>
         </view>
       </view>
-      <view class="field-row">
-        <text class="field-label">账号</text>
-        <input v-model="form.alipayAccount" class="field-input" placeholder="手机号或邮箱" placeholder-class="ph"/>
-      </view>
-      <view class="field-row">
-        <text class="field-label">姓名</text>
-        <input v-model="form.alipayName" class="field-input" placeholder="真实姓名（老板转账时要对上）" placeholder-class="ph"/>
-      </view>
-    </view>
 
-    <!-- 银行卡 -->
-    <view class="method-card" :class="{ 'is-default': form.defaultPaymentMethod === 'bank' }">
-      <view class="card-header">
-        <view class="card-title-row">
-          <text class="method-icon">🏦</text>
-          <text class="method-name">银行卡</text>
-          <text v-if="form.bankCard" class="status-dot">已设置</text>
-        </view>
-        <view
-          v-if="form.bankCard"
-          class="default-btn"
-          :class="{ active: form.defaultPaymentMethod === 'bank' }"
-          @click="setDefault('bank')"
-        >
-          <text>{{ form.defaultPaymentMethod === 'bank' ? '⭐ 默认' : '设为默认' }}</text>
+      <view class="qr-upload" @click="uploadQr('alipay')">
+        <image v-if="form.alipayQrUrl" :src="form.alipayQrUrl" class="qr-preview" mode="aspectFit"/>
+        <view v-else class="qr-placeholder">
+          <text class="qr-plus">＋</text>
+          <text class="qr-hint">上传支付宝收款码</text>
         </view>
       </view>
-      <view class="field-row">
-        <text class="field-label">卡号</text>
-        <input v-model="form.bankCard" class="field-input" placeholder="银行卡号" placeholder-class="ph" type="number"/>
-      </view>
-      <view class="field-row">
-        <text class="field-label">开户行</text>
-        <input v-model="form.bankName" class="field-input" placeholder="如：工商银行" placeholder-class="ph"/>
-      </view>
-      <view class="field-row">
-        <text class="field-label">持卡人</text>
-        <input v-model="form.bankHolder" class="field-input" placeholder="真实姓名" placeholder-class="ph"/>
-      </view>
+      <text class="field-tip">支付宝 → 收钱 → 保存收款码图片</text>
+      <text v-if="form.alipayQrUrl" class="reupload-tip" @click="uploadQr('alipay')">重新上传</text>
     </view>
 
     <button class="btn-save" :loading="saving" @click="handleSave">保存收款方式</button>
@@ -103,11 +74,7 @@ import { get, put } from '../../utils/request'
 const saving = ref(false)
 const form = ref({
   wechatQrUrl: '',
-  alipayAccount: '',
-  alipayName: '',
-  bankCard: '',
-  bankName: '',
-  bankHolder: '',
+  alipayQrUrl: '',
   defaultPaymentMethod: ''
 })
 
@@ -122,24 +89,28 @@ function setDefault(method: string) {
   form.value.defaultPaymentMethod = form.value.defaultPaymentMethod === method ? '' : method
 }
 
-function uploadWechatQr() {
+function uploadQr(type: 'wechat' | 'alipay') {
   uni.chooseImage({
     count: 1,
     sizeType: ['compressed'],
     sourceType: ['album', 'camera'],
     success: (res) => {
       const path = res.tempFilePaths[0]
-      // 转 base64 存储
       // #ifdef H5
       const img = new Image()
       img.onload = () => {
         const canvas = document.createElement('canvas')
         canvas.width = img.width
         canvas.height = img.height
-        const ctx = canvas.getContext('2d')!
-        ctx.drawImage(img, 0, 0)
-        form.value.wechatQrUrl = canvas.toDataURL('image/jpeg', 0.7)
-        if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat'
+        canvas.getContext('2d')!.drawImage(img, 0, 0)
+        const b64 = canvas.toDataURL('image/jpeg', 0.7)
+        if (type === 'wechat') {
+          form.value.wechatQrUrl = b64
+          if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat'
+        } else {
+          form.value.alipayQrUrl = b64
+          if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'alipay'
+        }
         uni.showToast({ title: '图片已选择', icon: 'success' })
       }
       img.src = path
@@ -149,8 +120,14 @@ function uploadWechatQr() {
         filePath: path,
         encoding: 'base64',
         success: (r) => {
-          form.value.wechatQrUrl = 'data:image/jpeg;base64,' + r.data
-          if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat'
+          const b64 = 'data:image/jpeg;base64,' + r.data
+          if (type === 'wechat') {
+            form.value.wechatQrUrl = b64
+            if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat'
+          } else {
+            form.value.alipayQrUrl = b64
+            if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'alipay'
+          }
           uni.showToast({ title: '图片已选择', icon: 'success' })
         }
       })
@@ -219,15 +196,6 @@ page { background: #0d0d1a; }
 .qr-hint { font-size: 24rpx; color: rgba(255,255,255,0.3); }
 .field-tip { font-size: 22rpx; color: rgba(255,255,255,0.25); display: block; text-align: center; }
 .reupload-tip { font-size: 22rpx; color: #FFD85C; display: block; text-align: center; margin-top: 10rpx; }
-
-.field-row {
-  display: flex; align-items: center; padding: 20rpx 0;
-  border-bottom: 1rpx solid rgba(255,255,255,0.06);
-}
-.field-row:last-child { border-bottom: none; }
-.field-label { font-size: 26rpx; color: rgba(255,255,255,0.45); width: 120rpx; flex-shrink: 0; }
-.field-input { flex: 1; font-size: 28rpx; color: #fff; height: 60rpx; background: transparent; }
-.ph { color: rgba(255,255,255,0.18); }
 
 .btn-save {
   width: 100%; height: 100rpx;

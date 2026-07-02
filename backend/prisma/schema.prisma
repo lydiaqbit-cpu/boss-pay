@@ -16,12 +16,8 @@ model User {
   avatar              String?
   bio                 String?
   wechatQrUrl         String?
-  alipayAccount       String?
-  alipayName          String?
-  bankCard            String?
-  bankName            String?
-  bankHolder            String?
-  defaultPaymentMethod  String?   // 'wechat' | 'alipay' | 'bank'
+  alipayQrUrl         String?
+  defaultPaymentMethod  String?   // 'wechat' | 'alipay'
   subscriptionExpiry    DateTime?
   createdAt           DateTime  @default(now())
   packages            Package[]
