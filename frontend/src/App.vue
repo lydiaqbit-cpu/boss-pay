@@ -7,11 +7,13 @@ onHide(() => {});
 
 <style lang="scss">
 /* ── 全局重置 ── */
+page, body, * {
+  font-family: 'Nunito', 'Noto Sans SC', 'PingFang SC', 'OPPO Sans', 'HarmonyOS Sans', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
 page {
   background: #FFF6EE;
-  font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
   color: #1C1008;
-  -webkit-font-smoothing: antialiased;
 }
 
 /* ── 全局动画 keyframes ── */

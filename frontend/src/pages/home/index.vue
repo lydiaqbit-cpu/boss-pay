@@ -302,15 +302,16 @@ page { background: #F5EAD8; }
 
 .setup-banner {
   margin: 20rpx 28rpx 0;
-  background: linear-gradient(135deg, rgba(201,136,61,0.15), rgba(184,119,42,0.1));
-  border: 1rpx solid rgba(201,136,61,0.4); border-radius: 20rpx;
+  background: linear-gradient(135deg, #C9883D, #B8772A);
+  border-radius: 20rpx;
   padding: 28rpx 24rpx; display: flex; align-items: center; gap: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(180,110,40,0.4);
 }
 .setup-left { display: flex; align-items: center; gap: 20rpx; flex: 1; }
 .setup-icon { font-size: 44rpx; flex-shrink: 0; }
-.setup-title { font-size: 28rpx; font-weight: 700; color: #FFD85C; display: block; }
-.setup-sub { font-size: 22rpx; color: rgba(255,216,92,0.6); margin-top: 6rpx; display: block; }
-.setup-arrow { font-size: 40rpx; color: rgba(255,216,92,0.5); }
+.setup-title { font-size: 30rpx; font-weight: 800; color: #fff; display: block; }
+.setup-sub { font-size: 22rpx; color: rgba(255,255,255,0.8); margin-top: 6rpx; display: block; }
+.setup-arrow { font-size: 48rpx; color: rgba(255,255,255,0.7); }
 
 .pending-banner {
   margin: 20rpx 28rpx 0; background: rgba(255,159,67,0.12);
