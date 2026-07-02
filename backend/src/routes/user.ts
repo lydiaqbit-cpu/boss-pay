@@ -17,11 +17,11 @@ router.put('/profile', authMiddleware, async (req: AuthRequest, res: Response) =
 
 // PUT /api/user/payment — 保存收款方式
 router.put('/payment', authMiddleware, async (req: AuthRequest, res: Response) => {
-  const { wechatQrUrl, alipayAccount, alipayName, bankCard, bankName, bankHolder } = req.body
+  const { wechatQrUrl, alipayAccount, alipayName, bankCard, bankName, bankHolder, defaultPaymentMethod } = req.body
   const user = await prisma.user.update({
     where: { id: req.userId! },
-    data: { wechatQrUrl, alipayAccount, alipayName, bankCard, bankName, bankHolder },
-    select: { id: true, wechatQrUrl: true, alipayAccount: true, alipayName: true, bankCard: true, bankName: true, bankHolder: true }
+    data: { wechatQrUrl, alipayAccount, alipayName, bankCard, bankName, bankHolder, defaultPaymentMethod },
+    select: { id: true, wechatQrUrl: true, alipayAccount: true, alipayName: true, bankCard: true, bankName: true, bankHolder: true, defaultPaymentMethod: true }
   })
   res.json({ code: 0, data: user })
 })
@@ -30,7 +30,7 @@ router.put('/payment', authMiddleware, async (req: AuthRequest, res: Response) =
 router.get('/payment', authMiddleware, async (req: AuthRequest, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { id: req.userId! },
-    select: { wechatQrUrl: true, alipayAccount: true, alipayName: true, bankCard: true, bankName: true, bankHolder: true }
+    select: { wechatQrUrl: true, alipayAccount: true, alipayName: true, bankCard: true, bankName: true, bankHolder: true, defaultPaymentMethod: true }
   })
   res.json({ code: 0, data: user })
 })
