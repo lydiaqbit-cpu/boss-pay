@@ -12,8 +12,7 @@ router.get('/page/:userId', async (req: Request, res: Response) => {
     where: { id: req.params.userId },
     select: {
       id: true, nickname: true, avatar: true, bio: true,
-      wechatQrUrl: true, alipayAccount: true, alipayName: true,
-      bankCard: true, bankName: true, bankHolder: true, defaultPaymentMethod: true
+      wechatQrUrl: true, alipayQrUrl: true, defaultPaymentMethod: true
     }
   })
   if (!user) { res.status(404).json({ code: 404, message: '收款页不存在' }); return }

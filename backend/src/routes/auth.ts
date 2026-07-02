@@ -23,7 +23,7 @@ router.post('/register', async (req: Request, res: Response) => {
     data: { phone, password: hashed, nickname }
   })
   const token = signToken(user.id)
-  res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone, balance: user.balance } } })
+  res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone } } })
 })
 
 // POST /api/auth/login
@@ -35,7 +35,7 @@ router.post('/login', async (req: Request, res: Response) => {
     return
   }
   const token = signToken(user.id)
-  res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone, balance: user.balance, avatar: user.avatar, bio: user.bio } } })
+  res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone, avatar: user.avatar, bio: user.bio } } })
 })
 
 // POST /api/auth/wechat  — 真实微信小程序登录，前端传 code
@@ -76,7 +76,7 @@ router.post('/wechat', async (req: Request, res: Response) => {
   }
 
   const token = signToken(user.id)
-  res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone, balance: user.balance, avatar: user.avatar, bio: user.bio } } })
+  res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone, avatar: user.avatar, bio: user.bio } } })
 })
 
 // POST /api/auth/wechat-mock  — 保留用于H5测试
@@ -97,14 +97,14 @@ router.post('/wechat-mock', async (req: Request, res: Response) => {
     })
   }
   const token = signToken(user.id)
-  res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone, balance: user.balance, avatar: user.avatar, bio: user.bio } } })
+  res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone, avatar: user.avatar, bio: user.bio } } })
 })
 
 // GET /api/auth/me  (protected)
 router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { id: req.userId! },
-    select: { id: true, nickname: true, phone: true, balance: true, avatar: true, bio: true }
+    select: { id: true, nickname: true, phone: true, avatar: true, bio: true }
   })
   res.json({ code: 0, data: user })
 })
