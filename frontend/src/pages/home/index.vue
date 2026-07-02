@@ -35,7 +35,7 @@
       <view class="stats-panel">
         <view class="stat-col">
           <view class="stat-row">
-            <text class="stat-icon">🤑</text>
+            <text class="stat-icon">💸</text>
             <text class="stat-val">¥{{ totalConfirmed }}</text>
           </view>
           <text class="stat-key">已确认到手</text>
@@ -43,7 +43,7 @@
         <view class="stat-divider"/>
         <view class="stat-col">
           <view class="stat-row">
-            <text class="stat-icon">⏳</text>
+            <text class="stat-icon">👀</text>
             <text class="stat-val orange">{{ pendingCount }}</text>
           </view>
           <text class="stat-key">待确认笔数</text>
@@ -51,7 +51,7 @@
         <view class="stat-divider"/>
         <view class="stat-col">
           <view class="stat-row">
-            <text class="stat-icon">👴</text>
+            <text class="stat-icon">🤵</text>
             <text class="stat-val">{{ confirmedCount }}</text>
           </view>
           <text class="stat-key">老板付款次数</text>
