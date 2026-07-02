@@ -1,134 +1,134 @@
 <template>
   <view class="page">
-    <!-- 员工信息头部 -->
-    <view class="header">
-      <view class="employee-info">
-        <image v-if="pageData.user?.avatar" :src="pageData.user.avatar" class="avatar" mode="aspectFill"/>
-        <view v-else class="avatar-placeholder"><text>{{ pageData.user?.nickname?.[0] }}</text></view>
-        <view class="employee-text">
-          <text class="employee-name">{{ pageData.user?.nickname }}</text>
-          <text class="employee-bio">{{ pageData.user?.bio || '辛勤打工中 🐂' }}</text>
+
+    <!-- 顶部收银台头 -->
+    <view class="cashier-header">
+      <view class="shop-info">
+        <image v-if="pageData.user?.avatar" :src="pageData.user.avatar" class="shop-avatar" mode="aspectFill"/>
+        <view v-else class="shop-avatar-placeholder"><text>{{ pageData.user?.nickname?.[0] }}</text></view>
+        <view>
+          <text class="shop-name">{{ pageData.user?.nickname }} 的收银台</text>
+          <text class="shop-sub">{{ pageData.user?.bio || '加班费专属收款' }}</text>
         </view>
       </view>
-      <view class="humor-tag"><text>老板，该结账了 👀</text></view>
+    </view>
+
+    <!-- 金额展示区（选了套餐才出现） -->
+    <view class="amount-panel" :class="{ 'has-amount': !!selectedId }">
+      <text class="amount-label">{{ selectedId ? '本次应付' : '请选择套餐' }}</text>
+      <view class="amount-row">
+        <text class="amount-currency">¥</text>
+        <text class="amount-value">{{ selectedPkg?.price ?? '--' }}</text>
+      </view>
+      <text v-if="selectedPkg" class="amount-pkg-name">{{ selectedPkg.name }}</text>
     </view>
 
     <!-- 套餐选择 -->
-    <view class="section-label">选择本次加班套餐</view>
-    <view
-      v-for="pkg in displayPackages"
-      :key="pkg.id"
-      class="pkg-card"
-      :class="{ selected: selectedId === pkg.id, locked: !!lockedPackageId }"
-      @click="!lockedPackageId && (selectedId = pkg.id)"
-    >
-      <view class="pkg-left">
-        <text class="pkg-name">{{ pkg.name }}</text>
-        <text class="pkg-desc">{{ pkg.description || `加班 ${pkg.hours}h，青春无价` }}</text>
-      </view>
-      <view class="pkg-right">
-        <text class="pkg-price">¥{{ pkg.price }}</text>
-        <view v-if="selectedId === pkg.id" class="check">✓</view>
+    <view class="pkg-list">
+      <view
+        v-for="pkg in displayPackages"
+        :key="pkg.id"
+        class="pkg-item"
+        :class="{ selected: selectedId === pkg.id, locked: !!lockedPackageId }"
+        @click="!lockedPackageId && (selectedId = pkg.id)"
+      >
+        <view class="pkg-item-left">
+          <view class="pkg-radio" :class="{ checked: selectedId === pkg.id }">
+            <view v-if="selectedId === pkg.id" class="pkg-radio-dot"/>
+          </view>
+          <view>
+            <text class="pkg-item-name">{{ pkg.name }}</text>
+            <text class="pkg-item-desc">{{ pkg.description || `加班 ${pkg.hours}h` }}</text>
+          </view>
+        </view>
+        <text class="pkg-item-price">¥{{ pkg.price }}</text>
       </view>
     </view>
 
-    <!-- 收款码区域（选了套餐才展示） -->
-    <view v-if="selectedId && hasPayment">
+    <!-- 支付方式区 -->
+    <view v-if="selectedId && hasPayment" class="pay-panel">
+      <view class="pay-panel-header">
+        <text class="pay-panel-title">选择付款方式</text>
+      </view>
 
-      <view class="pay-section">
-        <view class="pay-title-row">
-          <text class="pay-title">转账到这里 👇</text>
-          <text class="pay-amount-badge">¥{{ selectedPkg?.price }}</text>
-        </view>
-
-        <!-- 收款方式 tab -->
-        <view class="pay-tabs">
-          <view
-            v-for="tab in availableTabs"
-            :key="tab.key"
-            class="pay-tab"
-            :class="{ active: activeTab === tab.key }"
-            @click="activeTab = tab.key"
-          >
-            <text>{{ tab.label }}</text>
-            <text v-if="tab.isDefault" class="default-star">⭐</text>
-          </view>
-        </view>
-
-        <!-- 微信收款码 -->
-        <view v-if="activeTab === 'wechat'" class="qr-wrap">
-          <view class="qr-card">
-            <image :src="pageData.user?.wechatQrUrl" class="qr-img" mode="aspectFit"/>
-          </view>
-          <text class="qr-tip">长按图片识别二维码，转账 ¥{{ selectedPkg?.price }}</text>
-          <text class="humor-tip">💬 备注"{{ selectedPkg?.name }}"，老板有情有义</text>
-        </view>
-
-        <!-- 支付宝 -->
-        <view v-if="activeTab === 'alipay'" class="info-card">
-          <view class="info-hero">
-            <text class="info-amount">¥{{ selectedPkg?.price }}</text>
-            <text class="info-amount-label">转账金额</text>
-          </view>
-          <view class="info-row">
-            <text class="info-label">支付宝账号</text>
-            <text class="info-value">{{ pageData.user?.alipayAccount }}</text>
-            <text class="copy-btn" @click="copy(pageData.user?.alipayAccount)">复制</text>
-          </view>
-          <view class="info-row">
-            <text class="info-label">收款姓名</text>
-            <text class="info-value">{{ pageData.user?.alipayName }}</text>
-          </view>
-          <text class="humor-tip">💬 转账备注"{{ selectedPkg?.name }}"，下次加班还找你</text>
-        </view>
-
-        <!-- 银行卡 -->
-        <view v-if="activeTab === 'bank'" class="info-card">
-          <view class="info-hero">
-            <text class="info-amount">¥{{ selectedPkg?.price }}</text>
-            <text class="info-amount-label">转账金额</text>
-          </view>
-          <view class="info-row">
-            <text class="info-label">卡号</text>
-            <text class="info-value card-num">{{ formatCard(pageData.user?.bankCard) }}</text>
-            <text class="copy-btn" @click="copy(pageData.user?.bankCard)">复制</text>
-          </view>
-          <view class="info-row">
-            <text class="info-label">开户行</text>
-            <text class="info-value">{{ pageData.user?.bankName }}</text>
-          </view>
-          <view class="info-row">
-            <text class="info-label">持卡人</text>
-            <text class="info-value">{{ pageData.user?.bankHolder }}</text>
-          </view>
-          <text class="humor-tip">💬 转完截图发给 TA，感情维系靠证据</text>
+      <!-- 方式 tab -->
+      <view class="method-tabs">
+        <view
+          v-for="tab in availableTabs"
+          :key="tab.key"
+          class="method-tab"
+          :class="{ active: activeTab === tab.key }"
+          @click="activeTab = tab.key"
+        >
+          <text class="method-tab-icon">{{ tab.icon }}</text>
+          <text class="method-tab-label">{{ tab.label }}</text>
+          <view v-if="tab.isDefault" class="default-tag">默认</view>
         </view>
       </view>
 
-      <!-- 老板填写称呼 -->
-      <view class="payer-section">
-        <text class="section-label">老板，留个名吧</text>
-        <view class="input-wrap">
-          <input v-model="payerName" placeholder="你的称呼（如：张总、老王、亲爱的老板）" class="input" placeholder-class="ph"/>
+      <!-- 微信收款码 -->
+      <view v-if="activeTab === 'wechat'" class="qr-panel">
+        <view class="qr-box">
+          <image :src="pageData.user?.wechatQrUrl" class="qr-img" mode="aspectFit"/>
         </view>
-        <view class="note-wrap">
-          <input v-model="payerNote" placeholder="备注（可选，如：周五深夜加班费）" class="input" placeholder-class="ph"/>
-        </view>
+        <text class="scan-tip">📱 长按识别二维码扫码付款</text>
+        <text class="humor-tip">转账备注"{{ selectedPkg?.name }}"，老板有情有义 😇</text>
       </view>
 
-      <button class="btn-confirm" :loading="submitting" @click="handleBossPaid">
-        💸 钱已转，通知 TA 确认
+      <!-- 支付宝 -->
+      <view v-if="activeTab === 'alipay'" class="account-panel">
+        <view class="account-row" @click="copy(pageData.user?.alipayAccount)">
+          <view class="account-left">
+            <text class="account-field">账号</text>
+            <text class="account-val">{{ pageData.user?.alipayAccount }}</text>
+          </view>
+          <view class="copy-chip"><text>复制</text></view>
+        </view>
+        <view class="account-row">
+          <text class="account-field">姓名</text>
+          <text class="account-val">{{ pageData.user?.alipayName }}</text>
+        </view>
+        <text class="humor-tip">转完别忘了备注，让 TA 知道是你付的 💙</text>
+      </view>
+
+      <!-- 银行卡 -->
+      <view v-if="activeTab === 'bank'" class="account-panel">
+        <view class="bank-card-visual">
+          <text class="bank-card-num">{{ formatCard(pageData.user?.bankCard) }}</text>
+          <text class="bank-card-bank">{{ pageData.user?.bankName }}</text>
+        </view>
+        <view class="account-row" @click="copy(pageData.user?.bankCard)">
+          <view class="account-left">
+            <text class="account-field">卡号</text>
+            <text class="account-val">{{ formatCard(pageData.user?.bankCard) }}</text>
+          </view>
+          <view class="copy-chip"><text>复制</text></view>
+        </view>
+        <view class="account-row">
+          <text class="account-field">持卡人</text>
+          <text class="account-val">{{ pageData.user?.bankHolder }}</text>
+        </view>
+        <text class="humor-tip">转完截图发给 TA，感情维系靠证据 🏦</text>
+      </view>
+
+      <!-- 老板填写 -->
+      <view class="payer-row-wrap">
+        <input v-model="payerName" class="payer-input" placeholder="老板，留个大名吧（必填）" placeholder-class="ph"/>
+        <input v-model="payerNote" class="payer-input note" placeholder="备注（可选）" placeholder-class="ph"/>
+      </view>
+
+      <button class="btn-paid" :loading="submitting" @click="handleBossPaid">
+        ✅ 已转账，通知收款方确认
       </button>
-      <text class="bottom-tip">点击后对方会收到通知，确认到账后自动生成凭证</text>
+      <text class="paid-tip">对方确认收款后，双方均可查看凭证</text>
     </view>
 
-    <!-- 没有设置收款方式 -->
     <view v-if="selectedId && !hasPayment" class="no-payment">
-      <text class="no-payment-icon">😅</text>
-      <text class="no-payment-text">对方还没设置收款方式，让 TA 先去设置一下吧</text>
+      <text class="no-icon">😅</text>
+      <text class="no-text">对方还没设置收款方式，让 TA 先去设置一下</text>
     </view>
 
-    <view v-if="!pageData.user" class="loading-tip"><text>加载中...</text></view>
+    <view v-if="!pageData.user" class="loading"><text>加载中...</text></view>
   </view>
 </template>
 
@@ -159,11 +159,11 @@ onMounted(async () => {
   if (json.code === 0) {
     pageData.value = json.data
     if (lockedPackageId.value) selectedId.value = lockedPackageId.value
-    initDefaultTab(json.data.user)
+    initTab(json.data.user)
   }
 })
 
-function initDefaultTab(u: any) {
+function initTab(u: any) {
   if (!u) return
   const def = u.defaultPaymentMethod
   if (def === 'wechat' && u.wechatQrUrl) { activeTab.value = 'wechat'; return }
@@ -179,20 +179,16 @@ const displayPackages = computed(() =>
     ? pageData.value.packages.filter((p: any) => p.id === lockedPackageId.value)
     : pageData.value.packages
 )
-
-const selectedPkg = computed(() =>
-  pageData.value.packages.find((p: any) => p.id === selectedId.value)
-)
-
+const selectedPkg = computed(() => pageData.value.packages.find((p: any) => p.id === selectedId.value))
 const def = computed(() => pageData.value.user?.defaultPaymentMethod)
 
 const availableTabs = computed(() => {
   const u = pageData.value.user
   if (!u) return []
   const tabs: any[] = []
-  if (u.wechatQrUrl) tabs.push({ key: 'wechat', label: '微信', isDefault: def.value === 'wechat' })
-  if (u.alipayAccount) tabs.push({ key: 'alipay', label: '支付宝', isDefault: def.value === 'alipay' })
-  if (u.bankCard) tabs.push({ key: 'bank', label: '银行卡', isDefault: def.value === 'bank' })
+  if (u.wechatQrUrl) tabs.push({ key: 'wechat', label: '微信', icon: '💚', isDefault: def.value === 'wechat' })
+  if (u.alipayAccount) tabs.push({ key: 'alipay', label: '支付宝', icon: '💙', isDefault: def.value === 'alipay' })
+  if (u.bankCard) tabs.push({ key: 'bank', label: '银行卡', icon: '🏦', isDefault: def.value === 'bank' })
   return tabs
 })
 
@@ -216,16 +212,11 @@ async function handleBossPaid() {
     const res = await fetch(`${API_BASE}/pay/boss-paid`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: userId.value,
-        packageId: selectedId.value,
-        payerName: payerName.value,
-        payerNote: payerNote.value
-      })
+      body: JSON.stringify({ userId: userId.value, packageId: selectedId.value, payerName: payerName.value, payerNote: payerNote.value })
     })
     const json = await res.json()
     if (json.code === 0) {
-      uni.showToast({ title: '已通知，等 TA 确认 🎉', icon: 'success' })
+      uni.showToast({ title: '已通知，等确认 🎉', icon: 'success' })
       setTimeout(() => uni.navigateTo({ url: `/pages/pay/receipt?orderId=${json.data.orderId}&readonly=1` }), 1200)
     }
   } catch {
@@ -237,116 +228,135 @@ async function handleBossPaid() {
 </script>
 
 <style lang="scss">
-page { background: #0d0d1a; }
-.page { min-height: 100vh; padding: 0 0 120rpx; }
+page { background: #f4f4f8; }
+.page { min-height: 100vh; padding-bottom: 60rpx; }
 
-.header {
-  background: linear-gradient(135deg, #1a0d00, #2d1a00);
-  padding: 100rpx 40rpx 40rpx;
-  border-bottom-left-radius: 40rpx;
-  border-bottom-right-radius: 40rpx;
+/* 顶部 */
+.cashier-header {
+  background: linear-gradient(135deg, #3D2010, #5C3218);
+  padding: 80rpx 36rpx 36rpx;
 }
-.employee-info { display: flex; align-items: center; gap: 24rpx; margin-bottom: 24rpx; }
-.avatar { width: 96rpx; height: 96rpx; border-radius: 48rpx; border: 3rpx solid rgba(255,216,92,0.4); }
-.avatar-placeholder {
-  width: 96rpx; height: 96rpx; border-radius: 48rpx;
+.shop-info { display: flex; align-items: center; gap: 20rpx; }
+.shop-avatar { width: 80rpx; height: 80rpx; border-radius: 40rpx; border: 3rpx solid rgba(255,216,92,0.5); }
+.shop-avatar-placeholder {
+  width: 80rpx; height: 80rpx; border-radius: 40rpx;
   background: rgba(255,216,92,0.2); display: flex; align-items: center; justify-content: center;
+  text { font-size: 34rpx; color: #FFD85C; font-weight: 700; }
 }
-.avatar-placeholder text { font-size: 40rpx; color: #FFD85C; font-weight: 700; }
-.employee-name { font-size: 36rpx; font-weight: 800; color: #fff; display: block; }
-.employee-bio { font-size: 24rpx; color: rgba(255,255,255,0.5); margin-top: 6rpx; display: block; }
-.humor-tag {
-  background: rgba(255,216,92,0.12); border: 1rpx solid rgba(255,216,92,0.25);
-  border-radius: 20rpx; padding: 12rpx 24rpx; display: inline-block;
-  text { font-size: 24rpx; color: #FFD85C; font-weight: 600; }
+.shop-name { font-size: 30rpx; font-weight: 800; color: #fff; display: block; }
+.shop-sub { font-size: 22rpx; color: rgba(255,255,255,0.5); margin-top: 4rpx; display: block; }
+
+/* 金额面板 */
+.amount-panel {
+  background: #fff; margin: 0 28rpx;
+  border-radius: 24rpx; padding: 32rpx 36rpx;
+  margin-top: -24rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.1);
+  text-align: center;
+}
+.amount-label { font-size: 24rpx; color: #999; display: block; margin-bottom: 8rpx; }
+.amount-row { display: flex; align-items: baseline; justify-content: center; gap: 4rpx; }
+.amount-currency { font-size: 36rpx; color: #1a1a1a; font-weight: 700; }
+.amount-value { font-size: 72rpx; font-weight: 900; color: #1a1a1a; line-height: 1; }
+.amount-panel.has-amount .amount-value { color: #C9883D; }
+.amount-pkg-name { font-size: 24rpx; color: #999; display: block; margin-top: 8rpx; }
+
+/* 套餐列表 */
+.pkg-list { background: #fff; margin: 20rpx 28rpx; border-radius: 20rpx; overflow: hidden; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06); }
+.pkg-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28rpx 28rpx; border-bottom: 1rpx solid #f0f0f0;
+}
+.pkg-item:last-child { border-bottom: none; }
+.pkg-item.selected { background: #FFF9EE; }
+.pkg-item.locked { pointer-events: none; }
+.pkg-item-left { display: flex; align-items: center; gap: 20rpx; flex: 1; }
+.pkg-radio {
+  width: 40rpx; height: 40rpx; border-radius: 20rpx;
+  border: 2rpx solid #ddd; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.pkg-radio.checked { border-color: #C9883D; background: #C9883D; }
+.pkg-radio-dot { width: 16rpx; height: 16rpx; border-radius: 8rpx; background: #fff; }
+.pkg-item-name { font-size: 28rpx; font-weight: 700; color: #1a1a1a; display: block; }
+.pkg-item-desc { font-size: 22rpx; color: #999; margin-top: 4rpx; display: block; }
+.pkg-item-price { font-size: 40rpx; font-weight: 900; color: #C9883D; flex-shrink: 0; }
+
+/* 支付面板 */
+.pay-panel { background: #fff; margin: 0 28rpx 20rpx; border-radius: 20rpx; overflow: hidden; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06); }
+.pay-panel-header { padding: 24rpx 28rpx 0; border-bottom: 1rpx solid #f0f0f0; }
+.pay-panel-title { font-size: 26rpx; font-weight: 700; color: #333; display: block; padding-bottom: 20rpx; }
+
+/* 方式 tab */
+.method-tabs { display: flex; padding: 20rpx 28rpx; gap: 16rpx; border-bottom: 1rpx solid #f0f0f0; }
+.method-tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8rpx;
+  padding: 16rpx 10rpx; border-radius: 16rpx; border: 2rpx solid #eee;
+  position: relative;
+}
+.method-tab.active { border-color: #C9883D; background: #FFF9EE; }
+.method-tab-icon { font-size: 32rpx; }
+.method-tab-label { font-size: 22rpx; color: #666; }
+.method-tab.active .method-tab-label { color: #C9883D; font-weight: 700; }
+.default-tag {
+  position: absolute; top: -1rpx; right: -1rpx;
+  background: #C9883D; color: #fff; font-size: 16rpx;
+  padding: 3rpx 10rpx; border-radius: 0 14rpx 0 10rpx;
 }
 
-.section-label { font-size: 24rpx; color: rgba(255,255,255,0.4); padding: 28rpx 40rpx 16rpx; letter-spacing: 2rpx; }
+/* 二维码 */
+.qr-panel { padding: 32rpx 28rpx; text-align: center; }
+.qr-box {
+  display: inline-block; background: #fff; border: 1rpx solid #eee;
+  border-radius: 20rpx; padding: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.08);
+}
+.qr-img { width: 280rpx; height: 280rpx; display: block; }
+.scan-tip { font-size: 24rpx; color: #666; display: block; margin-top: 20rpx; }
 
-.pkg-card {
-  margin: 0 28rpx 16rpx; background: #161630;
-  border: 2rpx solid rgba(255,255,255,0.08); border-radius: 20rpx;
-  padding: 28rpx; display: flex; align-items: center; justify-content: space-between;
+/* 账号面板 */
+.account-panel { padding: 0 28rpx; }
+.bank-card-visual {
+  background: linear-gradient(135deg, #3D2010, #5C3218);
+  border-radius: 16rpx; padding: 28rpx; margin: 20rpx 0;
 }
-.pkg-card.selected { border-color: #FFD85C; background: rgba(255,216,92,0.08); }
-.pkg-card.locked { pointer-events: none; }
-.pkg-left { flex: 1; }
-.pkg-name { font-size: 30rpx; font-weight: 700; color: #fff; display: block; }
-.pkg-desc { font-size: 24rpx; color: rgba(255,255,255,0.4); margin-top: 6rpx; display: block; }
-.pkg-right { text-align: right; }
-.pkg-price { font-size: 44rpx; font-weight: 900; color: #FFD85C; display: block; }
-.check { font-size: 24rpx; color: #FFD85C; margin-top: 4rpx; text-align: right; }
+.bank-card-num { font-size: 28rpx; color: #fff; letter-spacing: 6rpx; display: block; font-weight: 700; }
+.bank-card-bank { font-size: 22rpx; color: rgba(255,255,255,0.6); margin-top: 8rpx; display: block; }
+.account-row {
+  display: flex; align-items: center; padding: 22rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+.account-row:last-of-type { border-bottom: none; }
+.account-left { flex: 1; display: flex; align-items: center; gap: 20rpx; }
+.account-field { font-size: 24rpx; color: #999; width: 100rpx; flex-shrink: 0; }
+.account-val { font-size: 28rpx; color: #1a1a1a; font-weight: 600; }
+.copy-chip {
+  background: #FFF3E0; border: 1rpx solid #FFD085; border-radius: 20rpx;
+  padding: 8rpx 20rpx; flex-shrink: 0;
+  text { font-size: 22rpx; color: #C9883D; font-weight: 600; }
+}
 
-.pay-section { padding: 0 28rpx; }
-.pay-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20rpx; }
-.pay-title { font-size: 28rpx; font-weight: 700; color: #fff; }
-.pay-amount-badge {
-  background: linear-gradient(135deg, #C9883D, #B8772A);
-  color: #fff; font-size: 28rpx; font-weight: 800;
-  padding: 8rpx 24rpx; border-radius: 30rpx;
-}
+.humor-tip { font-size: 22rpx; color: #bbb; display: block; text-align: center; padding: 16rpx 0 24rpx; }
 
-.pay-tabs { display: flex; gap: 14rpx; margin-bottom: 24rpx; flex-wrap: wrap; }
-.pay-tab {
-  display: flex; align-items: center; gap: 6rpx;
-  padding: 14rpx 28rpx; border-radius: 40rpx; font-size: 26rpx;
-  border: 1rpx solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.5);
+/* 老板填写 */
+.payer-row-wrap { padding: 0 28rpx; border-top: 1rpx solid #f0f0f0; }
+.payer-input {
+  width: 100%; height: 88rpx; font-size: 28rpx; color: #1a1a1a;
+  border-bottom: 1rpx solid #f0f0f0; background: transparent;
 }
-.pay-tab.active { background: rgba(255,216,92,0.15); border-color: #FFD85C; color: #FFD85C; }
-.default-star { font-size: 20rpx; }
+.payer-input.note { border-bottom: none; }
+.ph { color: #ccc; }
 
-.qr-wrap { text-align: center; padding: 8rpx 0 4rpx; }
-.qr-card {
-  display: inline-block; background: #fff; border-radius: 20rpx;
-  padding: 16rpx; box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.4);
+/* 按钮 */
+.btn-paid {
+  width: calc(100% - 56rpx); margin: 24rpx 28rpx 0;
+  height: 100rpx; background: linear-gradient(135deg, #C9883D, #B8772A);
+  color: #fff; border-radius: 50rpx; font-size: 30rpx; font-weight: 800; border: none;
+  box-shadow: 0 8rpx 24rpx rgba(180,110,40,0.35);
 }
-.qr-img { width: 300rpx; height: 300rpx; display: block; }
-.qr-tip { font-size: 24rpx; color: rgba(255,255,255,0.5); display: block; margin-top: 20rpx; }
-
-.info-card {
-  background: #161630; border-radius: 20rpx; border: 1rpx solid rgba(255,255,255,0.08);
-  overflow: hidden; margin-bottom: 4rpx;
-}
-.info-hero {
-  background: linear-gradient(135deg, #2d1a00, #1a0d00);
-  padding: 28rpx; text-align: center; border-bottom: 1rpx solid rgba(255,255,255,0.06);
-}
-.info-amount { font-size: 64rpx; font-weight: 900; color: #FFD85C; display: block; }
-.info-amount-label { font-size: 22rpx; color: rgba(255,255,255,0.4); margin-top: 4rpx; display: block; }
-.info-row {
-  display: flex; align-items: center; padding: 22rpx 28rpx;
-  border-bottom: 1rpx solid rgba(255,255,255,0.06);
-}
-.info-row:last-of-type { border-bottom: none; }
-.info-label { font-size: 24rpx; color: rgba(255,255,255,0.4); width: 120rpx; flex-shrink: 0; }
-.info-value { flex: 1; font-size: 28rpx; color: #fff; font-weight: 600; }
-.card-num { letter-spacing: 4rpx; font-size: 26rpx; }
-.copy-btn { font-size: 22rpx; color: #FFD85C; padding: 6rpx 18rpx; flex-shrink: 0; }
-
-.humor-tip { font-size: 22rpx; color: rgba(255,216,92,0.5); display: block; padding: 16rpx 28rpx 20rpx; }
-
-.payer-section { padding: 0 28rpx; }
-.input-wrap {
-  background: #161630; border-radius: 16rpx; border: 1rpx solid rgba(255,255,255,0.1);
-  padding: 0 28rpx; height: 88rpx; display: flex; align-items: center; margin-bottom: 16rpx;
-}
-.note-wrap {
-  background: #161630; border-radius: 16rpx; border: 1rpx solid rgba(255,255,255,0.1);
-  padding: 0 28rpx; height: 80rpx; display: flex; align-items: center; margin-bottom: 32rpx;
-}
-.input { flex: 1; height: 88rpx; font-size: 28rpx; color: #fff; background: transparent; }
-.ph { color: rgba(255,255,255,0.2); }
-
-.btn-confirm {
-  width: calc(100% - 56rpx); margin: 0 28rpx;
-  height: 104rpx; background: linear-gradient(135deg, #C9883D, #B8772A);
-  color: #fff; border-radius: 52rpx; font-size: 32rpx; font-weight: 800; border: none;
-  box-shadow: 0 8rpx 32rpx rgba(180,110,40,0.5);
-}
-.bottom-tip { font-size: 22rpx; color: rgba(255,255,255,0.25); display: block; text-align: center; margin-top: 20rpx; }
+.paid-tip { font-size: 22rpx; color: #bbb; display: block; text-align: center; padding: 16rpx 0 24rpx; }
 
 .no-payment { text-align: center; padding: 80rpx 40rpx; }
-.no-payment-icon { font-size: 80rpx; display: block; }
-.no-payment-text { font-size: 26rpx; color: rgba(255,255,255,0.4); margin-top: 20rpx; display: block; line-height: 1.7; }
-.loading-tip { text-align: center; padding: 200rpx 0; color: rgba(255,255,255,0.3); }
+.no-icon { font-size: 80rpx; display: block; }
+.no-text { font-size: 26rpx; color: #999; margin-top: 20rpx; display: block; line-height: 1.7; }
+.loading { text-align: center; padding: 200rpx 0; color: #ccc; }
 </style>
