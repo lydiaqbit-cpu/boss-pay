@@ -193,129 +193,105 @@ async function handleBossPaid() {
 </script>
 
 <style lang="scss">
-page { background: #f4f4f8; }
+page { background: #F5F7FA; }
 .page { min-height: 100vh; padding-bottom: 60rpx; }
 
 /* 顶部 */
 .cashier-header {
-  background: linear-gradient(135deg, #3D2010, #5C3218);
-  padding: 80rpx 36rpx 36rpx;
+  background: linear-gradient(150deg, #43B89C, #2A9B82);
+  padding: 80rpx 32rpx 32rpx;
 }
-.shop-info { display: flex; align-items: center; gap: 20rpx; }
-.shop-avatar { width: 80rpx; height: 80rpx; border-radius: 40rpx; border: 3rpx solid rgba(255,216,92,0.5); }
+.shop-info { display: flex; align-items: center; gap: 18rpx; }
+.shop-avatar { width: 72rpx; height: 72rpx; border-radius: 36rpx; border: 2rpx solid rgba(255,255,255,0.5); }
 .shop-avatar-placeholder {
-  width: 80rpx; height: 80rpx; border-radius: 40rpx;
-  background: rgba(255,216,92,0.2); display: flex; align-items: center; justify-content: center;
-  text { font-size: 34rpx; color: #FFD85C; font-weight: 700; }
+  width: 72rpx; height: 72rpx; border-radius: 36rpx;
+  background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center;
+  text { font-size: 30rpx; color: #fff; font-weight: 700; }
 }
 .shop-name { font-size: 30rpx; font-weight: 800; color: #fff; display: block; }
-.shop-sub { font-size: 22rpx; color: rgba(255,255,255,0.5); margin-top: 4rpx; display: block; }
+.shop-sub { font-size: 22rpx; color: rgba(255,255,255,0.7); margin-top: 4rpx; display: block; }
 
 /* 金额面板 */
 .amount-panel {
-  background: #fff; margin: 0 28rpx;
-  border-radius: 24rpx; padding: 32rpx 36rpx;
-  margin-top: -24rpx;
-  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.1);
+  background: #fff; margin: 0 24rpx;
+  border-radius: 20rpx; padding: 28rpx 32rpx;
+  margin-top: -20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.08);
   text-align: center;
 }
-.amount-label { font-size: 24rpx; color: #999; display: block; margin-bottom: 8rpx; }
+.amount-label { font-size: 24rpx; color: #A0AEC0; display: block; margin-bottom: 8rpx; }
 .amount-row { display: flex; align-items: baseline; justify-content: center; gap: 4rpx; }
-.amount-currency { font-size: 36rpx; color: #1a1a1a; font-weight: 700; }
-.amount-value { font-size: 72rpx; font-weight: 900; color: #1a1a1a; line-height: 1; }
-.amount-panel.has-amount .amount-value { color: #C9883D; }
-.amount-pkg-name { font-size: 24rpx; color: #999; display: block; margin-top: 8rpx; }
+.amount-currency { font-size: 32rpx; color: #2D3748; font-weight: 700; }
+.amount-value { font-size: 72rpx; font-weight: 900; color: #2D3748; line-height: 1; }
+.amount-panel.has-amount .amount-value { color: #FF6B4A; }
+.amount-pkg-name { font-size: 24rpx; color: #A0AEC0; display: block; margin-top: 8rpx; }
 
 /* 套餐列表 */
-.pkg-list { background: #fff; margin: 20rpx 28rpx; border-radius: 20rpx; overflow: hidden; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06); }
-.pkg-item {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 28rpx 28rpx; border-bottom: 1rpx solid #f0f0f0;
-}
+.pkg-list { background: #fff; margin: 16rpx 24rpx; border-radius: 18rpx; overflow: hidden; box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05); }
+.pkg-item { display: flex; align-items: center; justify-content: space-between; padding: 24rpx; border-bottom: 1rpx solid #F0F4F8; }
 .pkg-item:last-child { border-bottom: none; }
-.pkg-item.selected { background: #FFF9EE; }
+.pkg-item.selected { background: #F0FBF7; }
 .pkg-item.locked { pointer-events: none; }
-.pkg-item-left { display: flex; align-items: center; gap: 20rpx; flex: 1; }
+.pkg-item-left { display: flex; align-items: center; gap: 18rpx; flex: 1; }
 .pkg-radio {
   width: 40rpx; height: 40rpx; border-radius: 20rpx;
-  border: 2rpx solid #ddd; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  border: 2rpx solid #CBD5E0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.pkg-radio.checked { border-color: #C9883D; background: #C9883D; }
+.pkg-radio.checked { border-color: #43B89C; background: #43B89C; }
 .pkg-radio-dot { width: 16rpx; height: 16rpx; border-radius: 8rpx; background: #fff; }
-.pkg-item-name { font-size: 28rpx; font-weight: 700; color: #1a1a1a; display: block; }
-.pkg-item-desc { font-size: 22rpx; color: #999; margin-top: 4rpx; display: block; }
-.pkg-item-price { font-size: 40rpx; font-weight: 900; color: #C9883D; flex-shrink: 0; }
+.pkg-item-name { font-size: 28rpx; font-weight: 700; color: #1A202C; display: block; }
+.pkg-item-desc { font-size: 22rpx; color: #A0AEC0; margin-top: 4rpx; display: block; }
+.pkg-item-price { font-size: 38rpx; font-weight: 900; color: #FF6B4A; flex-shrink: 0; }
 
 /* 支付面板 */
-.pay-panel { background: #fff; margin: 0 28rpx 20rpx; border-radius: 20rpx; overflow: hidden; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06); }
-.pay-panel-header { padding: 24rpx 28rpx 0; border-bottom: 1rpx solid #f0f0f0; }
-.pay-panel-title { font-size: 26rpx; font-weight: 700; color: #333; display: block; padding-bottom: 20rpx; }
+.pay-panel { background: #fff; margin: 0 24rpx 20rpx; border-radius: 18rpx; overflow: hidden; box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05); }
+.pay-panel-header { padding: 22rpx 24rpx 0; border-bottom: 1rpx solid #F0F4F8; }
+.pay-panel-title { font-size: 26rpx; font-weight: 700; color: #2D3748; display: block; padding-bottom: 18rpx; }
 
 /* 方式 tab */
-.method-tabs { display: flex; padding: 20rpx 28rpx; gap: 16rpx; border-bottom: 1rpx solid #f0f0f0; }
+.method-tabs { display: flex; padding: 18rpx 24rpx; gap: 14rpx; border-bottom: 1rpx solid #F0F4F8; }
 .method-tab {
   flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8rpx;
-  padding: 16rpx 10rpx; border-radius: 16rpx; border: 2rpx solid #eee;
-  position: relative;
+  padding: 14rpx 10rpx; border-radius: 14rpx; border: 2rpx solid #EDF2F7; position: relative;
 }
-.method-tab.active { border-color: #C9883D; background: #FFF9EE; }
+.method-tab.active { border-color: #43B89C; background: #F0FBF7; }
 .method-tab-icon { font-size: 32rpx; }
-.method-tab-label { font-size: 22rpx; color: #666; }
-.method-tab.active .method-tab-label { color: #C9883D; font-weight: 700; }
+.method-tab-label { font-size: 22rpx; color: #718096; }
+.method-tab.active .method-tab-label { color: #2A9B82; font-weight: 700; }
 .default-tag {
   position: absolute; top: -1rpx; right: -1rpx;
-  background: #C9883D; color: #fff; font-size: 16rpx;
-  padding: 3rpx 10rpx; border-radius: 0 14rpx 0 10rpx;
+  background: #43B89C; color: #fff; font-size: 16rpx;
+  padding: 3rpx 10rpx; border-radius: 0 12rpx 0 10rpx;
 }
 
 /* 二维码 */
-.qr-panel { padding: 32rpx 28rpx; text-align: center; }
+.qr-panel { padding: 28rpx 24rpx; text-align: center; }
 .qr-box {
-  display: inline-block; background: #fff; border: 1rpx solid #eee;
-  border-radius: 20rpx; padding: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.08);
+  display: inline-block; background: #fff; border: 1rpx solid #EDF2F7;
+  border-radius: 18rpx; padding: 18rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.07);
 }
 .qr-img { width: 280rpx; height: 280rpx; display: block; }
-.scan-tip { font-size: 24rpx; color: #666; display: block; margin-top: 20rpx; }
-
-/* 账号面板 */
-.account-panel { padding: 0 28rpx; }
-.account-row {
-  display: flex; align-items: center; padding: 22rpx 0;
-  border-bottom: 1rpx solid #f5f5f5;
-}
-.account-row:last-of-type { border-bottom: none; }
-.account-left { flex: 1; display: flex; align-items: center; gap: 20rpx; }
-.account-field { font-size: 24rpx; color: #999; width: 100rpx; flex-shrink: 0; }
-.account-val { font-size: 28rpx; color: #1a1a1a; font-weight: 600; }
-.copy-chip {
-  background: #FFF3E0; border: 1rpx solid #FFD085; border-radius: 20rpx;
-  padding: 8rpx 20rpx; flex-shrink: 0;
-  text { font-size: 22rpx; color: #C9883D; font-weight: 600; }
-}
-
-.humor-tip { font-size: 22rpx; color: #bbb; display: block; text-align: center; padding: 16rpx 0 24rpx; }
+.scan-tip { font-size: 24rpx; color: #718096; display: block; margin-top: 18rpx; }
+.humor-tip { font-size: 22rpx; color: #CBD5E0; display: block; text-align: center; padding: 12rpx 0 20rpx; }
 
 /* 老板填写 */
-.payer-row-wrap { padding: 0 28rpx; border-top: 1rpx solid #f0f0f0; }
-.payer-input {
-  width: 100%; height: 88rpx; font-size: 28rpx; color: #1a1a1a;
-  border-bottom: 1rpx solid #f0f0f0; background: transparent;
-}
+.payer-row-wrap { padding: 0 24rpx; border-top: 1rpx solid #F0F4F8; }
+.payer-input { width: 100%; height: 88rpx; font-size: 28rpx; color: #1A202C; border-bottom: 1rpx solid #F0F4F8; background: transparent; }
 .payer-input.note { border-bottom: none; }
-.ph { color: #ccc; }
+.ph { color: #CBD5E0; }
 
 /* 按钮 */
 .btn-paid {
-  width: calc(100% - 56rpx); margin: 24rpx 28rpx 0;
-  height: 100rpx; background: linear-gradient(135deg, #C9883D, #B8772A);
+  width: calc(100% - 48rpx); margin: 20rpx 24rpx 0;
+  height: 100rpx; background: linear-gradient(135deg, #FF8547, #FF6B4A);
   color: #fff; border-radius: 50rpx; font-size: 30rpx; font-weight: 800; border: none;
-  box-shadow: 0 8rpx 24rpx rgba(180,110,40,0.35);
+  box-shadow: 0 6rpx 20rpx rgba(255,107,74,0.3);
 }
-.paid-tip { font-size: 22rpx; color: #bbb; display: block; text-align: center; padding: 16rpx 0 24rpx; }
+.paid-tip { font-size: 22rpx; color: #CBD5E0; display: block; text-align: center; padding: 14rpx 0 20rpx; }
 
 .no-payment { text-align: center; padding: 80rpx 40rpx; }
 .no-icon { font-size: 80rpx; display: block; }
-.no-text { font-size: 26rpx; color: #999; margin-top: 20rpx; display: block; line-height: 1.7; }
-.loading { text-align: center; padding: 200rpx 0; color: #ccc; }
+.no-text { font-size: 26rpx; color: #A0AEC0; margin-top: 20rpx; display: block; line-height: 1.7; }
+.loading { text-align: center; padding: 200rpx 0; color: #CBD5E0; }
 </style>

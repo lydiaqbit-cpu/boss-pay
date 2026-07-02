@@ -9,16 +9,10 @@
           <text class="method-name">微信收款码</text>
           <text v-if="form.wechatQrUrl" class="status-dot">已设置</text>
         </view>
-        <view
-          v-if="form.wechatQrUrl"
-          class="default-btn"
-          :class="{ active: form.defaultPaymentMethod === 'wechat' }"
-          @click="setDefault('wechat')"
-        >
+        <view v-if="form.wechatQrUrl" class="default-btn" :class="{ active: form.defaultPaymentMethod === 'wechat' }" @click="setDefault('wechat')">
           <text>{{ form.defaultPaymentMethod === 'wechat' ? '⭐ 默认' : '设为默认' }}</text>
         </view>
       </view>
-
       <view class="qr-upload" @click="uploadQr('wechat')">
         <image v-if="form.wechatQrUrl" :src="form.wechatQrUrl" class="qr-preview" mode="aspectFit"/>
         <view v-else class="qr-placeholder">
@@ -38,16 +32,10 @@
           <text class="method-name">支付宝收款码</text>
           <text v-if="form.alipayQrUrl" class="status-dot">已设置</text>
         </view>
-        <view
-          v-if="form.alipayQrUrl"
-          class="default-btn"
-          :class="{ active: form.defaultPaymentMethod === 'alipay' }"
-          @click="setDefault('alipay')"
-        >
+        <view v-if="form.alipayQrUrl" class="default-btn" :class="{ active: form.defaultPaymentMethod === 'alipay' }" @click="setDefault('alipay')">
           <text>{{ form.defaultPaymentMethod === 'alipay' ? '⭐ 默认' : '设为默认' }}</text>
         </view>
       </view>
-
       <view class="qr-upload" @click="uploadQr('alipay')">
         <image v-if="form.alipayQrUrl" :src="form.alipayQrUrl" class="qr-preview" mode="aspectFit"/>
         <view v-else class="qr-placeholder">
@@ -62,7 +50,7 @@
     <button class="btn-save" :loading="saving" @click="handleSave">保存收款方式</button>
 
     <view class="tip-card">
-      <text class="tip-text">💡 建议设置多种收款方式，老板用哪个方便用哪个，钱到手才是真的</text>
+      <text class="tip-text">💡 建议两种都设置，老板用哪个方便用哪个，钱到手才是真的</text>
     </view>
   </view>
 </template>
@@ -72,17 +60,10 @@ import { ref, onMounted } from 'vue'
 import { get, put } from '../../utils/request'
 
 const saving = ref(false)
-const form = ref({
-  wechatQrUrl: '',
-  alipayQrUrl: '',
-  defaultPaymentMethod: ''
-})
+const form = ref({ wechatQrUrl: '', alipayQrUrl: '', defaultPaymentMethod: '' })
 
 onMounted(async () => {
-  try {
-    const data = await get<any>('/user/payment')
-    if (data) Object.assign(form.value, data)
-  } catch {}
+  try { const data = await get<any>('/user/payment'); if (data) Object.assign(form.value, data) } catch {}
 })
 
 function setDefault(method: string) {
@@ -91,43 +72,29 @@ function setDefault(method: string) {
 
 function uploadQr(type: 'wechat' | 'alipay') {
   uni.chooseImage({
-    count: 1,
-    sizeType: ['compressed'],
-    sourceType: ['album', 'camera'],
+    count: 1, sizeType: ['compressed'], sourceType: ['album', 'camera'],
     success: (res) => {
       const path = res.tempFilePaths[0]
       // #ifdef H5
       const img = new Image()
       img.onload = () => {
         const canvas = document.createElement('canvas')
-        canvas.width = img.width
-        canvas.height = img.height
+        canvas.width = img.width; canvas.height = img.height
         canvas.getContext('2d')!.drawImage(img, 0, 0)
         const b64 = canvas.toDataURL('image/jpeg', 0.7)
-        if (type === 'wechat') {
-          form.value.wechatQrUrl = b64
-          if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat'
-        } else {
-          form.value.alipayQrUrl = b64
-          if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'alipay'
-        }
+        if (type === 'wechat') { form.value.wechatQrUrl = b64; if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat' }
+        else { form.value.alipayQrUrl = b64; if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'alipay' }
         uni.showToast({ title: '图片已选择', icon: 'success' })
       }
       img.src = path
       // #endif
       // #ifdef MP-WEIXIN
       uni.getFileSystemManager().readFile({
-        filePath: path,
-        encoding: 'base64',
+        filePath: path, encoding: 'base64',
         success: (r) => {
           const b64 = 'data:image/jpeg;base64,' + r.data
-          if (type === 'wechat') {
-            form.value.wechatQrUrl = b64
-            if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat'
-          } else {
-            form.value.alipayQrUrl = b64
-            if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'alipay'
-          }
+          if (type === 'wechat') { form.value.wechatQrUrl = b64; if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat' }
+          else { form.value.alipayQrUrl = b64; if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'alipay' }
           uni.showToast({ title: '图片已选择', icon: 'success' })
         }
       })
@@ -152,61 +119,45 @@ async function handleSave() {
 </script>
 
 <style lang="scss">
-page { background: #0d0d1a; }
-.page { min-height: 100vh; padding: 24rpx 28rpx 120rpx; }
+page { background: #F5F7FA; }
+.page { min-height: 100vh; padding: 24rpx 24rpx 120rpx; }
 
 .method-card {
-  background: #161630; border-radius: 24rpx; padding: 28rpx;
-  margin-bottom: 24rpx; border: 2rpx solid rgba(255,255,255,0.07);
-  transition: all 0.2s;
+  background: #fff; border-radius: 20rpx; padding: 28rpx;
+  margin-bottom: 20rpx; border: 2rpx solid #EDF2F7;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+  transition: border-color 0.2s;
 }
-.method-card.is-default {
-  border-color: #FFD85C;
-  background: rgba(255,216,92,0.05);
-}
+.method-card.is-default { border-color: #43B89C; }
 
-.card-header {
-  display: flex; align-items: center; justify-content: space-between; margin-bottom: 20rpx;
-}
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20rpx; }
 .card-title-row { display: flex; align-items: center; gap: 12rpx; }
 .method-icon { font-size: 36rpx; }
-.method-name { font-size: 30rpx; font-weight: 700; color: #fff; }
-.status-dot {
-  font-size: 20rpx; color: #4ade80; background: rgba(74,222,128,0.12);
-  padding: 4rpx 14rpx; border-radius: 20rpx;
-}
-.default-btn {
-  font-size: 22rpx; color: rgba(255,255,255,0.4);
-  border: 1rpx solid rgba(255,255,255,0.15); border-radius: 30rpx;
-  padding: 8rpx 20rpx;
-}
-.default-btn.active {
-  color: #FFD85C; border-color: #FFD85C;
-  background: rgba(255,216,92,0.1);
-}
+.method-name { font-size: 30rpx; font-weight: 700; color: #1A202C; }
+.status-dot { font-size: 20rpx; color: #43B89C; background: #E6FAF5; padding: 4rpx 14rpx; border-radius: 20rpx; }
+.default-btn { font-size: 22rpx; color: #A0AEC0; border: 1rpx solid #EDF2F7; border-radius: 30rpx; padding: 8rpx 20rpx; }
+.default-btn.active { color: #D97706; border-color: #FCD34D; background: #FFFBEB; }
 
 .qr-upload { display: flex; justify-content: center; margin-bottom: 16rpx; }
-.qr-preview { width: 260rpx; height: 260rpx; border-radius: 16rpx; background: #fff; }
+.qr-preview { width: 260rpx; height: 260rpx; border-radius: 12rpx; background: #F7F8FA; }
 .qr-placeholder {
   width: 260rpx; height: 260rpx; border-radius: 16rpx;
-  border: 2rpx dashed rgba(255,255,255,0.15);
+  border: 2rpx dashed #CBD5E0;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12rpx;
+  background: #F7F8FA;
 }
-.qr-plus { font-size: 64rpx; color: rgba(255,255,255,0.2); line-height: 1; }
-.qr-hint { font-size: 24rpx; color: rgba(255,255,255,0.3); }
-.field-tip { font-size: 22rpx; color: rgba(255,255,255,0.25); display: block; text-align: center; }
-.reupload-tip { font-size: 22rpx; color: #FFD85C; display: block; text-align: center; margin-top: 10rpx; }
+.qr-plus { font-size: 64rpx; color: #CBD5E0; line-height: 1; }
+.qr-hint { font-size: 24rpx; color: #A0AEC0; }
+.field-tip { font-size: 22rpx; color: #CBD5E0; display: block; text-align: center; }
+.reupload-tip { font-size: 22rpx; color: #43B89C; display: block; text-align: center; margin-top: 10rpx; }
 
 .btn-save {
   width: 100%; height: 100rpx;
-  background: linear-gradient(135deg, #C9883D, #B8772A);
+  background: linear-gradient(135deg, #FF8547, #FF6B4A);
   color: #fff; border-radius: 50rpx; font-size: 32rpx; font-weight: 800; border: none;
-  box-shadow: 0 8rpx 28rpx rgba(180,110,40,0.4); margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(255,107,74,0.3); margin-bottom: 24rpx;
 }
 
-.tip-card {
-  background: rgba(255,216,92,0.07); border-radius: 16rpx; padding: 20rpx 24rpx;
-  border: 1rpx solid rgba(255,216,92,0.15);
-}
-.tip-text { font-size: 24rpx; color: rgba(255,216,92,0.7); line-height: 1.7; }
+.tip-card { background: #F0FBF7; border-radius: 16rpx; padding: 20rpx 24rpx; border: 1rpx solid #B2F0E0; }
+.tip-text { font-size: 24rpx; color: #2A9B82; line-height: 1.7; }
 </style>

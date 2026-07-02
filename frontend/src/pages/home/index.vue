@@ -1,12 +1,8 @@
 <template>
   <view class="page">
-    <view
-      v-for="burst in moneyBursts"
-      :key="burst.id"
-      class="money-float"
-      :style="{ left: burst.x + 'px', top: burst.y + 'px' }"
-    >💰</view>
+    <view v-for="burst in moneyBursts" :key="burst.id" class="money-float" :style="{ left: burst.x + 'px', top: burst.y + 'px' }">💰</view>
 
+    <!-- 顶部 -->
     <view class="header-card">
       <view class="header-top">
         <view class="app-name-row">
@@ -14,7 +10,6 @@
           <text class="app-name">牛马加班吧</text>
         </view>
       </view>
-
       <view class="user-row">
         <view class="avatar-wrap">
           <text class="avatar-text">{{ avatarChar }}</text>
@@ -23,47 +18,35 @@
           <text class="nickname">{{ userStore.userInfo?.nickname || '打工人' }}</text>
           <view class="bio-row">
             <view class="work-badge">
-              <text class="work-badge-dot" />
-              <text class="work-badge-text">在线</text>
+              <view class="work-dot" />
+              <text class="work-badge-text">在线收钱中</text>
             </view>
-            <text class="bio">{{ userStore.userInfo?.bio || '准时下班，合理摸鱼' }}</text>
           </view>
         </view>
       </view>
 
-      <!-- 统计面板 -->
       <view class="stats-panel">
         <view class="stat-col">
-          <view class="stat-row">
-            <text class="stat-icon">💸</text>
-            <text class="stat-val">¥{{ totalConfirmed }}</text>
-          </view>
-          <text class="stat-key">已确认到手</text>
+          <text class="stat-val">¥{{ totalConfirmed }}</text>
+          <text class="stat-key">💸 已到手</text>
         </view>
         <view class="stat-divider"/>
         <view class="stat-col">
-          <view class="stat-row">
-            <text class="stat-icon">👀</text>
-            <text class="stat-val orange">{{ pendingCount }}</text>
-          </view>
-          <text class="stat-key">待确认笔数</text>
+          <text class="stat-val pending">{{ pendingCount }}</text>
+          <text class="stat-key">⏳ 待确认</text>
         </view>
         <view class="stat-divider"/>
         <view class="stat-col">
-          <view class="stat-row">
-            <text class="stat-icon">🤵</text>
-            <text class="stat-val">{{ confirmedCount }}</text>
-          </view>
-          <text class="stat-key">老板付款次数</text>
+          <text class="stat-val">{{ confirmedCount }}</text>
+          <text class="stat-key">🤵 老板次数</text>
         </view>
       </view>
     </view>
 
     <!-- 待确认提醒 -->
     <view v-if="pendingCount > 0" class="pending-banner" @click="toOrders">
-      <text class="pending-icon">⏳</text>
-      <text class="pending-text">有 {{ pendingCount }} 笔待确认，老板说已转账了</text>
-      <text class="pending-arrow">›</text>
+      <text class="pending-text">⏳ 有 {{ pendingCount }} 笔待确认，老板说已转了</text>
+      <text class="banner-arrow">›</text>
     </view>
 
     <!-- 到账通知 -->
@@ -76,7 +59,7 @@
       <text class="n-close">✕</text>
     </view>
 
-    <!-- 未设置收款方式提醒 -->
+    <!-- 未设置收款方式 -->
     <view v-if="!hasPaymentMethod" class="setup-banner" @click="toPaymentSetting">
       <view class="setup-left">
         <text class="setup-icon">🫙</text>
@@ -85,14 +68,14 @@
           <text class="setup-sub">设置收款码，让它乖乖转移到你这来 👉</text>
         </view>
       </view>
-      <text class="setup-arrow">›</text>
+      <text class="banner-arrow">›</text>
     </view>
 
-    <!-- 收款链接（设置了收款方式才显示） -->
+    <!-- 收款链接 -->
     <view v-if="hasPaymentMethod" class="section-card link-card">
       <view class="link-header">
         <text class="link-title">我的收款链接</text>
-        <text class="link-tip-badge">发给老板</text>
+        <view class="badge-green">发给老板</view>
       </view>
       <text class="link-url" selectable>{{ payLink }}</text>
       <view class="copy-btn" :class="{ copied }" @click="copyLink">
@@ -163,8 +146,7 @@ let ws: UniApp.SocketTask | null = null
 
 const hasPaymentMethod = computed(() => {
   const p = paymentInfo.value
-  if (!p) return false
-  return !!(p.wechatQrUrl || p.alipayAccount || p.bankCard)
+  return !!(p?.wechatQrUrl || p?.alipayQrUrl)
 })
 
 interface MoneyBurst { id: number; x: number; y: number }
@@ -172,21 +154,16 @@ const moneyBursts = ref<MoneyBurst[]>([])
 let burstId = 0
 
 const avatarChar = computed(() => (userStore.userInfo?.nickname || '工').charAt(0))
-
 const confirmedOrders = computed(() => orders.value.filter(o => o.status === 'confirmed'))
 const pendingCount = computed(() => orders.value.filter(o => o.status === 'boss_paid').length)
 const confirmedCount = computed(() => confirmedOrders.value.length)
 const totalConfirmed = computed(() => confirmedOrders.value.reduce((s, o) => s + o.netAmount, 0).toFixed(2))
 
 // #ifdef H5
-const payLink = computed(() =>
-  `${location.origin}/#/pages/pay/cashier?userId=${userStore.userInfo?.id || ''}`
-)
+const payLink = computed(() => `${location.origin}/#/pages/pay/cashier?userId=${userStore.userInfo?.id || ''}`)
 // #endif
 // #ifdef MP-WEIXIN
-const payLink = computed(() =>
-  `/pages/pay/cashier?userId=${userStore.userInfo?.id || ''}`
-)
+const payLink = computed(() => `/pages/pay/cashier?userId=${userStore.userInfo?.id || ''}`)
 // #endif
 
 function triggerMoneyBurst() {
@@ -207,17 +184,9 @@ onMounted(async () => {
 
 onUnmounted(() => { ws?.close() })
 
-async function loadPackages() {
-  try { packages.value = await get<any[]>('/packages') } catch {}
-}
-
-async function loadOrders() {
-  try { orders.value = await get<any[]>('/pay/orders') } catch {}
-}
-
-async function loadPaymentInfo() {
-  try { paymentInfo.value = await get<any>('/user/payment') } catch {}
-}
+async function loadPackages() { try { packages.value = await get<any[]>('/packages') } catch {} }
+async function loadOrders() { try { orders.value = await get<any[]>('/pay/orders') } catch {} }
+async function loadPaymentInfo() { try { paymentInfo.value = await get<any>('/user/payment') } catch {} }
 
 function connectWS() {
   if (!userStore.userInfo?.id) return
@@ -239,17 +208,10 @@ function connectWS() {
 function toPackages() { uni.navigateTo({ url: '/pages/packages/index' }) }
 function toOrders() { uni.switchTab({ url: '/pages/orders/index' }) }
 function toPaymentSetting() { uni.navigateTo({ url: '/pages/profile/payment' }) }
-
 function copyLink() {
-  uni.setClipboardData({
-    data: payLink.value,
-    success: () => { copied.value = true; setTimeout(() => { copied.value = false }, 2000) }
-  })
+  uni.setClipboardData({ data: payLink.value, success: () => { copied.value = true; setTimeout(() => { copied.value = false }, 2000) } })
 }
-
-function previewCashier() {
-  uni.navigateTo({ url: `/pages/pay/cashier?userId=${userStore.userInfo?.id}` })
-}
+function previewCashier() { uni.navigateTo({ url: `/pages/pay/cashier?userId=${userStore.userInfo?.id}` }) }
 
 onShareAppMessage(() => ({
   title: `${userStore.userInfo?.nickname || '打工人'} 请老板扫码付加班费 💰`,
@@ -258,141 +220,138 @@ onShareAppMessage(() => ({
 </script>
 
 <style lang="scss">
-page { background: #F5EAD8; }
+page { background: #F5F7FA; }
 .page { min-height: 100vh; padding-bottom: 40rpx; position: relative; overflow: hidden; }
 
 .money-float {
   position: fixed; font-size: 48rpx; pointer-events: none; z-index: 9999;
   animation: floatMoney 1.5s ease-out forwards;
 }
+@keyframes floatMoney {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-120rpx) scale(1.4); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
 
+/* 顶部卡片 */
 .header-card {
-  background: linear-gradient(160deg, #3D2010 0%, #5C3218 60%, #3D2010 100%);
+  background: linear-gradient(150deg, #43B89C 0%, #2A9B82 100%);
   padding: 64rpx 36rpx 36rpx;
-  border-radius: 0 0 48rpx 48rpx;
-  box-shadow: 0 16rpx 48rpx rgba(180,110,40,0.35);
+  border-radius: 0 0 40rpx 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(43,155,130,0.25);
 }
-.header-top {
-  display: flex; justify-content: space-between; align-items: center; margin-bottom: 36rpx;
-}
-.app-name-row { display: flex; align-items: center; gap: 14rpx; }
-.header-logo { width: 52rpx; height: 52rpx; border-radius: 12rpx; }
-.app-name { font-size: 30rpx; font-weight: 800; color: #fff; letter-spacing: 2rpx; }
+.header-top { margin-bottom: 32rpx; }
+.app-name-row { display: flex; align-items: center; gap: 12rpx; }
+.header-logo { width: 48rpx; height: 48rpx; border-radius: 10rpx; }
+.app-name { font-size: 28rpx; font-weight: 800; color: #fff; letter-spacing: 2rpx; }
 
-.user-row { display: flex; align-items: center; margin-bottom: 32rpx; }
+.user-row { display: flex; align-items: center; margin-bottom: 28rpx; }
 .avatar-wrap {
-  width: 92rpx; height: 92rpx; border-radius: 46rpx;
-  background: rgba(255,255,255,0.2); border: 2rpx solid rgba(255,255,255,0.35);
+  width: 88rpx; height: 88rpx; border-radius: 44rpx;
+  background: rgba(255,255,255,0.25); border: 2rpx solid rgba(255,255,255,0.5);
   display: flex; align-items: center; justify-content: center;
-  margin-right: 22rpx; flex-shrink: 0;
+  margin-right: 20rpx; flex-shrink: 0;
 }
-.avatar-text { font-size: 40rpx; font-weight: 700; color: #fff; }
-.user-text { flex: 1; min-width: 0; }
-.nickname { font-size: 34rpx; font-weight: 700; color: #fff; display: block; margin-bottom: 10rpx; }
-.bio-row { display: flex; align-items: center; gap: 10rpx; }
-.bio { font-size: 22rpx; color: rgba(255,255,255,0.6); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.work-badge {
-  display: flex; align-items: center; gap: 6rpx;
-  background: rgba(74,222,128,0.2); border: 1rpx solid rgba(74,222,128,0.4);
-  padding: 4rpx 12rpx; border-radius: 20rpx; flex-shrink: 0;
-}
-.work-badge-dot { display: block; width: 10rpx; height: 10rpx; border-radius: 5rpx; background: #4ADE80; }
-.work-badge-text { font-size: 18rpx; color: #4ADE80; font-weight: 600; }
+.avatar-text { font-size: 38rpx; font-weight: 700; color: #fff; }
+.user-text { flex: 1; }
+.nickname { font-size: 34rpx; font-weight: 700; color: #fff; display: block; margin-bottom: 8rpx; }
+.bio-row { display: flex; align-items: center; }
+.work-badge { display: flex; align-items: center; gap: 6rpx; background: rgba(255,255,255,0.2); padding: 4rpx 14rpx; border-radius: 20rpx; }
+.work-dot { width: 10rpx; height: 10rpx; border-radius: 5rpx; background: #fff; }
+.work-badge-text { font-size: 20rpx; color: #fff; font-weight: 600; }
 
-.stats-panel {
-  background: rgba(255,255,255,0.12); border-radius: 20rpx; padding: 24rpx 28rpx;
-  display: flex; align-items: center;
-}
+.stats-panel { background: rgba(255,255,255,0.15); border-radius: 18rpx; padding: 20rpx 24rpx; display: flex; align-items: center; }
 .stat-col { flex: 1; text-align: center; }
-.stat-row { display: flex; align-items: center; justify-content: center; gap: 8rpx; }
-.stat-icon { font-size: 28rpx; }
-.stat-val { font-size: 34rpx; font-weight: 800; color: #fff; }
-.stat-val.orange { color: #FF9F43; }
-.stat-key { font-size: 20rpx; color: rgba(255,255,255,0.5); margin-top: 6rpx; display: block; }
-.stat-divider { width: 1rpx; height: 48rpx; background: rgba(255,255,255,0.15); }
+.stat-val { font-size: 36rpx; font-weight: 800; color: #fff; display: block; }
+.stat-val.pending { color: #FFE066; }
+.stat-key { font-size: 20rpx; color: rgba(255,255,255,0.75); margin-top: 4rpx; display: block; }
+.stat-divider { width: 1rpx; height: 44rpx; background: rgba(255,255,255,0.25); }
+
+/* 提醒横幅 */
+.pending-banner {
+  margin: 20rpx 28rpx 0;
+  background: #FFF7E6; border: 1rpx solid #FFD591;
+  border-radius: 16rpx; padding: 18rpx 24rpx;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pending-text { font-size: 26rpx; color: #D46B08; flex: 1; }
+
+.notify-banner {
+  margin: 20rpx 28rpx 0; background: #fff; border-radius: 16rpx;
+  padding: 20rpx 24rpx; display: flex; align-items: center; gap: 16rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.08); border-left: 5rpx solid #43B89C;
+}
+.n-emoji { font-size: 36rpx; }
+.n-body { flex: 1; }
+.n-title { font-size: 22rpx; color: #43B89C; font-weight: 600; display: block; }
+.n-text { font-size: 24rpx; color: #374151; margin-top: 2rpx; display: block; }
+.n-close { font-size: 28rpx; color: #bbb; }
 
 .setup-banner {
   margin: 20rpx 28rpx 0;
-  background: linear-gradient(135deg, #C9883D, #B8772A);
-  border-radius: 20rpx;
-  padding: 28rpx 24rpx; display: flex; align-items: center; gap: 16rpx;
-  box-shadow: 0 8rpx 24rpx rgba(180,110,40,0.4);
+  background: linear-gradient(135deg, #FF8547, #FF6B4A);
+  border-radius: 18rpx; padding: 28rpx 24rpx;
+  display: flex; align-items: center;
+  box-shadow: 0 6rpx 20rpx rgba(255,107,74,0.3);
 }
-.setup-left { display: flex; align-items: center; gap: 20rpx; flex: 1; }
+.setup-left { display: flex; align-items: center; gap: 18rpx; flex: 1; }
 .setup-icon { font-size: 44rpx; flex-shrink: 0; }
-.setup-title { font-size: 30rpx; font-weight: 800; color: #fff; display: block; }
-.setup-sub { font-size: 22rpx; color: rgba(255,255,255,0.8); margin-top: 6rpx; display: block; }
-.setup-arrow { font-size: 48rpx; color: rgba(255,255,255,0.7); }
+.setup-title { font-size: 28rpx; font-weight: 700; color: #fff; display: block; }
+.setup-sub { font-size: 22rpx; color: rgba(255,255,255,0.85); margin-top: 6rpx; display: block; }
+.banner-arrow { font-size: 48rpx; color: rgba(255,255,255,0.7); flex-shrink: 0; }
 
-.pending-banner {
-  margin: 20rpx 28rpx 0; background: rgba(255,159,67,0.12);
-  border: 1rpx solid rgba(255,159,67,0.3); border-radius: 16rpx;
-  padding: 20rpx 24rpx; display: flex; align-items: center; gap: 12rpx;
-}
-.pending-icon { font-size: 28rpx; flex-shrink: 0; }
-.pending-text { flex: 1; font-size: 24rpx; color: #FF9F43; }
-.pending-arrow { font-size: 36rpx; color: rgba(255,159,67,0.6); }
-
-.notify-banner {
-  margin: 20rpx 28rpx 0; background: #fff; border-radius: 18rpx;
-  padding: 20rpx 24rpx; display: flex; align-items: center; gap: 16rpx;
-  box-shadow: 0 4rpx 24rpx rgba(5,150,105,0.15); border-left: 6rpx solid #C9883D;
-}
-.n-emoji { font-size: 36rpx; flex-shrink: 0; }
-.n-body { flex: 1; }
-.n-title { font-size: 22rpx; color: #C9883D; font-weight: 600; display: block; }
-.n-text { font-size: 24rpx; color: #374151; margin-top: 2rpx; display: block; }
-.n-close { font-size: 28rpx; color: #C4A888; }
-
+/* 卡片 */
 .section-card {
-  margin: 24rpx 28rpx 0; background: #fff; border-radius: 24rpx;
-  padding: 28rpx 28rpx 20rpx; box-shadow: 0 2rpx 16rpx rgba(180,110,40,0.07);
+  margin: 20rpx 28rpx 0; background: #fff; border-radius: 20rpx;
+  padding: 28rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
 }
-.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20rpx; }
-.section-title { font-size: 28rpx; font-weight: 700; color: #1C1208; }
-.section-more { font-size: 24rpx; color: #C9883D; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx; }
+.section-title { font-size: 28rpx; font-weight: 700; color: #1A202C; }
+.section-more { font-size: 24rpx; color: #43B89C; }
 
-.link-card { }
-.link-header { display: flex; align-items: center; gap: 14rpx; margin-bottom: 16rpx; }
-.link-title { font-size: 28rpx; font-weight: 700; color: #1C1208; }
-.link-tip-badge { background: #EFE0C8; color: #C9883D; font-size: 20rpx; font-weight: 600; padding: 4rpx 14rpx; border-radius: 20rpx; }
+.link-card {}
+.link-header { display: flex; align-items: center; gap: 12rpx; margin-bottom: 14rpx; }
+.link-title { font-size: 28rpx; font-weight: 700; color: #1A202C; }
+.badge-green { background: #E6FAF5; color: #43B89C; font-size: 20rpx; font-weight: 600; padding: 4rpx 14rpx; border-radius: 20rpx; }
 .link-url {
-  display: block; font-size: 22rpx; color: #8A6A50; word-break: break-all; line-height: 1.6;
-  background: #F9F2E8; border-radius: 12rpx; padding: 16rpx 18rpx; margin-bottom: 20rpx; border: 1rpx solid #E8C89A;
+  display: block; font-size: 22rpx; color: #718096; word-break: break-all; line-height: 1.7;
+  background: #F7F8FA; border-radius: 10rpx; padding: 14rpx 16rpx; margin-bottom: 18rpx;
 }
 .copy-btn {
-  width: 100%; height: 88rpx; background: linear-gradient(135deg, #C9883D 0%, #B8772A 100%);
+  height: 88rpx; background: linear-gradient(135deg, #FF8547, #FF6B4A);
   color: #fff; border-radius: 44rpx; font-size: 28rpx; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6rpx 24rpx rgba(180,110,40,0.35); animation: pulse 2.5s infinite;
+  box-shadow: 0 6rpx 20rpx rgba(255,107,74,0.3); animation: pulse 2.5s infinite;
 }
-.copy-btn.copied {
-  background: linear-gradient(135deg, #16A34A 0%, #22C55E 100%);
-  animation: none; box-shadow: 0 6rpx 24rpx rgba(5,150,105,0.35);
-}
+.copy-btn.copied { background: linear-gradient(135deg, #43B89C, #2A9B82); animation: none; box-shadow: 0 6rpx 20rpx rgba(43,155,130,0.3); }
 
-.action-grid { display: flex; gap: 16rpx; margin: 24rpx 28rpx 0; }
+/* 快捷操作 */
+.action-grid { display: flex; gap: 14rpx; margin: 20rpx 28rpx 0; }
 .action-item {
-  flex: 1; background: #fff; border-radius: 20rpx; padding: 28rpx 10rpx;
+  flex: 1; background: #fff; border-radius: 18rpx; padding: 24rpx 10rpx;
   display: flex; flex-direction: column; align-items: center;
-  box-shadow: 0 2rpx 12rpx rgba(180,110,40,0.07);
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
 }
-.a-icon-wrap { width: 80rpx; height: 80rpx; border-radius: 22rpx; background: #EFE0C8; display: flex; align-items: center; justify-content: center; margin-bottom: 12rpx; }
-.a-icon { font-size: 38rpx; }
-.a-label { font-size: 22rpx; color: #6A4E38; font-weight: 500; }
+.a-icon-wrap { width: 72rpx; height: 72rpx; border-radius: 18rpx; background: #F0FBF7; display: flex; align-items: center; justify-content: center; margin-bottom: 10rpx; }
+.a-icon { font-size: 36rpx; }
+.a-label { font-size: 21rpx; color: #4A5568; font-weight: 500; }
 
-.pkg-row { display: flex; justify-content: space-between; align-items: center; padding: 22rpx 0; border-bottom: 1rpx solid #F3F4F6; }
+/* 套餐 */
+.pkg-row { display: flex; justify-content: space-between; align-items: center; padding: 20rpx 0; border-bottom: 1rpx solid #F0F4F8; }
 .pkg-row:last-child { border-bottom: none; }
-.pkg-left { display: flex; align-items: center; gap: 16rpx; }
-.pkg-index { width: 44rpx; height: 44rpx; border-radius: 22rpx; background: #EFE0C8; color: #C9883D; font-size: 22rpx; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.pkg-name { font-size: 28rpx; font-weight: 600; color: #1C1208; display: block; }
-.pkg-desc { font-size: 22rpx; color: #8A6A50; margin-top: 4rpx; display: block; }
-.pkg-price { font-size: 32rpx; font-weight: 700; color: #16A34A; }
+.pkg-left { display: flex; align-items: center; gap: 14rpx; }
+.pkg-index { width: 40rpx; height: 40rpx; border-radius: 20rpx; background: #E6FAF5; color: #43B89C; font-size: 22rpx; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pkg-name { font-size: 28rpx; font-weight: 600; color: #1A202C; display: block; }
+.pkg-desc { font-size: 22rpx; color: #A0AEC0; margin-top: 4rpx; display: block; }
+.pkg-price { font-size: 32rpx; font-weight: 700; color: #FF6B4A; }
 
-.empty-state { text-align: center; padding: 40rpx 0; }
-.empty-emoji { font-size: 60rpx; display: block; }
-.empty-text { font-size: 26rpx; color: #8A6A50; margin-top: 16rpx; display: block; }
-.empty-btn { display: inline-block; margin-top: 20rpx; background: #EFE0C8; color: #C9883D; font-size: 26rpx; font-weight: 600; padding: 14rpx 36rpx; border-radius: 40rpx; }
+.empty-state { text-align: center; padding: 36rpx 0; }
+.empty-emoji { font-size: 56rpx; display: block; }
+.empty-text { font-size: 26rpx; color: #A0AEC0; margin-top: 14rpx; display: block; }
+.empty-btn { display: inline-block; margin-top: 18rpx; background: #E6FAF5; color: #43B89C; font-size: 26rpx; font-weight: 600; padding: 12rpx 32rpx; border-radius: 36rpx; }
 
 .footer-gap { height: 60rpx; }
 </style>

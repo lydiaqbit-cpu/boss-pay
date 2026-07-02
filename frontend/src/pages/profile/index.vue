@@ -1,26 +1,26 @@
 <template>
   <view class="page">
-    <!-- 用户信息头部 -->
     <view class="profile-header">
       <image v-if="user.avatar" :src="user.avatar" class="avatar" mode="aspectFill"/>
       <view v-else class="avatar-placeholder"><text>{{ user.nickname?.[0] }}</text></view>
       <view class="user-info">
-        <text class="nickname">{{ user.nickname }}</text>
-        <text class="bio">{{ user.bio || '点击编辑介绍' }}</text>
+        <view class="name-row">
+          <text class="nickname">{{ user.nickname }}</text>
+          <view v-if="isVip" class="vip-badge">VIP</view>
+        </view>
+        <text class="bio">{{ user.bio || '加班人，收款中' }}</text>
       </view>
-      <view v-if="isVip" class="vip-badge">VIP</view>
     </view>
 
-    <!-- 会员卡 -->
     <view class="vip-card" @click="toSubscribe">
+      <view class="vip-icon">✨</view>
       <view class="vip-left">
-        <text class="vip-title">{{ isVip ? '✨ 会员有效期至' : '🔓 开通会员' }}</text>
-        <text class="vip-sub">{{ isVip ? fmtDate(vipExpiry) : '无限套餐 · 无限确认次数' }}</text>
+        <text class="vip-title">{{ isVip ? '会员有效期至 ' + fmtDate(vipExpiry) : '开通会员，解锁全部功能' }}</text>
+        <text class="vip-sub">{{ isVip ? '感谢支持牛马事业 🐂' : '无限套餐 · 优先客服 · 更多特权' }}</text>
       </view>
       <text class="vip-arrow">›</text>
     </view>
 
-    <!-- 功能菜单 -->
     <view class="menu-section">
       <view class="menu-item" @click="toPayment">
         <text class="menu-icon">💳</text>
@@ -47,7 +47,7 @@
       </view>
     </view>
 
-    <text class="version">牛马加班吧 v1.0</text>
+    <text class="version">牛马加班吧 v1.0 · 打工人互助平台</text>
   </view>
 </template>
 
@@ -83,8 +83,7 @@ function copyMyLink() {
 
 function handleLogout() {
   uni.showModal({
-    title: '退出登录',
-    content: '确认退出？',
+    title: '退出登录', content: '确认退出？',
     success: (res) => {
       if (!res.confirm) return
       userStore.logout()
@@ -101,55 +100,58 @@ function fmtDate(t: string) {
 </script>
 
 <style lang="scss">
-page { background: #0d0d1a; }
+page { background: #F5F7FA; }
 .page { min-height: 100vh; padding-bottom: 120rpx; }
 
 .profile-header {
-  background: linear-gradient(135deg, #1a0d00, #2d1a00);
-  padding: 80rpx 40rpx 48rpx;
-  display: flex; align-items: center; gap: 28rpx;
+  background: linear-gradient(150deg, #43B89C, #2A9B82);
+  padding: 80rpx 36rpx 48rpx;
+  display: flex; align-items: center; gap: 24rpx;
+  border-radius: 0 0 40rpx 40rpx;
 }
-.avatar { width: 120rpx; height: 120rpx; border-radius: 60rpx; border: 3rpx solid rgba(255,216,92,0.4); }
+.avatar { width: 110rpx; height: 110rpx; border-radius: 55rpx; border: 3rpx solid rgba(255,255,255,0.5); }
 .avatar-placeholder {
-  width: 120rpx; height: 120rpx; border-radius: 60rpx;
-  background: rgba(255,216,92,0.15); display: flex; align-items: center; justify-content: center;
+  width: 110rpx; height: 110rpx; border-radius: 55rpx;
+  background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  text { font-size: 48rpx; color: #fff; font-weight: 700; }
 }
-.avatar-placeholder text { font-size: 52rpx; color: #FFD85C; font-weight: 700; }
 .user-info { flex: 1; }
-.nickname { font-size: 36rpx; font-weight: 700; color: #fff; display: block; }
-.bio { font-size: 24rpx; color: rgba(255,255,255,0.4); margin-top: 8rpx; display: block; }
+.name-row { display: flex; align-items: center; gap: 12rpx; margin-bottom: 8rpx; }
+.nickname { font-size: 34rpx; font-weight: 700; color: #fff; }
+.bio { font-size: 24rpx; color: rgba(255,255,255,0.75); display: block; }
 .vip-badge {
-  background: linear-gradient(135deg, #FFD85C, #C9883D);
-  color: #1a0d00; font-size: 20rpx; font-weight: 800;
-  padding: 6rpx 16rpx; border-radius: 20rpx;
+  background: #FFE066; color: #92400E;
+  font-size: 20rpx; font-weight: 800; padding: 4rpx 14rpx; border-radius: 20rpx;
 }
 
 .vip-card {
-  margin: 24rpx 28rpx;
-  background: linear-gradient(135deg, #2d1a00, #1a0d00);
-  border: 1rpx solid rgba(255,216,92,0.3);
-  border-radius: 20rpx; padding: 32rpx 28rpx;
-  display: flex; align-items: center; justify-content: space-between;
+  margin: 24rpx 24rpx 0;
+  background: #fff; border-radius: 20rpx;
+  border-left: 6rpx solid #FFB020;
+  padding: 28rpx 24rpx;
+  display: flex; align-items: center; gap: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
 }
+.vip-icon { font-size: 40rpx; flex-shrink: 0; }
 .vip-left { flex: 1; }
-.vip-title { font-size: 28rpx; font-weight: 700; color: #FFD85C; display: block; }
-.vip-sub { font-size: 24rpx; color: rgba(255,216,92,0.6); margin-top: 8rpx; display: block; }
-.vip-arrow { font-size: 40rpx; color: rgba(255,216,92,0.5); }
+.vip-title { font-size: 28rpx; font-weight: 700; color: #1A202C; display: block; }
+.vip-sub { font-size: 22rpx; color: #A0AEC0; margin-top: 6rpx; display: block; }
+.vip-arrow { font-size: 40rpx; color: #CBD5E0; }
 
 .menu-section {
-  background: #161630; margin: 0 28rpx 20rpx;
-  border-radius: 20rpx; border: 1rpx solid rgba(255,255,255,0.07);
-  overflow: hidden;
+  background: #fff; margin: 20rpx 24rpx 0;
+  border-radius: 20rpx; overflow: hidden;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
 }
 .menu-item {
-  display: flex; align-items: center; gap: 20rpx;
-  padding: 32rpx 28rpx; border-bottom: 1rpx solid rgba(255,255,255,0.05);
+  display: flex; align-items: center; gap: 18rpx;
+  padding: 30rpx 24rpx; border-bottom: 1rpx solid #F0F4F8;
 }
 .menu-item:last-child { border-bottom: none; }
-.menu-item.danger .menu-label { color: #FF4757; }
+.menu-item.danger .menu-label { color: #E53E3E; }
 .menu-icon { font-size: 36rpx; flex-shrink: 0; }
-.menu-label { flex: 1; font-size: 28rpx; color: #fff; }
-.menu-arrow { font-size: 36rpx; color: rgba(255,255,255,0.2); }
+.menu-label { flex: 1; font-size: 28rpx; color: #2D3748; }
+.menu-arrow { font-size: 36rpx; color: #CBD5E0; }
 
-.version { display: block; text-align: center; font-size: 22rpx; color: rgba(255,255,255,0.15); padding: 40rpx 0; }
+.version { display: block; text-align: center; font-size: 22rpx; color: #CBD5E0; padding: 40rpx 0; }
 </style>
