@@ -34,16 +34,19 @@
       <!-- 统计面板 -->
       <view class="stats-panel">
         <view class="stat-col">
+          <text class="stat-icon">🤑</text>
           <text class="stat-val">¥{{ totalConfirmed }}</text>
           <text class="stat-key">已确认到手</text>
         </view>
         <view class="stat-divider"/>
         <view class="stat-col">
+          <text class="stat-icon">⏳</text>
           <text class="stat-val orange">{{ pendingCount }}</text>
           <text class="stat-key">待确认笔数</text>
         </view>
         <view class="stat-divider"/>
         <view class="stat-col">
+          <text class="stat-icon">👴</text>
           <text class="stat-val">{{ confirmedCount }}</text>
           <text class="stat-key">老板付款次数</text>
         </view>
@@ -295,9 +298,10 @@ page { background: #F5EAD8; }
   display: flex; align-items: center;
 }
 .stat-col { flex: 1; text-align: center; }
-.stat-val { font-size: 36rpx; font-weight: 800; color: #fff; display: block; }
+.stat-icon { font-size: 36rpx; display: block; margin-bottom: 6rpx; }
+.stat-val { font-size: 34rpx; font-weight: 800; color: #fff; display: block; }
 .stat-val.orange { color: #FF9F43; }
-.stat-key { font-size: 20rpx; color: rgba(255,255,255,0.5); margin-top: 6rpx; display: block; }
+.stat-key { font-size: 20rpx; color: rgba(255,255,255,0.5); margin-top: 4rpx; display: block; }
 .stat-divider { width: 1rpx; height: 48rpx; background: rgba(255,255,255,0.15); }
 
 .setup-banner {
