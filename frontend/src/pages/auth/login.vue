@@ -38,7 +38,7 @@
           />
         </view>
       </view>
-      <button class="btn-primary" :loading="loading" @click="handleLogin">进入收款界面</button>
+      <button class="btn-primary" :loading="loading" @click="handleLogin">💰 老板欠我的，我来收了</button>
 
       <view class="or-divider">
         <view class="or-line" /><text class="or-text">或</text><view class="or-line" />
