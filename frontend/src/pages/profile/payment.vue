@@ -128,9 +128,33 @@ function uploadWechatQr() {
     sizeType: ['compressed'],
     sourceType: ['album', 'camera'],
     success: (res) => {
-      form.value.wechatQrUrl = res.tempFilePaths[0]
-      if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat'
-      uni.showToast({ title: '已选择图片', icon: 'success' })
+      const path = res.tempFilePaths[0]
+      // 转 base64 存储
+      // #ifdef H5
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = img.width
+        canvas.height = img.height
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0)
+        form.value.wechatQrUrl = canvas.toDataURL('image/jpeg', 0.7)
+        if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat'
+        uni.showToast({ title: '图片已选择', icon: 'success' })
+      }
+      img.src = path
+      // #endif
+      // #ifdef MP-WEIXIN
+      uni.getFileSystemManager().readFile({
+        filePath: path,
+        encoding: 'base64',
+        success: (r) => {
+          form.value.wechatQrUrl = 'data:image/jpeg;base64,' + r.data
+          if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat'
+          uni.showToast({ title: '图片已选择', icon: 'success' })
+        }
+      })
+      // #endif
     }
   })
 }
@@ -141,8 +165,9 @@ async function handleSave() {
     await put('/user/payment', form.value)
     uni.showToast({ title: '保存成功 💰', icon: 'success' })
     setTimeout(() => uni.navigateBack(), 800)
-  } catch {
-    uni.showToast({ title: '保存失败，再试一次', icon: 'none' })
+  } catch (e: any) {
+    console.error('save payment failed', e)
+    uni.showToast({ title: e?.message || '保存失败，再试一次', icon: 'none' })
   } finally {
     saving.value = false
   }
