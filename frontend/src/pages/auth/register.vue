@@ -1,32 +1,49 @@
 <template>
   <view class="page">
-    <view class="nav-back" @click="uni.navigateBack()">← 返回</view>
+    <view class="bg-circle bg-circle-1" />
+    <view class="bg-circle bg-circle-2" />
+
+    <view class="nav-back" @click="uni.navigateBack()">
+      <text class="back-arrow">←</text>
+      <text class="back-text">返回</text>
+    </view>
 
     <view class="hero">
-      <text class="logo">💼</text>
+      <image class="logo-img" src="/static/logo.svg" mode="aspectFit"/>
       <text class="title">加入打工人联盟</text>
       <text class="subtitle">注册后即可向老板发起付款请求</text>
     </view>
 
     <view class="card">
-      <text class="card-slogan">📝 让老板知道你是谁，才能精准转账</text>
       <view class="field">
-        <text class="label">你的大名 *</text>
-        <input v-model="form.nickname" placeholder="老板看到这个名字就得掏钱" class="input" placeholder-class="placeholder" />
+        <text class="label">你的大名</text>
+        <view class="input-wrap">
+          <text class="input-icon">👤</text>
+          <input v-model="form.nickname" placeholder="老板看到这个名字就得掏钱" class="input" placeholder-class="placeholder" />
+        </view>
       </view>
       <view class="field">
-        <text class="label">手机号 *</text>
-        <input v-model="form.phone" type="number" maxlength="11" placeholder="打工人专属联系方式" class="input" placeholder-class="placeholder" />
+        <text class="label">手机号</text>
+        <view class="input-wrap">
+          <text class="input-icon">📱</text>
+          <input v-model="form.phone" type="number" maxlength="11" placeholder="打工人专属联系方式" class="input" placeholder-class="placeholder" />
+        </view>
       </view>
       <view class="field">
-        <text class="label">密码 *</text>
-        <input v-model="form.password" password placeholder="至少 6 位，比工资还要保密" class="input" placeholder-class="placeholder" />
+        <text class="label">密码</text>
+        <view class="input-wrap">
+          <text class="input-icon">🔒</text>
+          <input v-model="form.password" password placeholder="至少 6 位" class="input" placeholder-class="placeholder" />
+        </view>
       </view>
       <view class="field">
         <text class="label">职位 / 部门（选填）</text>
-        <input v-model="form.bio" placeholder="如：被迫营业的 UI 设计师" class="input" placeholder-class="placeholder" />
+        <view class="input-wrap">
+          <text class="input-icon">💼</text>
+          <input v-model="form.bio" placeholder="如：被迫营业的 UI 设计师" class="input" placeholder-class="placeholder" />
+        </view>
       </view>
-      <button class="btn-primary" :loading="loading" @click="handleRegister">注册，开始收钱 💰</button>
+      <button class="btn-primary" :loading="loading" @click="handleRegister">注册，开始收钱</button>
     </view>
   </view>
 </template>
@@ -62,57 +79,93 @@ async function handleRegister() {
 </script>
 
 <style lang="scss">
-page { background: #0d0d1a; }
+page { background: #F5EAD8; }
 .page {
   min-height: 100vh;
-  background: linear-gradient(160deg, #0d0d1a 0%, #1a1035 60%, #0d0d1a 100%);
-  padding: 60rpx 48rpx 60rpx;
+  background: #F5EAD8;
+  padding: 56rpx 48rpx 60rpx;
+  position: relative;
+  overflow: hidden;
 }
-.nav-back { font-size: 28rpx; color: rgba(255,255,255,0.5); margin-bottom: 40rpx; padding: 10rpx 0; }
+
+.bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.bg-circle-1 {
+  width: 500rpx; height: 500rpx;
+  background: rgba(180, 110, 40, 0.07);
+  top: -100rpx; right: -100rpx;
+}
+.bg-circle-2 {
+  width: 300rpx; height: 300rpx;
+  background: rgba(124, 58, 237, 0.05);
+  bottom: 200rpx; left: -60rpx;
+}
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 40rpx;
+  .back-arrow { font-size: 36rpx; color: #C9883D; }
+  .back-text { font-size: 28rpx; color: #C9883D; font-weight: 500; }
+}
+
 .hero {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 48rpx;
-  .logo { font-size: 70rpx; margin-bottom: 16rpx; }
-  .title { font-size: 44rpx; font-weight: 800; color: #fff; }
-  .subtitle { font-size: 24rpx; color: rgba(255,255,255,0.5); margin-top: 8rpx; }
+  animation: slideUp 0.5s ease-out;
+  .logo-img { width: 110rpx; height: 110rpx; margin-bottom: 20rpx; border-radius: 24rpx; box-shadow: 0 10rpx 32rpx rgba(180,110,40,0.25); }
+  .title { font-size: 42rpx; font-weight: 800; color: #1C1208; }
+  .subtitle { font-size: 24rpx; color: #8A6A50; margin-top: 8rpx; }
 }
+
 .card {
-  background: #161630;
-  border-radius: 28rpx;
+  background: #FFFFFF;
+  border-radius: 32rpx;
   padding: 48rpx 44rpx 44rpx;
-  border: 1rpx solid rgba(255,255,255,0.07);
-  box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.5);
+  box-shadow: 0 8rpx 48rpx rgba(180, 110, 40, 0.1), 0 2rpx 8rpx rgba(0,0,0,0.04);
+  animation: slideUp 0.6s ease-out;
 }
-.card-slogan { font-size: 22rpx; color: #FFD85C; background: rgba(255,216,92,0.1); border-radius: 8rpx; padding: 12rpx 16rpx; display: block; margin-bottom: 24rpx; border: 1rpx solid rgba(255,216,92,0.2); }
+
 .field {
-  margin-bottom: 28rpx;
-  .label { font-size: 24rpx; color: rgba(255,255,255,0.45); display: block; margin-bottom: 10rpx; font-weight: 500; }
+  margin-bottom: 24rpx;
+  .label { font-size: 24rpx; color: #6A4E38; display: block; margin-bottom: 10rpx; font-weight: 500; }
+}
+.input-wrap {
+  display: flex;
+  align-items: center;
+  background: #F9F2E8;
+  border-radius: 16rpx;
+  border: 1.5rpx solid #E8C89A;
+  padding: 0 24rpx;
+  height: 92rpx;
+  .input-icon { font-size: 30rpx; margin-right: 14rpx; }
 }
 .input {
-  width: 100%;
-  height: 88rpx;
-  background: rgba(255,255,255,0.05);
-  border-radius: 14rpx;
-  padding: 0 28rpx;
-  font-size: 30rpx;
-  color: #fff;
-  box-sizing: border-box;
-  border: 1rpx solid rgba(255,255,255,0.12);
+  flex: 1;
+  height: 92rpx;
+  font-size: 29rpx;
+  color: #1C1208;
+  background: transparent;
 }
-.placeholder { color: rgba(255,255,255,0.2); }
+.placeholder { color: #C4A888; }
+
 .btn-primary {
   width: 100%;
   height: 100rpx;
-  background: linear-gradient(90deg, #F4A800, #FFD85C);
-  color: #0d0d1a;
+  background: linear-gradient(135deg, #C9883D 0%, #B8772A 100%);
+  color: #fff;
   border-radius: 50rpx;
   font-size: 32rpx;
-  font-weight: 800;
+  font-weight: 700;
   border: none;
   margin-top: 16rpx;
-  letter-spacing: 4rpx;
-  box-shadow: 0 8rpx 28rpx rgba(244,168,0,0.4);
+  letter-spacing: 2rpx;
+  box-shadow: 0 8rpx 28rpx rgba(180, 110, 40, 0.4);
 }
 </style>

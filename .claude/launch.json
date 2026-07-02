@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "frontend",
+      "name": "boss-pay-frontend",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev:h5"],
       "port": 5173,

@@ -1,80 +1,78 @@
-<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0f0f1a"/>
-      <stop offset="100%" style="stop-color:#1e1230"/>
-    </linearGradient>
-    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#e8d5b0"/>
-      <stop offset="100%" style="stop-color:#c9b48a"/>
-    </linearGradient>
-    <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#f0f4ff"/>
-      <stop offset="100%" style="stop-color:#d8e0ff"/>
-    </linearGradient>
-    <linearGradient id="coinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFE566"/>
-      <stop offset="100%" style="stop-color:#F4A800"/>
-    </linearGradient>
-    <linearGradient id="redBadge" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FF4757"/>
-      <stop offset="100%" style="stop-color:#C0392b"/>
-    </linearGradient>
-    <filter id="shadow">
-      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="12" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
-  <circle cx="512" cy="480" r="300" fill="#4F6EF7" opacity="0.06" filter="url(#glow)"/>
-  <path d="M310 820 Q310 660 512 640 Q714 660 714 820 Z" fill="url(#shirtGrad)" filter="url(#shadow)"/>
-  <path d="M490 648 L512 640 L534 648 L550 750 L512 780 L474 750 Z" fill="#FF4757"/>
-  <path d="M498 648 L512 644 L526 648 L512 690 Z" fill="#C0392b"/>
-  <path d="M310 820 L310 760 Q370 680 430 660 L460 700 L512 682 Z" fill="#1a1a2e" opacity="0.15"/>
-  <path d="M714 820 L714 760 Q654 680 594 660 L564 700 L512 682 Z" fill="#1a1a2e" opacity="0.15"/>
-  <path d="M350 320 Q290 240 320 180 Q360 200 370 260 Z" fill="#8B6914"/>
-  <path d="M354 316 Q298 244 326 188 Q356 208 364 262 Z" fill="#a07820"/>
-  <path d="M674 320 Q734 240 704 180 Q664 200 654 260 Z" fill="#8B6914"/>
-  <path d="M670 316 Q726 244 698 188 Q668 208 660 262 Z" fill="#a07820"/>
-  <ellipse cx="330" cy="390" rx="45" ry="60" fill="url(#bodyGrad)" transform="rotate(-15 330 390)"/>
-  <ellipse cx="330" cy="390" rx="28" ry="38" fill="#e8b4a0" transform="rotate(-15 330 390)" opacity="0.7"/>
-  <ellipse cx="694" cy="390" rx="45" ry="60" fill="url(#bodyGrad)" transform="rotate(15 694 390)"/>
-  <ellipse cx="694" cy="390" rx="28" ry="38" fill="#e8b4a0" transform="rotate(15 694 390)" opacity="0.7"/>
-  <ellipse cx="512" cy="430" rx="205" ry="195" fill="url(#bodyGrad)" filter="url(#shadow)"/>
-  <ellipse cx="512" cy="530" rx="120" ry="80" fill="#d4b896"/>
-  <ellipse cx="478" cy="540" rx="22" ry="16" fill="#8B5E3C" opacity="0.6"/>
-  <ellipse cx="546" cy="540" rx="22" ry="16" fill="#8B5E3C" opacity="0.6"/>
-  <ellipse cx="435" cy="430" rx="55" ry="40" fill="#2c1810" opacity="0.18"/>
-  <ellipse cx="589" cy="430" rx="55" ry="40" fill="#2c1810" opacity="0.18"/>
-  <ellipse cx="435" cy="428" rx="42" ry="35" fill="#fff"/>
-  <ellipse cx="589" cy="428" rx="42" ry="35" fill="#fff"/>
-  <circle cx="435" cy="435" r="22" fill="#2c1810"/>
-  <circle cx="589" cy="435" r="22" fill="#2c1810"/>
-  <circle cx="444" cy="426" r="7" fill="#fff"/>
-  <circle cx="598" cy="426" r="7" fill="#fff"/>
-  <path d="M393 410 Q435 396 477 410" fill="#c9b48a" stroke="none"/>
-  <path d="M547 410 Q589 396 631 410" fill="#c9b48a" stroke="none"/>
-  <path d="M400 390 Q435 380 468 388" fill="none" stroke="#5c3d1e" stroke-width="8" stroke-linecap="round"/>
-  <path d="M556 388 Q589 380 622 390" fill="none" stroke="#5c3d1e" stroke-width="8" stroke-linecap="round"/>
-  <path d="M490 375 Q512 368 534 375" fill="none" stroke="#8B5E3C" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
-  <path d="M468 575 Q512 568 556 575" fill="none" stroke="#8B5E3C" stroke-width="6" stroke-linecap="round"/>
-  <path d="M468 575 Q460 582 462 590" fill="none" stroke="#8B5E3C" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
-  <path d="M556 575 Q564 582 562 590" fill="none" stroke="#8B5E3C" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
-  <path d="M690 620 Q760 580 800 500 Q820 440 790 400" fill="none" stroke="#c9b48a" stroke-width="52" stroke-linecap="round"/>
-  <circle cx="790" cy="390" r="48" fill="url(#bodyGrad)"/>
-  <rect x="770" y="330" width="22" height="65" rx="11" fill="#c9b48a"/>
-  <rect x="798" y="325" width="22" height="68" rx="11" fill="#c9b48a"/>
-  <rect x="826" y="334" width="20" height="60" rx="10" fill="#c9b48a"/>
-  <circle cx="800" cy="290" r="68" fill="url(#coinGrad)" filter="url(#glow)"/>
-  <circle cx="800" cy="290" r="58" fill="none" stroke="#fff" stroke-width="5" opacity="0.4"/>
-  <text x="800" y="312" font-size="64" font-weight="900" text-anchor="middle" fill="#8B6914" font-family="Arial, sans-serif">¥</text>
-  <path d="M330 360 Q320 380 332 395 Q344 380 330 360Z" fill="#87CEEB" opacity="0.8"/>
-  <path d="M296 430 Q286 445 297 457 Q308 445 296 430Z" fill="#87CEEB" opacity="0.6"/>
-  <rect x="60" y="60" width="180" height="72" rx="36" fill="url(#redBadge)" filter="url(#shadow)"/>
-  <text x="150" y="106" font-size="38" font-weight="900" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif">996</text>
-  <rect x="80" y="860" width="864" height="124" rx="62" fill="#4F6EF7" opacity="0.15"/>
-  <text x="512" y="935" font-size="76" font-weight="900" text-anchor="middle" fill="#FFE566" font-family="PingFang SC, Noto Sans CJK SC, Arial, sans-serif" letter-spacing="6">老板请付费</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 680">
+<defs>
+  <linearGradient id="bg" x1="0.2" y1="0" x2="0.8" y2="1">
+    <stop offset="0%" stop-color="#7A4E2D"/>
+    <stop offset="100%" stop-color="#4A2800"/>
+  </linearGradient>
+</defs>
+
+<circle cx="340" cy="340" r="330" fill="url(#bg)"/>
+<circle cx="455" cy="200" r="120" fill="#C9A07A" opacity="0.22"/>
+
+<!-- 手指（先画，手机压在上面） -->
+<rect x="264" y="368" width="26" height="118" rx="13" fill="#FFFFFF"/>
+<rect x="296" y="355" width="26" height="132" rx="13" fill="#FFFFFF"/>
+<rect x="328" y="350" width="26" height="136" rx="13" fill="#FFFFFF"/>
+<rect x="360" y="356" width="26" height="130" rx="13" fill="#FFFFFF"/>
+
+<!-- 掌心 -->
+<rect x="244" y="464" width="162" height="66" rx="28" fill="#FFFFFF"/>
+
+<!-- 大拇指 -->
+<rect x="212" y="386" width="28" height="84" rx="14" fill="#FFFFFF" transform="rotate(-12,226,428)"/>
+
+<!-- 手腕 -->
+<rect x="283" y="528" width="84" height="44" rx="20" fill="#FFFFFF"/>
+
+<!-- 手机机身 -->
+<rect x="248" y="106" width="164" height="282" rx="24" fill="#FFFFFF"/>
+<!-- 屏幕 -->
+<rect x="261" y="121" width="138" height="252" rx="15" fill="#F5EAD8"/>
+
+<!-- 顶部摄像头 -->
+<rect x="316" y="129" width="28" height="8" rx="4" fill="#C9A07A"/>
+<circle cx="352" cy="133" r="4.5" fill="#C9A07A"/>
+
+<!-- 顶栏 -->
+<rect x="261" y="121" width="138" height="34" rx="15" fill="#4A2800"/>
+<rect x="261" y="140" width="138" height="15" fill="#4A2800"/>
+<text x="330" y="144" text-anchor="middle" font-size="12" fill="#FFFFFF" font-weight="bold" font-family="sans-serif">PAYMENT</text>
+
+<!-- 金额 -->
+<text x="318" y="222" text-anchor="end" font-size="18" fill="#9A7A5A" font-family="sans-serif">&#165;</text>
+<text x="368" y="226" text-anchor="middle" font-size="40" fill="#2D1500" font-weight="bold" font-family="sans-serif">996</text>
+
+<!-- 分割线 -->
+<line x1="278" y1="240" x2="382" y2="240" stroke="#D8E0F5" stroke-width="1"/>
+
+<!-- 二维码 -->
+<rect x="282" y="248" width="96" height="96" rx="8" fill="#FFFFFF" stroke="#D8E0F5" stroke-width="1"/>
+<rect x="287" y="253" width="20" height="20" rx="2" fill="#2D1500"/>
+<rect x="290" y="256" width="14" height="14" rx="1" fill="#FFFFFF"/>
+<rect x="292" y="258" width="10" height="10" rx="0.5" fill="#2D1500"/>
+<rect x="353" y="253" width="20" height="20" rx="2" fill="#2D1500"/>
+<rect x="356" y="256" width="14" height="14" rx="1" fill="#FFFFFF"/>
+<rect x="358" y="258" width="10" height="10" rx="0.5" fill="#2D1500"/>
+<rect x="287" y="319" width="20" height="20" rx="2" fill="#2D1500"/>
+<rect x="290" y="322" width="14" height="14" rx="1" fill="#FFFFFF"/>
+<rect x="292" y="324" width="10" height="10" rx="0.5" fill="#2D1500"/>
+<rect x="313" y="255" width="5" height="5" fill="#2D1500"/>
+<rect x="321" y="261" width="4" height="4" fill="#2D1500"/>
+<rect x="330" y="255" width="6" height="5" fill="#2D1500"/>
+<rect x="340" y="263" width="5" height="4" fill="#2D1500"/>
+<rect x="313" y="270" width="8" height="4" fill="#2D1500"/>
+<rect x="325" y="276" width="4" height="6" fill="#2D1500"/>
+<rect x="335" y="271" width="6" height="4" fill="#2D1500"/>
+<rect x="346" y="278" width="4" height="5" fill="#2D1500"/>
+<rect x="313" y="288" width="5" height="5" fill="#2D1500"/>
+<rect x="322" y="294" width="8" height="4" fill="#2D1500"/>
+<rect x="336" y="289" width="5" height="6" fill="#2D1500"/>
+<rect x="347" y="293" width="6" height="4" fill="#2D1500"/>
+<rect x="313" y="306" width="6" height="5" fill="#2D1500"/>
+<rect x="324" y="310" width="4" height="4" fill="#2D1500"/>
+<rect x="333" y="305" width="7" height="4" fill="#2D1500"/>
+<rect x="344" y="308" width="5" height="5" fill="#2D1500"/>
+
+<!-- Home 条 -->
+<rect x="305" y="368" width="50" height="4" rx="2" fill="#C9A07A"/>
 </svg>

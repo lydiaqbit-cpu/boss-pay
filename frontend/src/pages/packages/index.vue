@@ -15,6 +15,8 @@
       <view class="pkg-right">
         <text class="pkg-price">¥{{ pkg.price }}</text>
         <view class="pkg-actions">
+          <text class="action-link" @click="copyPkgLink(pkg)">复制链接</text>
+          <text class="action-sep">|</text>
           <text class="action-edit" @click="editPkg(pkg)">编辑</text>
           <text class="action-sep">|</text>
           <text class="action-del" @click="deletePkg(pkg.id)">删除</text>
@@ -37,8 +39,22 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { get, del as apiDel } from '../../utils/request'
+import { useUserStore } from '../../store/user'
 
 const packages = ref<any[]>([])
+const userStore = useUserStore()
+
+function pkgPayLink(pkg: any) {
+  const base = location.origin
+  return `${base}/#/pages/pay/cashier?userId=${userStore.userInfo?.id}&packageId=${pkg.id}`
+}
+
+function copyPkgLink(pkg: any) {
+  uni.setClipboardData({
+    data: pkgPayLink(pkg),
+    success: () => uni.showToast({ title: `"${pkg.name}" 链接已复制`, icon: 'success' })
+  })
+}
 
 onMounted(loadPackages)
 
@@ -123,6 +139,7 @@ page { background: #0d0d1a; }
   gap: 8rpx;
   margin-top: 8rpx;
   justify-content: flex-end;
+  .action-link { font-size: 24rpx; color: #4ade80; }
   .action-edit { font-size: 24rpx; color: rgba(255,216,92,0.8); }
   .action-sep { font-size: 24rpx; color: rgba(255,255,255,0.15); }
   .action-del { font-size: 24rpx; color: #FF4757; }

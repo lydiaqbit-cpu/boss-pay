@@ -2,7 +2,7 @@
   "pages": [
     {
       "path": "pages/home/index",
-      "style": { "navigationBarTitleText": "工作台", "navigationBarBackgroundColor": "#ffffff" }
+      "style": { "navigationBarTitleText": "工作台", "navigationStyle": "custom" }
     },
     {
       "path": "pages/auth/login",
@@ -14,15 +14,15 @@
     },
     {
       "path": "pages/packages/index",
-      "style": { "navigationBarTitleText": "套餐管理" }
+      "style": { "navigationBarTitleText": "套餐管理", "navigationBarBackgroundColor": "#0d0d1a", "navigationBarTextStyle": "white" }
     },
     {
       "path": "pages/packages/edit",
-      "style": { "navigationBarTitleText": "编辑套餐" }
+      "style": { "navigationBarTitleText": "编辑套餐", "navigationBarBackgroundColor": "#0d0d1a", "navigationBarTextStyle": "white" }
     },
     {
       "path": "pages/pay/cashier",
-      "style": { "navigationBarTitleText": "老板请付费", "navigationStyle": "custom" }
+      "style": { "navigationBarTitleText": "老板请付牛马钱", "navigationStyle": "custom" }
     },
     {
       "path": "pages/pay/qrcode",
@@ -33,8 +33,12 @@
       "style": { "navigationBarTitleText": "付款成功", "navigationStyle": "custom" }
     },
     {
+      "path": "pages/pay/receipt",
+      "style": { "navigationBarTitleText": "收款凭证", "navigationBarBackgroundColor": "#1a1008", "navigationBarTextStyle": "white" }
+    },
+    {
       "path": "pages/orders/index",
-      "style": { "navigationBarTitleText": "收款记录" }
+      "style": { "navigationBarTitleText": "收款记录", "navigationBarBackgroundColor": "#0d0d1a", "navigationBarTextStyle": "white" }
     }
   ],
   "tabBar": {

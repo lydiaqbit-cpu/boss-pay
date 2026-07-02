@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- 牛角 left -->
+  <path d="M14 16 C10 12, 8 6, 11 3 C12 8, 14 12, 16 15" fill="#C9883D" stroke="#A06828" stroke-width="0.5"/>
+  <!-- 牛角 right -->
+  <path d="M34 16 C38 12, 40 6, 37 3 C36 8, 34 12, 32 15" fill="#C9883D" stroke="#A06828" stroke-width="0.5"/>
+  <!-- 头 -->
+  <circle cx="24" cy="20" r="10" fill="#F5D6A8" stroke="#C9883D" stroke-width="1"/>
+  <!-- 眼睛 左 - 无神摸鱼眼 -->
+  <ellipse cx="20" cy="19" rx="2" ry="2.2" fill="white"/>
+  <circle cx="20.5" cy="19.5" r="1.2" fill="#3D2010"/>
+  <!-- 眼睛 右 -->
+  <ellipse cx="28" cy="19" rx="2" ry="2.2" fill="white"/>
+  <circle cx="28.5" cy="19.5" r="1.2" fill="#3D2010"/>
+  <!-- 眼袋 (tired lines) -->
+  <path d="M18.5 21.5 Q20 22.5 21.5 21.5" stroke="#C9883D" stroke-width="0.7" fill="none" opacity="0.6"/>
+  <path d="M26.5 21.5 Q28 22.5 29.5 21.5" stroke="#C9883D" stroke-width="0.7" fill="none" opacity="0.6"/>
+  <!-- 苦笑嘴 -->
+  <path d="M20 25 Q24 27 28 25" stroke="#A06828" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- 鼻子 -->
+  <ellipse cx="24" cy="23" rx="3" ry="2" fill="#E8B870" opacity="0.6"/>
+  <circle cx="22.5" cy="23" r="0.7" fill="#A06828" opacity="0.5"/>
+  <circle cx="25.5" cy="23" r="0.7" fill="#A06828" opacity="0.5"/>
+  <!-- 身体 西装 -->
+  <rect x="16" y="31" width="16" height="13" rx="4" fill="#3D2010"/>
+  <!-- 领带 -->
+  <path d="M24 31 L22 36 L24 35 L26 36 Z" fill="#C9883D"/>
+  <!-- 衬衫领子 -->
+  <path d="M20 31 L24 34 L28 31" stroke="white" stroke-width="1" fill="none"/>
+  <!-- 汗珠 -->
+  <ellipse cx="32" cy="13" rx="1.2" ry="1.8" fill="#7EC8F0" opacity="0.8"/>
+  <ellipse cx="34" cy="17" rx="0.8" ry="1.2" fill="#7EC8F0" opacity="0.6"/>
+</svg>

@@ -43,7 +43,12 @@
 
       <view class="order-footer">
         <text class="net-amount">到账 ¥{{ order.netAmount }}</text>
-        <text class="order-time">{{ fmtTime(order.paidAt || order.createdAt) }}</text>
+        <view class="footer-right">
+          <text class="order-time">{{ fmtTime(order.paidAt || order.createdAt) }}</text>
+          <view v-if="order.status === 'paid'" class="receipt-btn" @click="viewReceipt(order.id)">
+            <text>🧾 凭证</text>
+          </view>
+        </view>
       </view>
     </view>
 
@@ -64,6 +69,10 @@ const totalFee = computed(() => paidOrders.value.reduce((s, o) => s + o.platform
 onMounted(async () => {
   try { orders.value = await get<any[]>('/pay/orders') } catch {}
 })
+
+function viewReceipt(orderId: string) {
+  uni.navigateTo({ url: `/pages/pay/receipt?orderId=${orderId}` })
+}
 
 function fmtTime(t: string) {
   if (!t) return '-'
@@ -149,7 +158,20 @@ page { background: #0d0d1a; }
   align-items: center;
   border-top: 1rpx solid rgba(255,255,255,0.05);
   .net-amount { font-size: 26rpx; color: #4ade80; font-weight: 700; }
-  .order-time { font-size: 24rpx; color: rgba(255,255,255,0.25); }
+}
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.order-time { font-size: 24rpx; color: rgba(255,255,255,0.25); }
+.receipt-btn {
+  background: rgba(255,216,92,0.12);
+  border: 1rpx solid rgba(255,216,92,0.3);
+  border-radius: 20rpx;
+  padding: 6rpx 18rpx;
+  font-size: 22rpx;
+  color: #FFD85C;
 }
 
 .bottom-gap { height: 40rpx; }

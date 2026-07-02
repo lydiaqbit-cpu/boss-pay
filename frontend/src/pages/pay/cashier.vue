@@ -46,11 +46,11 @@
       <!-- 套餐列表 -->
       <view class="pkg-list">
         <view
-          v-for="(pkg, i) in pkgList"
+          v-for="(pkg, i) in (lockedPackageId ? pkgList.filter(p => p.id === lockedPackageId) : pkgList)"
           :key="pkg.id"
           class="pkg-option"
-          :class="{ selected: selectedId === pkg.id }"
-          @click="selectedId = pkg.id"
+          :class="{ selected: selectedId === pkg.id, locked: !!lockedPackageId }"
+          @click="!lockedPackageId && (selectedId = pkg.id)"
         >
           <view class="radio-wrap">
             <view class="radio" :class="{ active: selectedId === pkg.id }">
@@ -110,8 +110,11 @@ const selectedPkg = computed(() =>
   pkgList.value.find(p => p.id === selectedId.value)
 )
 
+const lockedPackageId = ref('')
+
 onLoad((options: any) => {
   userId.value = options?.userId || ''
+  lockedPackageId.value = options?.packageId || ''
 })
 
 onMounted(async () => {
@@ -120,7 +123,9 @@ onMounted(async () => {
     const data = await get<{ user: any; packages: any[] }>(`/pay/page/${userId.value}`, false)
     payee.value = data.user
     pkgList.value = data.packages
-    if (pkgList.value.length > 0) {
+    if (lockedPackageId.value) {
+      selectedId.value = lockedPackageId.value
+    } else if (pkgList.value.length > 0) {
       selectedId.value = pkgList.value[pkgList.value.length - 1].id
     }
   } catch {}
@@ -254,6 +259,11 @@ page { background: #0d0d1a; }
   &.selected {
     border-color: #FFD85C;
     background: rgba(255,216,92,0.06);
+  }
+  &.locked {
+    border-color: #FFD85C;
+    background: rgba(255,216,92,0.08);
+    pointer-events: none;
   }
 }
 .radio-wrap { flex-shrink: 0; }
