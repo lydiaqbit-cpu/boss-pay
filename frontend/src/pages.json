@@ -53,19 +53,19 @@
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "工作台",
+        "text": "收钱台",
         "iconPath": "static/tab-home.png",
         "selectedIconPath": "static/tab-home-active.png"
       },
       {
         "pagePath": "pages/orders/index",
-        "text": "收款记录",
+        "text": "讨债本",
         "iconPath": "static/tab-orders.png",
         "selectedIconPath": "static/tab-orders-active.png"
       },
       {
         "pagePath": "pages/profile/index",
-        "text": "我的",
+        "text": "牛马档案",
         "iconPath": "static/tab-profile.png",
         "selectedIconPath": "static/tab-profile-active.png"
       }
