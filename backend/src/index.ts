@@ -7,6 +7,7 @@ import { authMiddleware } from './middleware/auth'
 import authRouter from './routes/auth'
 import packagesRouter from './routes/packages'
 import payRouter from './routes/pay'
+import userRouter from './routes/user'
 
 const app = express()
 const server = http.createServer(app)
@@ -25,6 +26,9 @@ app.use('/api/packages', authMiddleware, packagesRouter)
 
 // Pay routes — mixed (create/page are public, orders is protected)
 app.use('/api/pay', payRouter)
+
+// User routes — all protected
+app.use('/api/user', userRouter)
 
 // Health check
 app.get('/health', (_req, res) => res.json({ ok: true }))

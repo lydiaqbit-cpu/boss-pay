@@ -9,27 +9,32 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  phone        String    @unique
-  password     String
-  nickname     String
-  avatar       String?
-  bio          String?   // 职位/介绍，如 "产品经理 @ 某厂"
-  createdAt    DateTime  @default(now())
-  packages     Package[]
-  orders       Order[]
-  withdrawals  Withdrawal[]
-  balance      Float     @default(0)  // 可提现余额（已扣佣金）
+  id                  String    @id @default(uuid())
+  phone               String    @unique
+  password            String
+  nickname            String
+  avatar              String?
+  bio                 String?
+  wechatQrUrl         String?
+  alipayAccount       String?
+  alipayName          String?
+  bankCard            String?
+  bankName            String?
+  bankHolder          String?
+  subscriptionExpiry  DateTime?
+  createdAt           DateTime  @default(now())
+  packages            Package[]
+  orders              Order[]
 }
 
 model Package {
   id          String   @id @default(uuid())
   userId      String
   user        User     @relation(fields: [userId], references: [id])
-  name        String   // 如 "继续工作 2 小时"
-  description String?  // 如 "适合处理遗留事项"
-  hours       Float    // 延长小时数
-  price       Float    // 单位：元
+  name        String
+  description String?
+  hours       Float
+  price       Float
   sortOrder   Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -37,27 +42,17 @@ model Package {
 }
 
 model Order {
-  id            String      @id @default(uuid())
-  userId        String      // 收款人（员工）
-  user          User        @relation(fields: [userId], references: [id])
-  packageId     String
-  package       Package     @relation(fields: [packageId], references: [id])
-  payerName     String      // 付款人姓名（老板填写）
-  amount        Float       // 实付金额
-  platformFee   Float       // 平台佣金
-  netAmount     Float       // 实到账金额
-  status        String      @default("pending")  // pending | paid | refunded
-  wechatOrderNo String?     // 微信支付单号
-  mockQrUrl     String?     // mock 二维码
-  paidAt        DateTime?
-  createdAt     DateTime    @default(now())
-}
-
-model Withdrawal {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  amount    Float
-  status    String   @default("pending")  // pending | done
-  createdAt DateTime @default(now())
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  packageId   String
+  package     Package   @relation(fields: [packageId], references: [id])
+  payerName   String
+  payerNote   String?
+  amount      Float
+  platformFee Float
+  netAmount   Float
+  status      String    @default("pending")  // pending | boss_paid | confirmed | rejected
+  confirmedAt DateTime?
+  createdAt   DateTime  @default(now())
 }

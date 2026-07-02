@@ -1,116 +1,114 @@
 <template>
   <view class="page">
-    <view v-if="loading" class="loading-screen">
-      <text class="loading-text">加载中...</text>
+    <view class="header">
+      <view class="employee-info">
+        <image v-if="pageData.user?.avatar" :src="pageData.user.avatar" class="avatar" mode="aspectFill"/>
+        <view v-else class="avatar-placeholder"><text>{{ pageData.user?.nickname?.[0] }}</text></view>
+        <view class="employee-text">
+          <text class="employee-name">{{ pageData.user?.nickname }}</text>
+          <text class="employee-bio">{{ pageData.user?.bio || '打工人' }}</text>
+        </view>
+      </view>
     </view>
 
-    <view v-else-if="!payee" class="error-screen">
-      <text class="error-icon">😔</text>
-      <text class="error-text">收款页不存在或已失效</text>
+    <view class="section-title">选择加班套餐</view>
+    <view
+      v-for="pkg in displayPackages"
+      :key="pkg.id"
+      class="pkg-card"
+      :class="{ selected: selectedId === pkg.id, locked: !!lockedPackageId }"
+      @click="!lockedPackageId && (selectedId = pkg.id)"
+    >
+      <view class="pkg-left">
+        <text class="pkg-name">{{ pkg.name }}</text>
+        <text class="pkg-desc">{{ pkg.description || `加班 ${pkg.hours}h` }}</text>
+      </view>
+      <view class="pkg-right">
+        <text class="pkg-price">¥{{ pkg.price }}</text>
+        <view v-if="selectedId === pkg.id" class="check">✓</view>
+      </view>
     </view>
 
-    <template v-else>
-      <!-- 顶部状态栏 -->
-      <view class="top-bar">
-        <view class="time-row">
-          <text class="moon-icon">🌙</text>
-          <text class="current-time">当前时间 {{ currentTime }}</text>
-          <text class="overtime-tag">⚠️ 已超下班时间</text>
-        </view>
-        <text class="page-title">加班费管理系统 · 专业版</text>
+    <view v-if="selectedId" class="pay-section">
+      <view class="section-title">你的称呼</view>
+      <view class="input-wrap">
+        <input v-model="payerName" placeholder="老板怎么称呼？" class="input" placeholder-class="ph"/>
       </view>
 
-      <!-- 员工信息 -->
-      <view class="employee-section">
-        <view class="avatar-circle">
-          <text class="avatar-text">{{ payee.nickname?.charAt(0) || '👩' }}</text>
-        </view>
-        <text class="overtime-badge">🔔 员工已超下班时间</text>
-        <text class="headline">
-          {{ payerName || '老板' }} 支付加班费，让 {{ payee.nickname }} 继续燃烧
-        </text>
-        <text class="subheadline">请选择续命套餐 · 付完即可继续压榨 · 合法合规 ✅</text>
-      </view>
-
-      <!-- 付款人姓名 -->
-      <view class="payer-section">
-        <text class="payer-label">👤 你是哪位老板（付款通知会带上你的大名）</text>
-        <input
-          v-model="payerName"
-          placeholder="如：Michael · 仁慈的老板"
-          class="payer-input"
-          placeholder-class="ph"
-        />
-      </view>
-
-      <!-- 套餐列表 -->
-      <view class="pkg-list">
+      <view class="section-title">转账方式</view>
+      <view class="pay-tabs">
         <view
-          v-for="(pkg, i) in (lockedPackageId ? pkgList.filter(p => p.id === lockedPackageId) : pkgList)"
-          :key="pkg.id"
-          class="pkg-option"
-          :class="{ selected: selectedId === pkg.id, locked: !!lockedPackageId }"
-          @click="!lockedPackageId && (selectedId = pkg.id)"
-        >
-          <view class="radio-wrap">
-            <view class="radio" :class="{ active: selectedId === pkg.id }">
-              <view v-if="selectedId === pkg.id" class="radio-dot" />
-            </view>
-          </view>
-          <view class="option-body">
-            <text class="option-name">{{ pkg.name }}</text>
-            <text class="option-time">🕐 预计撑到：{{ calcEnd(pkg.hours) }}</text>
-          </view>
-          <view class="option-right">
-            <view v-if="i === pkgList.length - 1" class="recommend-badge">🔥 老板最爱</view>
-            <text class="option-price">¥{{ pkg.price }}</text>
-            <text class="option-desc">{{ pkg.description }}</text>
-          </view>
+          v-for="tab in availableTabs"
+          :key="tab.key"
+          class="pay-tab"
+          :class="{ active: activeTab === tab.key }"
+          @click="activeTab = tab.key"
+        >{{ tab.label }}</view>
+      </view>
+
+      <view v-if="activeTab === 'wechat'" class="qr-wrap">
+        <image :src="pageData.user?.wechatQrUrl" class="qr-img" mode="aspectFit"/>
+        <text class="qr-tip">长按识别或截图扫码转账</text>
+      </view>
+
+      <view v-if="activeTab === 'alipay'" class="info-card">
+        <view class="info-row">
+          <text class="info-label">支付宝账号</text>
+          <text class="info-value">{{ pageData.user?.alipayAccount }}</text>
+          <text class="copy-btn" @click="copy(pageData.user?.alipayAccount)">复制</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">收款姓名</text>
+          <text class="info-value">{{ pageData.user?.alipayName }}</text>
         </view>
       </view>
 
-      <!-- 支付按钮 -->
-      <view class="pay-bar">
-        <view class="pay-meta">
-          <text v-if="selectedPkg" class="pay-total">¥{{ selectedPkg.price }}</text>
-          <text v-if="selectedPkg" class="pay-name">{{ selectedPkg.name }}</text>
+      <view v-if="activeTab === 'bank'" class="info-card">
+        <view class="info-row">
+          <text class="info-label">银行卡号</text>
+          <text class="info-value">{{ pageData.user?.bankCard }}</text>
+          <text class="copy-btn" @click="copy(pageData.user?.bankCard)">复制</text>
         </view>
-        <button
-          class="btn-pay"
-          :loading="paying"
-          :disabled="!selectedId || !payerName.trim()"
-          @click="handlePay"
-        >
-          💳 立即付款，员工继续为你奋斗
-        </button>
+        <view class="info-row">
+          <text class="info-label">开户行</text>
+          <text class="info-value">{{ pageData.user?.bankName }}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">持卡人</text>
+          <text class="info-value">{{ pageData.user?.bankHolder }}</text>
+        </view>
       </view>
-    </template>
+
+      <view class="amount-tip">转账金额：<text class="amount-highlight">¥{{ selectedPkg?.price }}</text></view>
+
+      <view class="note-wrap">
+        <input v-model="payerNote" placeholder="备注（可选，如：周五加班费）" class="input" placeholder-class="ph"/>
+      </view>
+
+      <button class="btn-confirm" :loading="submitting" @click="handleBossPaid">
+        我已转账，通知对方确认
+      </button>
+      <text class="bottom-tip">转账后点击按钮，对方确认到账后生成凭证</text>
+    </view>
+
+    <view v-if="!pageData.user" class="loading-tip"><text>加载中...</text></view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { get, post } from '../../utils/request'
 
-const payee = ref<any>(null)
-const pkgList = ref<any[]>([])
+const userId = ref('')
+const lockedPackageId = ref('')
+const pageData = ref<any>({ user: null, packages: [] })
 const selectedId = ref('')
 const payerName = ref('')
-const loading = ref(true)
-const paying = ref(false)
-const userId = ref('')
+const payerNote = ref('')
+const activeTab = ref('')
+const submitting = ref(false)
 
-const currentTime = computed(() => {
-  const n = new Date()
-  return `${pad(n.getHours())}:${pad(n.getMinutes())}`
-})
-
-const selectedPkg = computed(() =>
-  pkgList.value.find(p => p.id === selectedId.value)
-)
-
-const lockedPackageId = ref('')
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
 
 onLoad((options: any) => {
   userId.value = options?.userId || ''
@@ -118,219 +116,159 @@ onLoad((options: any) => {
 })
 
 onMounted(async () => {
-  if (!userId.value) { loading.value = false; return }
-  try {
-    const data = await get<{ user: any; packages: any[] }>(`/pay/page/${userId.value}`, false)
-    payee.value = data.user
-    pkgList.value = data.packages
-    if (lockedPackageId.value) {
-      selectedId.value = lockedPackageId.value
-    } else if (pkgList.value.length > 0) {
-      selectedId.value = pkgList.value[pkgList.value.length - 1].id
-    }
-  } catch {}
-  loading.value = false
+  if (!userId.value) return
+  const res = await fetch(`${API_BASE}/pay/page/${userId.value}`)
+  const json = await res.json()
+  if (json.code === 0) {
+    pageData.value = json.data
+    if (lockedPackageId.value) selectedId.value = lockedPackageId.value
+    const u = json.data.user
+    if (u.wechatQrUrl) activeTab.value = 'wechat'
+    else if (u.alipayAccount) activeTab.value = 'alipay'
+    else if (u.bankCard) activeTab.value = 'bank'
+  }
 })
 
-function pad(n: number) { return String(n).padStart(2, '0') }
+const displayPackages = computed(() =>
+  lockedPackageId.value
+    ? pageData.value.packages.filter((p: any) => p.id === lockedPackageId.value)
+    : pageData.value.packages
+)
 
-function calcEnd(hours: number) {
-  const d = new Date()
-  d.setTime(d.getTime() + hours * 3600000)
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}`
+const selectedPkg = computed(() =>
+  pageData.value.packages.find((p: any) => p.id === selectedId.value)
+)
+
+const availableTabs = computed(() => {
+  const u = pageData.value.user
+  if (!u) return []
+  const tabs: any[] = []
+  if (u.wechatQrUrl) tabs.push({ key: 'wechat', label: '微信' })
+  if (u.alipayAccount) tabs.push({ key: 'alipay', label: '支付宝' })
+  if (u.bankCard) tabs.push({ key: 'bank', label: '银行卡' })
+  return tabs
+})
+
+function copy(text: string) {
+  uni.setClipboardData({ data: text, success: () => uni.showToast({ title: '已复制', icon: 'success' }) })
 }
 
-async function handlePay() {
+async function handleBossPaid() {
   if (!payerName.value.trim()) {
-    uni.showToast({ title: '请输入你的称呼', icon: 'none' })
-    return
+    uni.showToast({ title: '请填写你的称呼', icon: 'none' }); return
   }
-  paying.value = true
+  submitting.value = true
   try {
-    const data = await post<any>('/pay/create', {
-      userId: userId.value,
-      packageId: selectedId.value,
-      payerName: payerName.value.trim()
-    }, false)
-    uni.navigateTo({
-      url: `/pages/pay/qrcode?orderId=${data.orderId}&qrUrl=${encodeURIComponent(data.qrUrl)}&amount=${data.amount}&packageName=${encodeURIComponent(data.packageName)}`
+    const res = await fetch(`${API_BASE}/pay/boss-paid`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: userId.value,
+        packageId: selectedId.value,
+        payerName: payerName.value,
+        payerNote: payerNote.value
+      })
     })
+    const json = await res.json()
+    if (json.code === 0) {
+      uni.showToast({ title: '已通知对方确认！', icon: 'success' })
+      setTimeout(() => {
+        uni.navigateTo({ url: `/pages/pay/receipt?orderId=${json.data.orderId}&readonly=1` })
+      }, 1200)
+    }
+  } catch {
+    uni.showToast({ title: '提交失败，请重试', icon: 'none' })
   } finally {
-    paying.value = false
+    submitting.value = false
   }
 }
 </script>
 
 <style lang="scss">
 page { background: #0d0d1a; }
-.page { min-height: 100vh; padding-bottom: 180rpx; }
+.page { min-height: 100vh; padding: 0 0 120rpx; }
 
-.loading-screen, .error-screen {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24rpx;
-  background: #0d0d1a;
-  .loading-text, .error-text { font-size: 30rpx; color: rgba(255,255,255,0.4); }
-  .error-icon { font-size: 80rpx; }
+.header {
+  background: linear-gradient(135deg, #1a0d00, #2d1a00);
+  padding: 100rpx 40rpx 48rpx;
+  border-bottom-left-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
 }
+.employee-info { display: flex; align-items: center; gap: 24rpx; }
+.avatar { width: 96rpx; height: 96rpx; border-radius: 48rpx; border: 3rpx solid rgba(255,216,92,0.4); }
+.avatar-placeholder {
+  width: 96rpx; height: 96rpx; border-radius: 48rpx;
+  background: rgba(255,216,92,0.2); display: flex; align-items: center; justify-content: center;
+}
+.avatar-placeholder text { font-size: 40rpx; color: #FFD85C; font-weight: 700; }
+.employee-text { flex: 1; }
+.employee-name { font-size: 36rpx; font-weight: 700; color: #fff; display: block; }
+.employee-bio { font-size: 24rpx; color: rgba(255,255,255,0.5); margin-top: 6rpx; display: block; }
 
-.top-bar {
-  background: #0d0d1a;
-  padding: 60rpx 32rpx 24rpx;
-  border-bottom: 1rpx solid rgba(255,255,255,0.06);
-  .page-title { font-size: 36rpx; font-weight: 800; color: #FFD85C; display: block; margin-bottom: 12rpx; }
-}
-.time-row {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-  margin-bottom: 8rpx;
-  .moon-icon { font-size: 28rpx; }
-  .current-time { font-size: 24rpx; color: rgba(255,255,255,0.4); }
-  .overtime-tag { font-size: 24rpx; color: #FF4757; font-weight: 700; }
-}
+.section-title { font-size: 24rpx; color: rgba(255,255,255,0.4); padding: 32rpx 40rpx 16rpx; letter-spacing: 2rpx; }
 
-.employee-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 36rpx 40rpx 28rpx;
-  background: #0d0d1a;
-  border-bottom: 1rpx solid rgba(255,255,255,0.06);
-  margin-bottom: 8rpx;
-}
-.avatar-circle {
-  width: 140rpx;
-  height: 140rpx;
-  border-radius: 70rpx;
-  background: rgba(255,216,92,0.12);
-  border: 3rpx solid rgba(255,216,92,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20rpx;
-  .avatar-text { font-size: 64rpx; font-weight: 800; color: #FFD85C; }
-}
-.overtime-badge { font-size: 22rpx; color: rgba(255,255,255,0.35); margin-bottom: 16rpx; }
-.headline {
-  font-size: 36rpx;
-  font-weight: 800;
-  color: #fff;
-  text-align: center;
-  line-height: 1.4;
-  margin-bottom: 12rpx;
-}
-.subheadline { font-size: 26rpx; color: rgba(255,255,255,0.4); text-align: center; }
-
-.payer-section {
-  background: #161630;
-  padding: 24rpx 32rpx;
+.pkg-card {
   margin: 0 28rpx 16rpx;
-  border-radius: 16rpx;
-  border: 1rpx solid rgba(255,255,255,0.07);
-  .payer-label { font-size: 24rpx; color: rgba(255,255,255,0.4); display: block; margin-bottom: 14rpx; }
-}
-.payer-input {
-  width: 100%;
-  height: 80rpx;
-  background: rgba(255,255,255,0.05);
-  border-radius: 12rpx;
-  padding: 0 24rpx;
-  font-size: 30rpx;
-  color: #fff;
-  box-sizing: border-box;
-  border: 1rpx solid rgba(255,255,255,0.1);
-}
-.ph { color: rgba(255,255,255,0.2); }
-
-.pkg-list { padding: 0 28rpx; }
-.pkg-option {
   background: #161630;
-  border: 1rpx solid rgba(255,255,255,0.08);
-  border-radius: 18rpx;
-  padding: 24rpx 20rpx;
-  margin-bottom: 16rpx;
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  &.selected {
-    border-color: #FFD85C;
-    background: rgba(255,216,92,0.06);
-  }
-  &.locked {
-    border-color: #FFD85C;
-    background: rgba(255,216,92,0.08);
-    pointer-events: none;
-  }
-}
-.radio-wrap { flex-shrink: 0; }
-.radio {
-  width: 40rpx;
-  height: 40rpx;
+  border: 2rpx solid rgba(255,255,255,0.08);
   border-radius: 20rpx;
-  border: 2rpx solid rgba(255,255,255,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &.active { border-color: #FFD85C; }
+  padding: 28rpx;
+  display: flex; align-items: center; justify-content: space-between;
 }
-.radio-dot {
-  width: 22rpx;
-  height: 22rpx;
-  border-radius: 11rpx;
-  background: #FFD85C;
-}
-.option-body {
-  flex: 1;
-  .option-name { font-size: 30rpx; font-weight: 700; color: #fff; display: block; }
-  .option-time { font-size: 22rpx; color: rgba(255,255,255,0.35); margin-top: 6rpx; display: block; }
-}
-.option-right {
-  text-align: right;
-  flex-shrink: 0;
-  .option-price { font-size: 36rpx; font-weight: 800; color: #FFD85C; display: block; }
-  .option-desc { font-size: 20rpx; color: rgba(255,255,255,0.3); margin-top: 4rpx; display: block; max-width: 160rpx; }
-}
-.recommend-badge {
-  background: #FF4757;
-  color: #fff;
-  font-size: 18rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 20rpx;
-  margin-bottom: 8rpx;
-  display: inline-block;
-}
+.pkg-card.selected { border-color: #FFD85C; background: rgba(255,216,92,0.08); }
+.pkg-card.locked { pointer-events: none; }
+.pkg-left { flex: 1; }
+.pkg-name { font-size: 30rpx; font-weight: 600; color: #fff; display: block; }
+.pkg-desc { font-size: 24rpx; color: rgba(255,255,255,0.4); margin-top: 6rpx; display: block; }
+.pkg-right { text-align: right; }
+.pkg-price { font-size: 40rpx; font-weight: 800; color: #FFD85C; display: block; }
+.check { font-size: 24rpx; color: #FFD85C; margin-top: 4rpx; text-align: right; }
 
-.pay-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #161630;
-  padding: 16rpx 28rpx 60rpx;
-  border-top: 1rpx solid rgba(255,255,255,0.07);
+.pay-section { padding: 0 28rpx; }
+.input-wrap {
+  background: #161630; border-radius: 16rpx; border: 1rpx solid rgba(255,255,255,0.1);
+  padding: 0 28rpx; height: 88rpx; display: flex; align-items: center; margin-bottom: 4rpx;
 }
-.pay-meta {
-  display: flex;
-  align-items: baseline;
-  gap: 12rpx;
-  margin-bottom: 14rpx;
-  .pay-total { font-size: 44rpx; font-weight: 800; color: #FFD85C; }
-  .pay-name { font-size: 24rpx; color: rgba(255,255,255,0.35); }
+.note-wrap {
+  background: #161630; border-radius: 16rpx; border: 1rpx solid rgba(255,255,255,0.1);
+  padding: 0 28rpx; height: 80rpx; display: flex; align-items: center; margin-bottom: 32rpx; margin-top: 16rpx;
 }
-.btn-pay {
-  width: 100%;
-  height: 96rpx;
-  background: linear-gradient(90deg, #F4A800, #FFD85C);
-  color: #0d0d1a;
-  border-radius: 48rpx;
-  font-size: 32rpx;
-  font-weight: 800;
-  border: none;
-  box-shadow: 0 8rpx 28rpx rgba(244,168,0,0.4);
-  &[disabled] { opacity: 0.35; box-shadow: none; }
+.input { flex: 1; height: 88rpx; font-size: 28rpx; color: #fff; background: transparent; }
+.ph { color: rgba(255,255,255,0.25); }
+
+.pay-tabs { display: flex; gap: 16rpx; margin-bottom: 24rpx; }
+.pay-tab {
+  padding: 14rpx 36rpx; border-radius: 40rpx; font-size: 26rpx;
+  border: 1rpx solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.5);
 }
+.pay-tab.active { background: rgba(255,216,92,0.15); border-color: #FFD85C; color: #FFD85C; }
+
+.qr-wrap { text-align: center; padding: 24rpx 0 16rpx; }
+.qr-img { width: 320rpx; height: 320rpx; border-radius: 16rpx; background: #fff; }
+.qr-tip { font-size: 22rpx; color: rgba(255,255,255,0.35); display: block; margin-top: 16rpx; }
+
+.info-card {
+  background: #161630; border-radius: 16rpx; border: 1rpx solid rgba(255,255,255,0.08);
+  padding: 8rpx 28rpx; margin-bottom: 4rpx;
+}
+.info-row {
+  display: flex; align-items: center; padding: 20rpx 0;
+  border-bottom: 1rpx solid rgba(255,255,255,0.06);
+}
+.info-row:last-child { border-bottom: none; }
+.info-label { font-size: 24rpx; color: rgba(255,255,255,0.4); width: 140rpx; flex-shrink: 0; }
+.info-value { flex: 1; font-size: 28rpx; color: #fff; }
+.copy-btn { font-size: 22rpx; color: #FFD85C; padding: 6rpx 16rpx; }
+
+.amount-tip { font-size: 26rpx; color: rgba(255,255,255,0.5); text-align: center; padding: 24rpx 0 8rpx; }
+.amount-highlight { font-size: 40rpx; font-weight: 800; color: #FFD85C; }
+
+.btn-confirm {
+  width: 100%; height: 100rpx;
+  background: linear-gradient(135deg, #C9883D, #B8772A);
+  color: #fff; border-radius: 50rpx; font-size: 30rpx; font-weight: 700; border: none;
+  box-shadow: 0 8rpx 28rpx rgba(180,110,40,0.4);
+}
+.bottom-tip { font-size: 22rpx; color: rgba(255,255,255,0.3); display: block; text-align: center; margin-top: 20rpx; }
+.loading-tip { text-align: center; padding: 200rpx 0; color: rgba(255,255,255,0.3); }
 </style>
