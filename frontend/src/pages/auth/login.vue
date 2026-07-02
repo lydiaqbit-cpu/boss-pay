@@ -83,63 +83,64 @@ function toRegister() { uni.navigateTo({ url: '/pages/auth/register' }) }
 </script>
 
 <style lang="scss">
-page { background: #F5F7FA; }
+page { background: #EDF2EC; }
 .page {
-  min-height: 100vh; background: #F5F7FA;
+  min-height: 100vh; background: #EDF2EC;
   display: flex; flex-direction: column; align-items: center;
   padding: 80rpx 40rpx 60rpx;
 }
 
 .hero {
   display: flex; flex-direction: column; align-items: center; margin-bottom: 48rpx;
-  .logo-img { width: 160rpx; height: 160rpx; margin-bottom: 20rpx; border-radius: 36rpx; box-shadow: 0 12rpx 36rpx rgba(43,155,130,0.25); }
-  .app-title { font-size: 44rpx; font-weight: 800; color: #1A202C; letter-spacing: 4rpx; }
-  .subtitle { font-size: 26rpx; color: #A0AEC0; margin-top: 10rpx; }
+  .logo-img { width: 160rpx; height: 160rpx; margin-bottom: 20rpx; border-radius: 36rpx; box-shadow: 0 12rpx 36rpx rgba(26,46,26,0.25); }
+  .app-title { font-size: 44rpx; font-weight: 800; color: #1A2E1A; letter-spacing: 4rpx; }
+  .subtitle { font-size: 26rpx; color: #7A9A78; margin-top: 10rpx; }
 }
 
 .card {
   width: 100%; background: #fff; border-radius: 28rpx;
-  padding: 48rpx 40rpx 40rpx; box-shadow: 0 4rpx 32rpx rgba(0,0,0,0.08);
+  padding: 48rpx 40rpx 40rpx; box-shadow: 0 4rpx 24rpx rgba(26,46,26,0.1);
+  border: 1rpx solid #D4E4D0;
 }
 
 .field { margin-bottom: 24rpx; }
-.label { font-size: 24rpx; color: #4A5568; display: block; margin-bottom: 10rpx; font-weight: 600; }
+.label { font-size: 24rpx; color: #4A6A48; display: block; margin-bottom: 10rpx; font-weight: 600; }
 .input-wrap {
-  display: flex; align-items: center; background: #F7F8FA;
-  border-radius: 14rpx; border: 1.5rpx solid #EDF2F7; padding: 0 20rpx; height: 92rpx;
-  &:focus-within { border-color: #43B89C; }
+  display: flex; align-items: center; background: #F2F7F0;
+  border-radius: 14rpx; border: 1.5rpx solid #C8DCC4; padding: 0 20rpx; height: 92rpx;
+  &:focus-within { border-color: #3A6B38; }
   .input-icon { font-size: 30rpx; margin-right: 14rpx; }
 }
-.input { flex: 1; height: 92rpx; font-size: 30rpx; color: #1A202C; background: transparent; }
-.placeholder { color: #CBD5E0; }
+.input { flex: 1; height: 92rpx; font-size: 30rpx; color: #1A2E1A; background: transparent; }
+.placeholder { color: #A0B89E; }
 
 .btn-primary {
   width: 100%; height: 100rpx;
-  background: linear-gradient(135deg, #FF8547, #FF6B4A);
+  background: linear-gradient(135deg, #3A6B38, #1A2E1A);
   color: #fff; border-radius: 50rpx; font-size: 30rpx; font-weight: 700; border: none;
-  margin-top: 8rpx; box-shadow: 0 6rpx 24rpx rgba(255,107,74,0.3);
+  margin-top: 8rpx; box-shadow: 0 6rpx 24rpx rgba(26,46,26,0.25);
 }
 
 .or-divider {
   display: flex; align-items: center; gap: 16rpx; margin: 28rpx 0;
-  .or-line { flex: 1; height: 1rpx; background: #EDF2F7; }
-  .or-text { font-size: 22rpx; color: #CBD5E0; white-space: nowrap; }
+  .or-line { flex: 1; height: 1rpx; background: #D4E4D0; }
+  .or-text { font-size: 22rpx; color: #A0B89E; white-space: nowrap; }
 }
 
 .btn-wechat {
   width: 100%; height: 100rpx; background: #07C160;
   color: #fff; border-radius: 50rpx; font-size: 30rpx; font-weight: 700; border: none;
-  box-shadow: 0 6rpx 20rpx rgba(7,193,96,0.3);
+  box-shadow: 0 6rpx 20rpx rgba(7,193,96,0.25);
 }
 
 .divider { text-align: center; margin: 28rpx 0 16rpx; }
-.divider-text { font-size: 24rpx; color: #CBD5E0; }
+.divider-text { font-size: 24rpx; color: #A0B89E; }
 
 .btn-secondary {
   width: 100%; height: 92rpx; background: transparent;
-  color: #43B89C; border-radius: 50rpx; font-size: 28rpx; font-weight: 600;
-  border: 1.5rpx solid #43B89C;
+  color: #3A6B38; border-radius: 50rpx; font-size: 28rpx; font-weight: 600;
+  border: 1.5rpx solid #3A6B38;
 }
 
-.footer-tip { font-size: 22rpx; color: #CBD5E0; margin-top: 44rpx; }
+.footer-tip { font-size: 22rpx; color: #A0B89E; margin-top: 44rpx; }
 </style>

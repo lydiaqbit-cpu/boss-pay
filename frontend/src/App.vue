@@ -12,8 +12,8 @@ page, body, * {
   -webkit-font-smoothing: antialiased;
 }
 page {
-  background: #FFF6EE;
-  color: #1C1008;
+  background: #EDF2EC;
+  color: #1A2E1A;
 }
 
 /* ── 全局动画 keyframes ── */
@@ -51,7 +51,7 @@ page {
 /* ── H5 桌面端手机框架 ── */
 @media (min-width: 500px) {
   body {
-    background: linear-gradient(135deg, #2D1400 0%, #4A2000 50%, #2D1400 100%) !important;
+    background: linear-gradient(135deg, #0D1A0D 0%, #1A2E1A 50%, #0D1A0D 100%) !important;
     min-height: 100vh;
     display: flex !important;
     justify-content: center !important;
@@ -65,7 +65,7 @@ page {
     max-width: 390px !important;
     border-radius: 50px !important;
     overflow: hidden !important;
-    border: 13px solid #1A0A00 !important;
+    border: 13px solid #0D1A0D !important;
     box-shadow:
       0 0 0 1px rgba(255,255,255,0.1),
       0 50px 130px rgba(0,0,0,0.9),

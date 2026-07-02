@@ -119,45 +119,45 @@ async function handleSave() {
 </script>
 
 <style lang="scss">
-page { background: #F5F7FA; }
+page { background: #EDF2EC; }
 .page { min-height: 100vh; padding: 24rpx 24rpx 120rpx; }
 
 .method-card {
   background: #fff; border-radius: 20rpx; padding: 28rpx;
-  margin-bottom: 20rpx; border: 2rpx solid #EDF2F7;
-  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+  margin-bottom: 20rpx; border: 1rpx solid #D4E4D0;
+  box-shadow: 0 2rpx 10rpx rgba(26,46,26,0.07);
   transition: border-color 0.2s;
 }
-.method-card.is-default { border-color: #43B89C; }
+.method-card.is-default { border-color: #3A6B38; border-width: 2rpx; }
 
 .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20rpx; }
 .card-title-row { display: flex; align-items: center; gap: 12rpx; }
 .method-icon { font-size: 36rpx; }
-.method-name { font-size: 30rpx; font-weight: 700; color: #1A202C; }
-.status-dot { font-size: 20rpx; color: #43B89C; background: #E6FAF5; padding: 4rpx 14rpx; border-radius: 20rpx; }
-.default-btn { font-size: 22rpx; color: #A0AEC0; border: 1rpx solid #EDF2F7; border-radius: 30rpx; padding: 8rpx 20rpx; }
-.default-btn.active { color: #D97706; border-color: #FCD34D; background: #FFFBEB; }
+.method-name { font-size: 30rpx; font-weight: 700; color: #1A2E1A; }
+.status-dot { font-size: 20rpx; color: #3A6B38; background: #E0EED8; padding: 4rpx 14rpx; border-radius: 20rpx; }
+.default-btn { font-size: 22rpx; color: #7A9A78; border: 1rpx solid #C8DCC4; border-radius: 30rpx; padding: 8rpx 20rpx; }
+.default-btn.active { color: #8A6A2A; border-color: #C8A84A; background: #FDF8EC; }
 
 .qr-upload { display: flex; justify-content: center; margin-bottom: 16rpx; }
-.qr-preview { width: 260rpx; height: 260rpx; border-radius: 12rpx; background: #F7F8FA; }
+.qr-preview { width: 260rpx; height: 260rpx; border-radius: 12rpx; background: #F2F7F0; }
 .qr-placeholder {
   width: 260rpx; height: 260rpx; border-radius: 16rpx;
-  border: 2rpx dashed #CBD5E0;
+  border: 2rpx dashed #C0D4BC;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12rpx;
-  background: #F7F8FA;
+  background: #F2F7F0;
 }
-.qr-plus { font-size: 64rpx; color: #CBD5E0; line-height: 1; }
-.qr-hint { font-size: 24rpx; color: #A0AEC0; }
-.field-tip { font-size: 22rpx; color: #CBD5E0; display: block; text-align: center; }
-.reupload-tip { font-size: 22rpx; color: #43B89C; display: block; text-align: center; margin-top: 10rpx; }
+.qr-plus { font-size: 64rpx; color: #C0D4BC; line-height: 1; }
+.qr-hint { font-size: 24rpx; color: #7A9A78; }
+.field-tip { font-size: 22rpx; color: #A0B89E; display: block; text-align: center; }
+.reupload-tip { font-size: 22rpx; color: #3A6B38; display: block; text-align: center; margin-top: 10rpx; }
 
 .btn-save {
   width: 100%; height: 100rpx;
-  background: linear-gradient(135deg, #FF8547, #FF6B4A);
+  background: linear-gradient(135deg, #3A6B38, #1A2E1A);
   color: #fff; border-radius: 50rpx; font-size: 32rpx; font-weight: 800; border: none;
-  box-shadow: 0 8rpx 24rpx rgba(255,107,74,0.3); margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(26,46,26,0.25); margin-bottom: 24rpx;
 }
 
-.tip-card { background: #F0FBF7; border-radius: 16rpx; padding: 20rpx 24rpx; border: 1rpx solid #B2F0E0; }
-.tip-text { font-size: 24rpx; color: #2A9B82; line-height: 1.7; }
+.tip-card { background: #E8F2E4; border-radius: 16rpx; padding: 20rpx 24rpx; border: 1rpx solid #C0D4BC; }
+.tip-text { font-size: 24rpx; color: #4A6A48; line-height: 1.7; }
 </style>

@@ -193,105 +193,105 @@ async function handleBossPaid() {
 </script>
 
 <style lang="scss">
-page { background: #F5F7FA; }
+page { background: #EDF2EC; }
 .page { min-height: 100vh; padding-bottom: 60rpx; }
 
 /* 顶部 */
 .cashier-header {
-  background: linear-gradient(150deg, #43B89C, #2A9B82);
+  background: linear-gradient(150deg, #1A2E1A, #3A6B38);
   padding: 80rpx 32rpx 32rpx;
 }
 .shop-info { display: flex; align-items: center; gap: 18rpx; }
-.shop-avatar { width: 72rpx; height: 72rpx; border-radius: 36rpx; border: 2rpx solid rgba(255,255,255,0.5); }
+.shop-avatar { width: 72rpx; height: 72rpx; border-radius: 36rpx; border: 2rpx solid rgba(255,255,255,0.4); }
 .shop-avatar-placeholder {
   width: 72rpx; height: 72rpx; border-radius: 36rpx;
-  background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;
   text { font-size: 30rpx; color: #fff; font-weight: 700; }
 }
 .shop-name { font-size: 30rpx; font-weight: 800; color: #fff; display: block; }
-.shop-sub { font-size: 22rpx; color: rgba(255,255,255,0.7); margin-top: 4rpx; display: block; }
+.shop-sub { font-size: 22rpx; color: rgba(255,255,255,0.65); margin-top: 4rpx; display: block; }
 
 /* 金额面板 */
 .amount-panel {
   background: #fff; margin: 0 24rpx;
   border-radius: 20rpx; padding: 28rpx 32rpx;
   margin-top: -20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.08);
-  text-align: center;
+  box-shadow: 0 4rpx 20rpx rgba(26,46,26,0.1);
+  text-align: center; border: 1rpx solid #D4E4D0;
 }
-.amount-label { font-size: 24rpx; color: #A0AEC0; display: block; margin-bottom: 8rpx; }
+.amount-label { font-size: 24rpx; color: #7A9A78; display: block; margin-bottom: 8rpx; }
 .amount-row { display: flex; align-items: baseline; justify-content: center; gap: 4rpx; }
-.amount-currency { font-size: 32rpx; color: #2D3748; font-weight: 700; }
-.amount-value { font-size: 72rpx; font-weight: 900; color: #2D3748; line-height: 1; }
-.amount-panel.has-amount .amount-value { color: #FF6B4A; }
-.amount-pkg-name { font-size: 24rpx; color: #A0AEC0; display: block; margin-top: 8rpx; }
+.amount-currency { font-size: 32rpx; color: #1A2E1A; font-weight: 700; }
+.amount-value { font-size: 72rpx; font-weight: 900; color: #1A2E1A; line-height: 1; }
+.amount-panel.has-amount .amount-value { color: #8A6A2A; }
+.amount-pkg-name { font-size: 24rpx; color: #7A9A78; display: block; margin-top: 8rpx; }
 
 /* 套餐列表 */
-.pkg-list { background: #fff; margin: 16rpx 24rpx; border-radius: 18rpx; overflow: hidden; box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05); }
-.pkg-item { display: flex; align-items: center; justify-content: space-between; padding: 24rpx; border-bottom: 1rpx solid #F0F4F8; }
+.pkg-list { background: #fff; margin: 16rpx 24rpx; border-radius: 18rpx; overflow: hidden; box-shadow: 0 2rpx 10rpx rgba(26,46,26,0.07); border: 1rpx solid #D4E4D0; }
+.pkg-item { display: flex; align-items: center; justify-content: space-between; padding: 24rpx; border-bottom: 1rpx solid #E8F0E4; }
 .pkg-item:last-child { border-bottom: none; }
-.pkg-item.selected { background: #F0FBF7; }
+.pkg-item.selected { background: #F0F7EE; }
 .pkg-item.locked { pointer-events: none; }
 .pkg-item-left { display: flex; align-items: center; gap: 18rpx; flex: 1; }
 .pkg-radio {
   width: 40rpx; height: 40rpx; border-radius: 20rpx;
-  border: 2rpx solid #CBD5E0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  border: 2rpx solid #C0D4BC; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.pkg-radio.checked { border-color: #43B89C; background: #43B89C; }
+.pkg-radio.checked { border-color: #3A6B38; background: #3A6B38; }
 .pkg-radio-dot { width: 16rpx; height: 16rpx; border-radius: 8rpx; background: #fff; }
-.pkg-item-name { font-size: 28rpx; font-weight: 700; color: #1A202C; display: block; }
-.pkg-item-desc { font-size: 22rpx; color: #A0AEC0; margin-top: 4rpx; display: block; }
-.pkg-item-price { font-size: 38rpx; font-weight: 900; color: #FF6B4A; flex-shrink: 0; }
+.pkg-item-name { font-size: 28rpx; font-weight: 700; color: #1A2E1A; display: block; }
+.pkg-item-desc { font-size: 22rpx; color: #7A9A78; margin-top: 4rpx; display: block; }
+.pkg-item-price { font-size: 38rpx; font-weight: 900; color: #8A6A2A; flex-shrink: 0; }
 
 /* 支付面板 */
-.pay-panel { background: #fff; margin: 0 24rpx 20rpx; border-radius: 18rpx; overflow: hidden; box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05); }
-.pay-panel-header { padding: 22rpx 24rpx 0; border-bottom: 1rpx solid #F0F4F8; }
-.pay-panel-title { font-size: 26rpx; font-weight: 700; color: #2D3748; display: block; padding-bottom: 18rpx; }
+.pay-panel { background: #fff; margin: 0 24rpx 20rpx; border-radius: 18rpx; overflow: hidden; box-shadow: 0 2rpx 10rpx rgba(26,46,26,0.07); border: 1rpx solid #D4E4D0; }
+.pay-panel-header { padding: 22rpx 24rpx 0; border-bottom: 1rpx solid #E8F0E4; }
+.pay-panel-title { font-size: 26rpx; font-weight: 700; color: #1A2E1A; display: block; padding-bottom: 18rpx; }
 
 /* 方式 tab */
-.method-tabs { display: flex; padding: 18rpx 24rpx; gap: 14rpx; border-bottom: 1rpx solid #F0F4F8; }
+.method-tabs { display: flex; padding: 18rpx 24rpx; gap: 14rpx; border-bottom: 1rpx solid #E8F0E4; }
 .method-tab {
   flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8rpx;
-  padding: 14rpx 10rpx; border-radius: 14rpx; border: 2rpx solid #EDF2F7; position: relative;
+  padding: 14rpx 10rpx; border-radius: 14rpx; border: 1rpx solid #C8DCC4; position: relative;
 }
-.method-tab.active { border-color: #43B89C; background: #F0FBF7; }
+.method-tab.active { border-color: #3A6B38; background: #F0F7EE; }
 .method-tab-icon { font-size: 32rpx; }
-.method-tab-label { font-size: 22rpx; color: #718096; }
-.method-tab.active .method-tab-label { color: #2A9B82; font-weight: 700; }
+.method-tab-label { font-size: 22rpx; color: #7A9A78; }
+.method-tab.active .method-tab-label { color: #3A6B38; font-weight: 700; }
 .default-tag {
   position: absolute; top: -1rpx; right: -1rpx;
-  background: #43B89C; color: #fff; font-size: 16rpx;
+  background: #3A6B38; color: #fff; font-size: 16rpx;
   padding: 3rpx 10rpx; border-radius: 0 12rpx 0 10rpx;
 }
 
 /* 二维码 */
 .qr-panel { padding: 28rpx 24rpx; text-align: center; }
 .qr-box {
-  display: inline-block; background: #fff; border: 1rpx solid #EDF2F7;
+  display: inline-block; background: #fff; border: 1rpx solid #D4E4D0;
   border-radius: 18rpx; padding: 18rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.07);
+  box-shadow: 0 4rpx 16rpx rgba(26,46,26,0.08);
 }
 .qr-img { width: 280rpx; height: 280rpx; display: block; }
-.scan-tip { font-size: 24rpx; color: #718096; display: block; margin-top: 18rpx; }
-.humor-tip { font-size: 22rpx; color: #CBD5E0; display: block; text-align: center; padding: 12rpx 0 20rpx; }
+.scan-tip { font-size: 24rpx; color: #5A7A58; display: block; margin-top: 18rpx; }
+.humor-tip { font-size: 22rpx; color: #A0B89E; display: block; text-align: center; padding: 12rpx 0 20rpx; }
 
 /* 老板填写 */
-.payer-row-wrap { padding: 0 24rpx; border-top: 1rpx solid #F0F4F8; }
-.payer-input { width: 100%; height: 88rpx; font-size: 28rpx; color: #1A202C; border-bottom: 1rpx solid #F0F4F8; background: transparent; }
+.payer-row-wrap { padding: 0 24rpx; border-top: 1rpx solid #E8F0E4; }
+.payer-input { width: 100%; height: 88rpx; font-size: 28rpx; color: #1A2E1A; border-bottom: 1rpx solid #E8F0E4; background: transparent; }
 .payer-input.note { border-bottom: none; }
-.ph { color: #CBD5E0; }
+.ph { color: #A0B89E; }
 
 /* 按钮 */
 .btn-paid {
   width: calc(100% - 48rpx); margin: 20rpx 24rpx 0;
-  height: 100rpx; background: linear-gradient(135deg, #FF8547, #FF6B4A);
+  height: 100rpx; background: linear-gradient(135deg, #3A6B38, #1A2E1A);
   color: #fff; border-radius: 50rpx; font-size: 30rpx; font-weight: 800; border: none;
-  box-shadow: 0 6rpx 20rpx rgba(255,107,74,0.3);
+  box-shadow: 0 6rpx 20rpx rgba(26,46,26,0.25);
 }
-.paid-tip { font-size: 22rpx; color: #CBD5E0; display: block; text-align: center; padding: 14rpx 0 20rpx; }
+.paid-tip { font-size: 22rpx; color: #A0B89E; display: block; text-align: center; padding: 14rpx 0 20rpx; }
 
 .no-payment { text-align: center; padding: 80rpx 40rpx; }
 .no-icon { font-size: 80rpx; display: block; }
-.no-text { font-size: 26rpx; color: #A0AEC0; margin-top: 20rpx; display: block; line-height: 1.7; }
-.loading { text-align: center; padding: 200rpx 0; color: #CBD5E0; }
+.no-text { font-size: 26rpx; color: #7A9A78; margin-top: 20rpx; display: block; line-height: 1.7; }
+.loading { text-align: center; padding: 200rpx 0; color: #A0B89E; }
 </style>
