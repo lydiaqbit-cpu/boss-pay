@@ -93,56 +93,57 @@ async function deletePkg(id: string) {
 </script>
 
 <style lang="scss">
-page { background: #0d0d1a; }
+page { background: #F2EBE0; }
 .page { min-height: 100vh; padding: 24rpx 28rpx 160rpx; }
 
 .empty {
   text-align: center;
   padding: 100rpx 0 60rpx;
   .e-icon { font-size: 80rpx; display: block; }
-  .e-tip { font-size: 30rpx; color: rgba(255,255,255,0.6); margin-top: 24rpx; display: block; font-weight: 600; }
-  .e-subtip { font-size: 24rpx; color: rgba(255,255,255,0.3); margin-top: 10rpx; display: block; }
+  .e-tip { font-size: 30rpx; color: #1E1A14; margin-top: 24rpx; display: block; font-weight: 600; }
+  .e-subtip { font-size: 24rpx; color: #8B7355; margin-top: 10rpx; display: block; }
 }
 
 .pkg-card {
-  background: #161630;
-  border-radius: 20rpx;
+  background: #fff;
+  border-radius: 8rpx;
   padding: 28rpx 28rpx 28rpx 20rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
   display: flex;
   align-items: center;
   gap: 20rpx;
-  border: 1rpx solid rgba(255,255,255,0.07);
+  border: 1rpx solid #D4C4A8;
 }
 .pkg-badge {
   width: 72rpx;
   height: 72rpx;
-  border-radius: 16rpx;
-  background: rgba(255,216,92,0.12);
-  color: #FFD85C;
+  border-radius: 6rpx;
+  background: #F5EDE0;
+  color: #8B3A2A;
   font-size: 22rpx;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1rpx solid #D4C4A8;
 }
 .pkg-body {
   flex: 1;
-  .pkg-name { font-size: 30rpx; font-weight: 600; color: #fff; display: block; }
-  .pkg-desc { font-size: 24rpx; color: rgba(255,255,255,0.35); margin-top: 6rpx; display: block; }
+  .pkg-name { font-size: 30rpx; font-weight: 600; color: #1E1A14; display: block; }
+  .pkg-desc { font-size: 24rpx; color: #8B7355; margin-top: 6rpx; display: block; }
 }
 .pkg-right { text-align: right; flex-shrink: 0; }
-.pkg-price { font-size: 36rpx; font-weight: 800; color: #FFD85C; display: block; }
+.pkg-price { font-size: 36rpx; font-weight: 800; color: #C0392B; display: block; }
 .pkg-actions {
   display: flex;
   gap: 8rpx;
   margin-top: 8rpx;
   justify-content: flex-end;
-  .action-link { font-size: 24rpx; color: #4ade80; }
-  .action-edit { font-size: 24rpx; color: rgba(255,216,92,0.8); }
-  .action-sep { font-size: 24rpx; color: rgba(255,255,255,0.15); }
-  .action-del { font-size: 24rpx; color: #FF4757; }
+  .action-link { font-size: 24rpx; color: #8B3A2A; }
+  .action-edit { font-size: 24rpx; color: #8B7355; }
+  .action-sep { font-size: 24rpx; color: #D4C4A8; }
+  .action-del { font-size: 24rpx; color: #C0392B; }
 }
 
 .add-btn {
@@ -150,23 +151,22 @@ page { background: #0d0d1a; }
   align-items: center;
   justify-content: center;
   gap: 12rpx;
-  background: linear-gradient(90deg, #F4A800, #FFD85C);
-  border-radius: 20rpx;
+  background: #1E1A14;
+  border-radius: 8rpx;
   padding: 36rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 8rpx 28rpx rgba(244,168,0,0.35);
-  .add-icon { font-size: 36rpx; color: #0d0d1a; }
-  .add-text { font-size: 30rpx; font-weight: 800; color: #0d0d1a; }
+  .add-icon { font-size: 36rpx; color: #C4A882; }
+  .add-text { font-size: 30rpx; font-weight: 800; color: #F2EBE0; letter-spacing: 2rpx; }
 }
 
 .tip-card {
-  background: rgba(255,216,92,0.07);
-  border-radius: 16rpx;
+  background: #FAF6F0;
+  border-radius: 8rpx;
   padding: 20rpx 24rpx;
   display: flex;
   gap: 12rpx;
-  border: 1rpx solid rgba(255,216,92,0.15);
+  border: 1rpx solid #D4C4A8;
   .tip-icon { font-size: 28rpx; flex-shrink: 0; }
-  .tip-text { font-size: 24rpx; color: rgba(255,216,92,0.75); line-height: 1.6; }
+  .tip-text { font-size: 24rpx; color: #6B5040; line-height: 1.6; }
 }
 </style>

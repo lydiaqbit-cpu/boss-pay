@@ -115,19 +115,19 @@ async function handleSave() {
 </script>
 
 <style lang="scss">
-page { background: #0d0d1a; }
+page { background: #F2EBE0; }
 .page { min-height: 100vh; padding: 28rpx 28rpx 80rpx; }
 
 .field {
-  background: #161630;
-  border-radius: 16rpx;
+  background: #fff;
+  border-radius: 8rpx;
   padding: 24rpx 28rpx;
   margin-bottom: 16rpx;
   position: relative;
-  border: 1rpx solid rgba(255,255,255,0.07);
-  .label { font-size: 24rpx; color: rgba(255,255,255,0.45); display: block; margin-bottom: 12rpx; font-weight: 500; }
-  .req { color: #FF4757; }
-  .char-count { position: absolute; right: 28rpx; bottom: 24rpx; font-size: 20rpx; color: rgba(255,255,255,0.2); }
+  border: 1rpx solid #D4C4A8;
+  .label { font-size: 24rpx; color: #6B5040; display: block; margin-bottom: 12rpx; font-weight: 500; }
+  .req { color: #C0392B; }
+  .char-count { position: absolute; right: 28rpx; bottom: 24rpx; font-size: 20rpx; color: #C4A882; }
 }
 .field-row {
   display: flex;
@@ -138,14 +138,14 @@ page { background: #0d0d1a; }
   width: 100%;
   height: 80rpx;
   font-size: 30rpx;
-  color: #fff;
-  border-bottom: 1rpx solid rgba(255,255,255,0.1);
+  color: #1E1A14;
+  border-bottom: 1rpx solid #EDE0CC;
   box-sizing: border-box;
   background: transparent;
 }
-.ph { color: rgba(255,255,255,0.2); }
+.ph { color: #C4A882; }
 
-.preset-title { font-size: 24rpx; color: rgba(255,255,255,0.35); padding: 16rpx 4rpx 10rpx; display: block; }
+.preset-title { font-size: 24rpx; color: #8B7355; padding: 16rpx 4rpx 10rpx; display: block; }
 .preset-list {
   display: flex;
   gap: 14rpx;
@@ -153,40 +153,40 @@ page { background: #0d0d1a; }
   flex-wrap: wrap;
 }
 .preset-chip {
-  background: rgba(255,216,92,0.1);
-  color: #FFD85C;
+  background: #F5EDE0;
+  color: #8B3A2A;
   font-size: 24rpx;
   padding: 12rpx 24rpx;
-  border-radius: 40rpx;
-  border: 1rpx solid rgba(255,216,92,0.25);
+  border-radius: 6rpx;
+  border: 1rpx solid #D4C4A8;
 }
 
 .preview-card {
-  background: #161630;
-  border-radius: 16rpx;
+  background: #fff;
+  border-radius: 8rpx;
   padding: 24rpx 28rpx;
   margin-bottom: 24rpx;
-  border: 1rpx solid rgba(255,216,92,0.2);
-  .preview-label { font-size: 22rpx; color: rgba(255,255,255,0.35); display: block; margin-bottom: 16rpx; }
+  border: 1rpx solid #D4C4A8;
+  .preview-label { font-size: 22rpx; color: #8B7355; display: block; margin-bottom: 16rpx; }
 }
 .preview-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .preview-name { font-size: 30rpx; font-weight: 600; color: #fff; display: block; }
-  .preview-desc { font-size: 24rpx; color: rgba(255,255,255,0.35); margin-top: 4rpx; display: block; }
-  .preview-price { font-size: 38rpx; font-weight: 800; color: #FFD85C; }
+  .preview-name { font-size: 30rpx; font-weight: 600; color: #1E1A14; display: block; }
+  .preview-desc { font-size: 24rpx; color: #8B7355; margin-top: 4rpx; display: block; }
+  .preview-price { font-size: 38rpx; font-weight: 800; color: #C0392B; }
 }
 
 .btn-save {
   width: 100%;
   height: 100rpx;
-  background: linear-gradient(90deg, #F4A800, #FFD85C);
-  color: #0d0d1a;
-  border-radius: 50rpx;
+  background: #1E1A14;
+  color: #F2EBE0;
+  border-radius: 8rpx;
   font-size: 32rpx;
   font-weight: 800;
   border: none;
-  box-shadow: 0 8rpx 28rpx rgba(244,168,0,0.35);
+  letter-spacing: 2rpx;
 }
 </style>
