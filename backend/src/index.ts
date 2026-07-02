@@ -16,7 +16,7 @@ app.use(cors({
   origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*',
   credentials: true
 }))
-app.use(express.json())
+app.use(express.json({ limit: '5mb' }))
 
 // Auth routes (me is protected inside the router)
 app.use('/api/auth', authRouter)
