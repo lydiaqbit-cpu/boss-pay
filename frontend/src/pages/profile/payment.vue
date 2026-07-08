@@ -96,7 +96,8 @@ function uploadQr(type: 'wechat' | 'alipay') {
           if (type === 'wechat') { form.value.wechatQrUrl = b64; if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'wechat' }
           else { form.value.alipayQrUrl = b64; if (!form.value.defaultPaymentMethod) form.value.defaultPaymentMethod = 'alipay' }
           uni.showToast({ title: '图片已选择', icon: 'success' })
-        }
+        },
+        fail: () => uni.showToast({ title: '图片读取失败，请重试', icon: 'none' })
       })
       // #endif
     }

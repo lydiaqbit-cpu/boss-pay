@@ -3,24 +3,64 @@
     <view class="stats-card">
       <view class="stat-item">
         <text class="stat-val">{{ confirmedOrders.length }}</text>
-        <text class="stat-key">已确认收款</text>
+        <text class="stat-key">东家认账笔数</text>
       </view>
       <view class="stat-divider" />
       <view class="stat-item">
         <text class="stat-val green">¥{{ totalNet }}</text>
-        <text class="stat-key">累计到手</text>
+        <text class="stat-key">累计入账银两</text>
       </view>
       <view class="stat-divider" />
       <view class="stat-item">
         <text class="stat-val orange">{{ pendingOrders.length }}</text>
-        <text class="stat-key">待确认</text>
+        <text class="stat-key">悬而未决</text>
       </view>
     </view>
 
     <view v-if="orders.length === 0" class="empty">
-      <text class="e-icon">🥲</text>
-      <text class="e-tip">老板还没付过钱</text>
-      <text class="e-sub">把收款链接甩给他，今天不付明天还得加班</text>
+      <view class="beggar-wrap">
+        <svg width="200" height="220" viewBox="0 0 680 540" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="340" cy="160" rx="100" ry="18" fill="#5A4A28"/>
+          <path d="M260 160 Q280 120 340 112 Q400 120 420 160Z" fill="#5A4A28"/>
+          <path d="M260 160 L248 165 L262 162 L255 170 L270 163" fill="#4A3A18"/>
+          <path d="M420 160 L432 165 L418 162 L425 170 L410 163" fill="#4A3A18"/>
+          <path d="M305 113 Q340 105 375 113" stroke="#8B6914" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M295 148 Q288 130 292 115" stroke="#2A1A05" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M375 148 Q380 128 378 114" stroke="#2A1A05" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <ellipse cx="340" cy="240" rx="88" ry="95" fill="#D4A96A"/>
+          <ellipse cx="272" cy="258" rx="22" ry="14" fill="#C07040" opacity="0.3"/>
+          <ellipse cx="408" cy="258" rx="22" ry="14" fill="#C07040" opacity="0.3"/>
+          <path d="M288 200 Q308 192 322 200" stroke="#2A1A05" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M358 200 Q372 192 392 200" stroke="#2A1A05" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M332 196 Q340 188 348 196" stroke="#2A1A05" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="308" cy="215" rx="20" ry="14" fill="white"/>
+          <ellipse cx="372" cy="215" rx="20" ry="14" fill="white"/>
+          <circle cx="308" cy="220" r="9" fill="#1A0A00"/>
+          <circle cx="372" cy="220" r="9" fill="#1A0A00"/>
+          <circle cx="312" cy="217" r="3" fill="white"/>
+          <circle cx="376" cy="217" r="3" fill="white"/>
+          <ellipse cx="294" cy="234" rx="4" ry="6" fill="#6AABDF" opacity="0.8"/>
+          <ellipse cx="385" cy="236" rx="3.5" ry="5.5" fill="#6AABDF" opacity="0.8"/>
+          <ellipse cx="340" cy="244" rx="12" ry="9" fill="#D4A96A"/>
+          <ellipse cx="328" cy="248" rx="10" ry="7" fill="#B08040"/>
+          <ellipse cx="352" cy="248" rx="10" ry="7" fill="#B08040"/>
+          <path d="M312 278 Q325 284 340 280 Q355 284 368 278" stroke="#8B4513" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M312 278 Q306 290 310 294" stroke="#8B4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M368 278 Q374 290 370 294" stroke="#8B4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M252 330 Q270 315 340 308 Q410 315 428 330 L445 490 Q340 510 235 490 Z" fill="#7A6A50"/>
+          <rect x="285" y="355" width="50" height="38" rx="3" fill="#6A5840" stroke="#4A3820" stroke-width="1" stroke-dasharray="3,2"/>
+          <rect x="348" y="375" width="42" height="32" rx="3" fill="#6A5840" stroke="#4A3820" stroke-width="1" stroke-dasharray="3,2" transform="rotate(-5 369 391)"/>
+          <path d="M255 400 Q340 388 425 400" stroke="#8B6914" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M255 350 Q225 380 210 420" stroke="#D4A96A" stroke-width="28" fill="none" stroke-linecap="round"/>
+          <path d="M185 420 Q195 450 235 452 Q275 450 272 420 Z" fill="#8B7355" stroke="#5A4A30" stroke-width="2"/>
+          <ellipse cx="228" cy="420" rx="45" ry="10" fill="#8B7355" stroke="#5A4A30" stroke-width="2"/>
+          <text x="228" y="445" text-anchor="middle" font-size="22" fill="#5A4030" font-family="sans-serif">空</text>
+          <path d="M425 355 Q455 390 460 425" stroke="#D4A96A" stroke-width="26" fill="none" stroke-linecap="round"/>
+          <ellipse cx="463" cy="432" rx="18" ry="14" fill="#D4A96A"/>
+        </svg>
+      </view>
+      <text class="e-tip">东家一文未付，账簿形同虚设</text>
+      <text class="e-sub">速将讨薪令牌甩给东家，今日不付来日加倍奉陪</text>
     </view>
 
     <view v-for="order in orders" :key="order.id" class="order-card">
@@ -131,10 +171,11 @@ page { background: #F2EBE0; }
 .stat-key { font-size: 22rpx; color: rgba(196,168,130,0.7); margin-top: 6rpx; display: block; letter-spacing: 1rpx; }
 .stat-divider { width: 1rpx; height: 56rpx; background: rgba(196,168,130,0.25); }
 
-.empty { text-align: center; padding: 100rpx 0; }
-.e-icon { font-size: 80rpx; display: block; }
-.e-tip { font-size: 32rpx; font-weight: 600; color: #1E1A14; margin-top: 24rpx; display: block; }
-.e-sub { font-size: 26rpx; color: #8B7355; margin-top: 10rpx; display: block; }
+.empty { text-align: center; padding: 80rpx 0; }
+.e-tip { font-size: 30rpx; font-weight: 600; color: #1E1A14; margin-top: 20rpx; display: block; }
+.e-sub { font-size: 24rpx; color: #8B7355; margin-top: 10rpx; display: block; padding: 0 40rpx; line-height: 1.6; }
+
+.beggar-wrap { display: flex; justify-content: center; margin-bottom: 8rpx; }
 
 .order-card {
   background: #fff; margin: 0 24rpx 16rpx;

@@ -15,34 +15,34 @@
     <view class="vip-card" @click="toSubscribe">
       <view class="vip-icon">✨</view>
       <view class="vip-left">
-        <text class="vip-title">{{ isVip ? '会员有效期至 ' + fmtDate(vipExpiry) : '开通会员，解锁全部功能' }}</text>
-        <text class="vip-sub">{{ isVip ? '感谢支持牛马事业 🐂' : '无限套餐 · 优先客服 · 更多特权' }}</text>
+        <text class="vip-title">{{ isVip ? '令牌有效，身价已定 · ' + fmtDate(vipExpiry) + ' 到期' : '纳贡升级，解锁全部功能' }}</text>
+        <text class="vip-sub">{{ isVip ? '尊贵牛马，已享免徭役特权 🐂' : '无限套餐 · 优先待诏 · 更多特权' }}</text>
       </view>
       <text class="vip-arrow">›</text>
     </view>
 
     <view class="menu-section">
       <view class="menu-item" @click="toPayment">
-        <text class="menu-icon">💳</text>
-        <text class="menu-label">收款方式设置</text>
+        <text class="menu-icon">🪙</text>
+        <text class="menu-label">银两收取方式</text>
         <text class="menu-arrow">›</text>
       </view>
       <view class="menu-item" @click="toPackages">
-        <text class="menu-icon">📦</text>
-        <text class="menu-label">加班套餐管理</text>
+        <text class="menu-icon">📜</text>
+        <text class="menu-label">劳役价目管理</text>
         <text class="menu-arrow">›</text>
       </view>
       <view class="menu-item" @click="copyMyLink">
-        <text class="menu-icon">🔗</text>
-        <text class="menu-label">复制我的收款链接</text>
+        <text class="menu-icon">📮</text>
+        <text class="menu-label">复制讨薪令牌</text>
         <text class="menu-arrow">›</text>
       </view>
     </view>
 
     <view class="menu-section">
       <view class="menu-item danger" @click="handleLogout">
-        <text class="menu-icon">🚪</text>
-        <text class="menu-label">退出登录</text>
+        <text class="menu-icon">🏃</text>
+        <text class="menu-label">溜了溜了</text>
         <text class="menu-arrow">›</text>
       </view>
     </view>
@@ -77,8 +77,11 @@ function toSubscribe() { uni.navigateTo({ url: '/pages/subscribe/index' }) }
 function copyMyLink() {
   // #ifdef H5
   const link = `${location.origin}/#/pages/pay/cashier?userId=${user.value.id}`
-  uni.setClipboardData({ data: link, success: () => uni.showToast({ title: '收款链接已复制', icon: 'success' }) })
   // #endif
+  // #ifdef MP-WEIXIN
+  const link = `/pages/pay/cashier?userId=${user.value.id}`
+  // #endif
+  uni.setClipboardData({ data: link, success: () => uni.showToast({ title: '讨薪令牌已复制', icon: 'success' }) })
 }
 
 function handleLogout() {

@@ -70,8 +70,8 @@
 
       <!-- 操作按钮 -->
       <view class="actions">
-        <view class="btn-share" @click="shareReceipt">
-          <text>📤 分享给老板</text>
+        <view class="btn-share" :class="{ saving: saving }" @click="saveScreenshot">
+          <text>{{ saving ? '生成中...' : '📸 截图保存，发给老板' }}</text>
         </view>
         <view class="btn-back" @click="uni.navigateBack()">
           <text>返回记录</text>
@@ -117,20 +117,31 @@ function fmtTime(t: string) {
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-function shareReceipt() {
-  uni.showActionSheet({
-    itemList: ['截图保存后分享', '复制凭证编号'],
-    success: (res) => {
-      if (res.tapIndex === 0) {
-        uni.showToast({ title: '截图后发给老板即可 📸', icon: 'none', duration: 2500 })
-      } else if (res.tapIndex === 1) {
-        uni.setClipboardData({
-          data: order.value?.id.slice(0, 8).toUpperCase() || '',
-          success: () => uni.showToast({ title: '凭证编号已复制', icon: 'success' })
-        })
-      }
-    }
-  })
+const saving = ref(false)
+
+async function saveScreenshot() {
+  if (saving.value) return
+  saving.value = true
+  // #ifdef H5
+  try {
+    const html2canvas = (await import('html2canvas')).default
+    const el = document.getElementById('receipt-card')
+    if (!el) throw new Error('element not found')
+    const canvas = await html2canvas(el, { useCORS: true, scale: 2, backgroundColor: '#FFFBF4' })
+    const url = canvas.toDataURL('image/png')
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `凭证_${order.value?.id.slice(0, 8).toUpperCase()}.png`
+    a.click()
+    uni.showToast({ title: '凭证已保存，发给老板吧 📸', icon: 'none', duration: 2500 })
+  } catch (e) {
+    uni.showToast({ title: '截图失败，请手动截图', icon: 'none' })
+  }
+  // #endif
+  // #ifdef MP-WEIXIN
+  uni.showToast({ title: '长按屏幕截图后发给老板 📸', icon: 'none', duration: 3000 })
+  // #endif
+  saving.value = false
 }
 
 onShareAppMessage(() => ({
@@ -140,7 +151,7 @@ onShareAppMessage(() => ({
 </script>
 
 <style lang="scss">
-page { background: #1a1008; }
+page { background: #F2EBE0; }
 .page { min-height: 100vh; padding: 0 0 60rpx; }
 
 .loading-wrap, .error-wrap {
@@ -148,14 +159,14 @@ page { background: #1a1008; }
   display: flex;
   align-items: center;
   justify-content: center;
-  .loading-text, .error-text { font-size: 28rpx; color: rgba(255,255,255,0.4); }
+  .loading-text, .error-text { font-size: 28rpx; color: #8B7355; }
 }
 
 .screenshot-tip {
   display: block;
   text-align: center;
   font-size: 24rpx;
-  color: rgba(255,255,255,0.35);
+  color: #8B7355;
   padding: 32rpx 0 20rpx;
 }
 
@@ -164,13 +175,14 @@ page { background: #1a1008; }
 /* ── 凭证卡 ── */
 .receipt-card {
   background: #FFFBF4;
-  border-radius: 24rpx;
+  border-radius: 16rpx;
   overflow: hidden;
-  box-shadow: 0 16rpx 60rpx rgba(0,0,0,0.5);
+  border: 1rpx solid #D4C4A8;
+  box-shadow: 0 8rpx 32rpx rgba(60,40,20,0.12);
 }
 
 .receipt-header {
-  background: linear-gradient(135deg, #3D2010 0%, #5C3218 100%);
+  background: linear-gradient(135deg, #1E1A14 0%, #3D3526 100%);
   padding: 36rpx 36rpx 32rpx;
   display: flex;
   align-items: center;
@@ -180,39 +192,39 @@ page { background: #1a1008; }
   width: 100rpx;
   height: 100rpx;
   border-radius: 50rpx;
-  border: 4rpx solid #FFD85C;
+  border: 4rpx solid #C4A882;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   transform: rotate(-12deg);
 }
-.stamp-text { font-size: 22rpx; font-weight: 800; color: #FFD85C; letter-spacing: 2rpx; }
+.stamp-text { font-size: 22rpx; font-weight: 800; color: #C4A882; letter-spacing: 2rpx; }
 .header-texts { flex: 1; }
-.receipt-title { font-size: 32rpx; font-weight: 800; color: #fff; display: block; }
-.receipt-no { font-size: 20rpx; color: rgba(255,255,255,0.45); margin-top: 8rpx; display: block; font-family: monospace; }
+.receipt-title { font-size: 32rpx; font-weight: 800; color: #F2EBE0; display: block; }
+.receipt-no { font-size: 20rpx; color: #8B7355; margin-top: 8rpx; display: block; font-family: monospace; }
 
 .divider-dots {
-  border-top: 3rpx dashed #E8D8C0;
+  border-top: 3rpx dashed #D4C4A8;
   margin: 0 28rpx;
 }
 
 .amount-section {
   padding: 36rpx 36rpx 28rpx;
   text-align: center;
-  .amount-label { font-size: 22rpx; color: #8A6A50; display: block; margin-bottom: 12rpx; }
+  .amount-label { font-size: 22rpx; color: #8B7355; display: block; margin-bottom: 12rpx; }
 }
 .amount-row {
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: 4rpx;
-  .amount-unit { font-size: 36rpx; font-weight: 700; color: #C9883D; }
-  .amount-val { font-size: 80rpx; font-weight: 900; color: #3D2010; line-height: 1; }
+  .amount-unit { font-size: 36rpx; font-weight: 700; color: #C0392B; }
+  .amount-val { font-size: 80rpx; font-weight: 900; color: #1E1A14; line-height: 1; }
 }
-.amount-sub { font-size: 20rpx; color: #A08060; margin-top: 12rpx; display: block; }
+.amount-sub { font-size: 20rpx; color: #8B7355; margin-top: 12rpx; display: block; }
 
-.divider-solid { height: 1rpx; background: #E8D8C0; margin: 0 28rpx; }
+.divider-solid { height: 1rpx; background: #D4C4A8; margin: 0 28rpx; }
 
 .detail-list { padding: 8rpx 36rpx 8rpx; }
 .detail-row {
@@ -220,31 +232,31 @@ page { background: #1a1008; }
   justify-content: space-between;
   align-items: center;
   padding: 20rpx 0;
-  border-bottom: 1rpx solid #F0E4D0;
+  border-bottom: 1rpx solid #EDE0CC;
   &:last-child { border-bottom: none; }
 }
-.d-label { font-size: 26rpx; color: #8A6A50; }
+.d-label { font-size: 26rpx; color: #8B7355; }
 .d-val {
   font-size: 26rpx;
-  color: #3D2010;
+  color: #1E1A14;
   &.bold { font-weight: 700; }
   &.green { color: #16A34A; font-weight: 700; }
 }
 
 .receipt-footer {
-  background: #FDF5E8;
+  background: #FAF6F0;
   padding: 24rpx 36rpx;
   text-align: center;
-  border-top: 1rpx solid #E8D8C0;
-  .footer-seal { font-size: 20rpx; color: #8A6A50; display: block; font-weight: 600; letter-spacing: 1rpx; }
-  .footer-sub { font-size: 18rpx; color: #C4A888; margin-top: 8rpx; display: block; }
+  border-top: 1rpx solid #D4C4A8;
+  .footer-seal { font-size: 20rpx; color: #6B5040; display: block; font-weight: 600; letter-spacing: 1rpx; }
+  .footer-sub { font-size: 18rpx; color: #C4A882; margin-top: 8rpx; display: block; }
 }
 
 /* ── 操作按钮 ── */
 .actions { margin-top: 32rpx; display: flex; flex-direction: column; gap: 16rpx; }
 .btn-share {
-  background: linear-gradient(135deg, #C9883D 0%, #B8772A 100%);
-  border-radius: 50rpx;
+  background: #C0392B;
+  border-radius: 8rpx;
   height: 96rpx;
   display: flex;
   align-items: center;
@@ -252,16 +264,17 @@ page { background: #1a1008; }
   font-size: 30rpx;
   font-weight: 700;
   color: #fff;
-  box-shadow: 0 8rpx 24rpx rgba(180,110,40,0.4);
+  box-shadow: 0 8rpx 24rpx rgba(192,57,43,0.3);
+  &.saving { opacity: 0.7; }
 }
 .btn-back {
-  border-radius: 50rpx;
+  border-radius: 8rpx;
   height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28rpx;
-  color: rgba(255,255,255,0.4);
-  border: 1rpx solid rgba(255,255,255,0.1);
+  color: #8B7355;
+  border: 1rpx solid #D4C4A8;
 }
 </style>

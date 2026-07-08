@@ -1,18 +1,31 @@
 import { WebSocketServer, WebSocket } from 'ws'
 import { Server } from 'http'
+import { verifyToken } from '../utils/jwt'
 
-// userId -> WebSocket connection
-const clients = new Map<string, WebSocket>()
+const clients = new Map<string, Set<WebSocket>>()
 
 export function setupWS(server: Server) {
   const wss = new WebSocketServer({ server, path: '/ws' })
 
   wss.on('connection', (ws, req) => {
     const url = new URL(req.url || '', 'http://localhost')
-    const userId = url.searchParams.get('userId')
-    if (!userId) { ws.close(); return }
+    const token = url.searchParams.get('token')
+    let userId: string
+    try {
+      userId = verifyToken(token || '').userId
+    } catch {
+      ws.close(1008, 'Unauthorized'); return
+    }
 
-    clients.set(userId, ws)
+    if (!clients.has(userId)) clients.set(userId, new Set())
+    clients.get(userId)!.add(ws)
+
+    const cleanup = () => {
+      clients.get(userId)?.delete(ws)
+      if (clients.get(userId)?.size === 0) clients.delete(userId)
+    }
+    ws.on('close', cleanup)
+    ws.on('error', cleanup)
 
     ws.on('close', () => clients.delete(userId))
     ws.on('error', () => clients.delete(userId))
@@ -22,8 +35,7 @@ export function setupWS(server: Server) {
 }
 
 export function notifyUser(userId: string, payload: object) {
-  const ws = clients.get(userId)
-  if (ws?.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify(payload))
-  }
+  clients.get(userId)?.forEach(ws => {
+    if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(payload))
+  })
 }

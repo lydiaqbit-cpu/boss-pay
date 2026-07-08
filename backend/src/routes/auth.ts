@@ -79,8 +79,9 @@ router.post('/wechat', async (req: Request, res: Response) => {
   res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone, avatar: user.avatar, bio: user.bio } } })
 })
 
-// POST /api/auth/wechat-mock  — 保留用于H5测试
+// POST /api/auth/wechat-mock  — 仅开发环境
 router.post('/wechat-mock', async (req: Request, res: Response) => {
+  if (process.env.NODE_ENV === 'production') { res.status(404).json({ code: 404, message: 'Not found' }); return }
   const mockOpenId = (req.body.openId as string) || 'wx_mock_default'
   const mockPhone = `wx_${mockOpenId}`
 
@@ -106,6 +107,7 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
     where: { id: req.userId! },
     select: { id: true, nickname: true, phone: true, avatar: true, bio: true }
   })
+  if (!user) { res.status(404).json({ code: 404, message: '用户不存在' }); return }
   res.json({ code: 0, data: user })
 })
 

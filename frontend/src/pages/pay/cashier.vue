@@ -127,13 +127,16 @@ onLoad((options: any) => {
 
 onMounted(async () => {
   if (!userId.value) return
-  const res = await fetch(`${API_BASE}/pay/page/${userId.value}`)
-  const json = await res.json()
-  if (json.code === 0) {
-    pageData.value = json.data
-    if (lockedPackageId.value) selectedId.value = lockedPackageId.value
-    initTab(json.data.user)
-  }
+  try {
+    const json = await new Promise<any>((resolve, reject) =>
+      uni.request({ url: `${API_BASE}/pay/page/${userId.value}`, method: 'GET', success: r => resolve(r.data), fail: reject })
+    )
+    if (json.code === 0) {
+      pageData.value = json.data
+      if (lockedPackageId.value) selectedId.value = lockedPackageId.value
+      initTab(json.data.user)
+    }
+  } catch { uni.showToast({ title: '加载失败，请重试', icon: 'none' }) }
 })
 
 function initTab(u: any) {
@@ -174,12 +177,11 @@ async function handleBossPaid() {
   }
   submitting.value = true
   try {
-    const res = await fetch(`${API_BASE}/pay/boss-paid`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: userId.value, packageId: selectedId.value, payerName: payerName.value, payerNote: payerNote.value })
-    })
-    const json = await res.json()
+    const json = await new Promise<any>((resolve, reject) =>
+      uni.request({ url: `${API_BASE}/pay/boss-paid`, method: 'POST', header: { 'Content-Type': 'application/json' },
+        data: { userId: userId.value, packageId: selectedId.value, payerName: payerName.value, payerNote: payerNote.value },
+        success: r => resolve(r.data), fail: reject })
+    )
     if (json.code === 0) {
       uni.showToast({ title: '已通知，等确认 🎉', icon: 'success' })
       setTimeout(() => uni.navigateTo({ url: `/pages/pay/receipt?orderId=${json.data.orderId}&readonly=1` }), 1200)

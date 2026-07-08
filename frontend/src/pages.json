@@ -30,7 +30,7 @@
     },
     {
       "path": "pages/orders/index",
-      "style": { "navigationBarTitleText": "收款记录", "navigationBarBackgroundColor": "#0d0d1a", "navigationBarTextStyle": "white" }
+      "style": { "navigationBarTitleText": "血汗账簿", "navigationBarBackgroundColor": "#1E1A14", "navigationBarTextStyle": "white" }
     },
     {
       "path": "pages/profile/index",
@@ -46,14 +46,14 @@
     }
   ],
   "tabBar": {
-    "color": "rgba(255,255,255,0.4)",
-    "selectedColor": "#FFD85C",
-    "backgroundColor": "#0d0d1a",
+    "color": "#8B7355",
+    "selectedColor": "#C0392B",
+    "backgroundColor": "#1E1A14",
     "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "收钱台",
+        "text": "聚宝堂",
         "iconPath": "static/tab-home.png",
         "selectedIconPath": "static/tab-home-active.png"
       },
@@ -65,7 +65,7 @@
       },
       {
         "pagePath": "pages/profile/index",
-        "text": "牛马档案",
+        "text": "劳役簿",
         "iconPath": "static/tab-profile.png",
         "selectedIconPath": "static/tab-profile-active.png"
       }

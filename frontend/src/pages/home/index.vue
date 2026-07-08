@@ -28,17 +28,17 @@
       <view class="stats-panel">
         <view class="stat-col">
           <text class="stat-val">¥{{ totalConfirmed }}</text>
-          <text class="stat-key">💸 已到手</text>
+          <text class="stat-key">🪙 入账银两</text>
         </view>
         <view class="stat-divider"/>
         <view class="stat-col">
           <text class="stat-val pending">{{ pendingCount }}</text>
-          <text class="stat-key">⏳ 待确认</text>
+          <text class="stat-key">⌛ 东家未认</text>
         </view>
         <view class="stat-divider"/>
         <view class="stat-col">
           <text class="stat-val">{{ confirmedCount }}</text>
-          <text class="stat-key">🤵 老板次数</text>
+          <text class="stat-key">👨‍💼 东家出手</text>
         </view>
       </view>
     </view>
@@ -62,7 +62,27 @@
     <!-- 未设置收款方式 -->
     <view v-if="!hasPaymentMethod" class="setup-banner" @click="toPaymentSetting">
       <view class="setup-left">
-        <text class="setup-icon">🫙</text>
+        <view class="setup-icon">
+          <svg width="52" height="52" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="60" cy="100" rx="42" ry="28" fill="#8B6914"/>
+            <path d="M18 85 Q18 50 60 45 Q102 50 102 85 L102 100 Q102 128 60 128 Q18 128 18 100Z" fill="#C4A020"/>
+            <path d="M22 88 Q22 55 60 50 Q98 55 98 88" fill="#D4B030" opacity="0.4"/>
+            <ellipse cx="60" cy="46" rx="28" ry="10" fill="#8B6914"/>
+            <ellipse cx="60" cy="43" rx="22" ry="8" fill="#C4A020"/>
+            <path d="M38 43 Q60 30 82 43" fill="#A08010" stroke="none"/>
+            <path d="M42 40 Q60 22 78 40" fill="none" stroke="#8B6914" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="48" cy="26" r="5" fill="#C0392B"/>
+            <circle cx="60" cy="20" r="6" fill="#C0392B"/>
+            <circle cx="72" cy="26" r="5" fill="#C0392B"/>
+            <circle cx="48" cy="26" r="2.5" fill="#FF6B6B"/>
+            <circle cx="60" cy="20" r="3" fill="#FF6B6B"/>
+            <circle cx="72" cy="26" r="2.5" fill="#FF6B6B"/>
+            <text x="60" y="96" text-anchor="middle" font-size="22" font-weight="700" fill="#8B6914" font-family="sans-serif">錢</text>
+            <circle cx="38" cy="80" r="5" fill="#E8C040" opacity="0.6"/>
+            <circle cx="82" cy="90" r="4" fill="#E8C040" opacity="0.5"/>
+            <circle cx="50" cy="110" r="3.5" fill="#E8C040" opacity="0.4"/>
+          </svg>
+        </view>
         <view>
           <text class="setup-title">老板的钱还在他口袋里！</text>
           <text class="setup-sub">设置收款码，让它乖乖转移到你这来 👉</text>
@@ -86,20 +106,24 @@
     <!-- 快捷操作 -->
     <view class="action-grid">
       <view class="action-item" @click="toPackages">
-        <view class="a-icon-wrap"><text class="a-icon">📦</text></view>
-        <text class="a-label">套餐定价</text>
+        <view class="a-icon-wrap"><text class="a-icon">📜</text></view>
+        <text class="a-label">卖身价目</text>
+        <text class="a-sub">定好价，一字不让</text>
       </view>
       <view class="action-item" @click="toOrders">
-        <view class="a-icon-wrap"><text class="a-icon">🧾</text></view>
-        <text class="a-label">收款记录</text>
+        <view class="a-icon-wrap"><text class="a-icon">📖</text></view>
+        <text class="a-label">血汗账簿</text>
+        <text class="a-sub">每笔都是泪</text>
       </view>
       <view class="action-item" @click="toPaymentSetting">
-        <view class="a-icon-wrap"><text class="a-icon">💳</text></view>
-        <text class="a-label">收款方式</text>
+        <view class="a-icon-wrap"><text class="a-icon">🪙</text></view>
+        <text class="a-label">银两去处</text>
+        <text class="a-sub">钱往哪打</text>
       </view>
       <view class="action-item" @click="previewCashier">
-        <view class="a-icon-wrap"><text class="a-icon">👁️</text></view>
-        <text class="a-label">老板视角</text>
+        <view class="a-icon-wrap"><text class="a-icon">🎭</text></view>
+        <text class="a-label">东家视角</text>
+        <text class="a-sub">甲方看到啥</text>
       </view>
     </view>
 
@@ -110,9 +134,49 @@
         <text class="section-more" @click="toPackages">管理 →</text>
       </view>
       <view v-if="packages.length === 0" class="empty-state">
-        <text class="empty-emoji">😴</text>
-        <text class="empty-text">还没设置加班费，老板偷着乐呢</text>
-        <view class="empty-btn" @click="toPackages">+ 马上定价</view>
+        <view class="beggar-wrap">
+          <svg width="160" height="175" viewBox="0 0 680 540" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="340" cy="160" rx="100" ry="18" fill="#5A4A28"/>
+            <path d="M260 160 Q280 120 340 112 Q400 120 420 160Z" fill="#5A4A28"/>
+            <path d="M260 160 L248 165 L262 162 L255 170 L270 163" fill="#4A3A18"/>
+            <path d="M420 160 L432 165 L418 162 L425 170 L410 163" fill="#4A3A18"/>
+            <path d="M305 113 Q340 105 375 113" stroke="#8B6914" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M295 148 Q288 130 292 115" stroke="#2A1A05" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M375 148 Q380 128 378 114" stroke="#2A1A05" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <ellipse cx="340" cy="240" rx="88" ry="95" fill="#D4A96A"/>
+            <ellipse cx="272" cy="258" rx="22" ry="14" fill="#C07040" opacity="0.3"/>
+            <ellipse cx="408" cy="258" rx="22" ry="14" fill="#C07040" opacity="0.3"/>
+            <path d="M288 200 Q308 192 322 200" stroke="#2A1A05" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M358 200 Q372 192 392 200" stroke="#2A1A05" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M332 196 Q340 188 348 196" stroke="#2A1A05" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="308" cy="215" rx="20" ry="14" fill="white"/>
+            <ellipse cx="372" cy="215" rx="20" ry="14" fill="white"/>
+            <circle cx="308" cy="220" r="9" fill="#1A0A00"/>
+            <circle cx="372" cy="220" r="9" fill="#1A0A00"/>
+            <circle cx="312" cy="217" r="3" fill="white"/>
+            <circle cx="376" cy="217" r="3" fill="white"/>
+            <ellipse cx="294" cy="234" rx="4" ry="6" fill="#6AABDF" opacity="0.8"/>
+            <ellipse cx="385" cy="236" rx="3.5" ry="5.5" fill="#6AABDF" opacity="0.8"/>
+            <ellipse cx="340" cy="244" rx="12" ry="9" fill="#D4A96A"/>
+            <ellipse cx="328" cy="248" rx="10" ry="7" fill="#B08040"/>
+            <ellipse cx="352" cy="248" rx="10" ry="7" fill="#B08040"/>
+            <path d="M312 278 Q325 284 340 280 Q355 284 368 278" stroke="#8B4513" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M312 278 Q306 290 310 294" stroke="#8B4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M368 278 Q374 290 370 294" stroke="#8B4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M252 330 Q270 315 340 308 Q410 315 428 330 L445 490 Q340 510 235 490 Z" fill="#7A6A50"/>
+            <rect x="285" y="355" width="50" height="38" rx="3" fill="#6A5840" stroke="#4A3820" stroke-width="1" stroke-dasharray="3,2"/>
+            <rect x="348" y="375" width="42" height="32" rx="3" fill="#6A5840" stroke="#4A3820" stroke-width="1" stroke-dasharray="3,2" transform="rotate(-5 369 391)"/>
+            <path d="M255 400 Q340 388 425 400" stroke="#8B6914" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M255 350 Q225 380 210 420" stroke="#D4A96A" stroke-width="28" fill="none" stroke-linecap="round"/>
+            <path d="M185 420 Q195 450 235 452 Q275 450 272 420 Z" fill="#8B7355" stroke="#5A4A30" stroke-width="2"/>
+            <ellipse cx="228" cy="420" rx="45" ry="10" fill="#8B7355" stroke="#5A4A30" stroke-width="2"/>
+            <text x="228" y="445" text-anchor="middle" font-size="22" fill="#5A4030" font-family="sans-serif">空</text>
+            <path d="M425 355 Q455 390 460 425" stroke="#D4A96A" stroke-width="26" fill="none" stroke-linecap="round"/>
+            <ellipse cx="463" cy="432" rx="18" ry="14" fill="#D4A96A"/>
+          </svg>
+        </view>
+        <text class="empty-text">尚未立价，老板正偷着乐呢</text>
+        <view class="empty-btn" @click="toPackages">📜 立即定价，要钱要命</view>
       </view>
       <view v-for="(pkg, i) in packages" :key="pkg.id" class="pkg-row">
         <view class="pkg-left">
@@ -191,7 +255,7 @@ async function loadPaymentInfo() { try { paymentInfo.value = await get<any>('/us
 function connectWS() {
   if (!userStore.userInfo?.id) return
   const wsBase = (import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:3000').replace(/\/$/, '')
-  ws = uni.connectSocket({ url: `${wsBase}/ws?userId=${userStore.userInfo.id}`, complete: () => {} })
+  ws = uni.connectSocket({ url: `${wsBase}/ws?token=${userStore.token}`, complete: () => {} })
   ws.onMessage((res) => {
     try {
       const msg = JSON.parse(res.data as string)
@@ -266,7 +330,7 @@ page { background: #F2EBE0; }
 .stat-col { flex: 1; text-align: center; }
 .stat-val { font-size: 36rpx; font-weight: 800; color: #F2EBE0; display: block; }
 .stat-val.pending { color: #E8A090; }
-.stat-key { font-size: 20rpx; color: rgba(196,168,130,0.7); margin-top: 4rpx; display: block; letter-spacing: 1rpx; }
+.stat-key { font-size: 19rpx; color: rgba(196,168,130,0.7); margin-top: 4rpx; display: block; white-space: nowrap; }
 .stat-divider { width: 1rpx; height: 44rpx; background: rgba(196,168,130,0.25); }
 
 .pending-banner {
@@ -298,7 +362,7 @@ page { background: #F2EBE0; }
   border: 1rpx solid rgba(196,168,130,0.3);
 }
 .setup-left { display: flex; align-items: center; gap: 18rpx; flex: 1; }
-.setup-icon { font-size: 44rpx; flex-shrink: 0; }
+.setup-icon { flex-shrink: 0; display: flex; align-items: center; }
 .setup-title { font-size: 28rpx; font-weight: 700; color: #F2EBE0; display: block; }
 .setup-sub { font-size: 22rpx; color: rgba(196,168,130,0.85); margin-top: 6rpx; display: block; }
 .banner-arrow { font-size: 48rpx; color: rgba(196,168,130,0.6); flex-shrink: 0; }
@@ -336,7 +400,8 @@ page { background: #F2EBE0; }
 }
 .a-icon-wrap { width: 72rpx; height: 72rpx; border-radius: 8rpx; background: #F5EDE0; display: flex; align-items: center; justify-content: center; margin-bottom: 10rpx; }
 .a-icon { font-size: 36rpx; }
-.a-label { font-size: 21rpx; color: #6B5040; font-weight: 500; }
+.a-label { font-size: 19rpx; color: #6B5040; font-weight: 600; white-space: nowrap; }
+.a-sub { font-size: 17rpx; color: #C4A882; margin-top: 4rpx; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .pkg-row { display: flex; justify-content: space-between; align-items: center; padding: 20rpx 0; border-bottom: 1rpx solid #EDE0CC; }
 .pkg-row:last-child { border-bottom: none; }
@@ -347,9 +412,10 @@ page { background: #F2EBE0; }
 .pkg-price { font-size: 32rpx; font-weight: 700; color: #C0392B; }
 
 .empty-state { text-align: center; padding: 36rpx 0; }
-.empty-emoji { font-size: 56rpx; display: block; }
 .empty-text { font-size: 26rpx; color: #8B7355; margin-top: 14rpx; display: block; }
-.empty-btn { display: inline-block; margin-top: 18rpx; background: #F5EDE0; color: #8B3A2A; font-size: 26rpx; font-weight: 600; padding: 12rpx 32rpx; border-radius: 6rpx; border: 1rpx solid #D4C4A8; }
+.empty-btn { display: inline-block; margin-top: 18rpx; background: #1E1A14; color: #F2EBE0; font-size: 26rpx; font-weight: 600; padding: 12rpx 32rpx; border-radius: 6rpx; }
+
+.beggar-wrap { display: flex; justify-content: center; margin-bottom: 8rpx; }
 
 .footer-gap { height: 60rpx; }
 </style>

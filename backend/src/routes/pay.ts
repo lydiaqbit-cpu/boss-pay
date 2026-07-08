@@ -1,10 +1,19 @@
 import { Router, Request, Response } from 'express'
+import rateLimit from 'express-rate-limit'
 import { authMiddleware, AuthRequest } from '../middleware/auth'
 import { prisma } from '../utils/prisma'
 import { notifyUser } from '../ws/notifier'
 
 const router = Router()
 const FEE_RATE = Number(process.env.PLATFORM_FEE_RATE || 0.05)
+
+const bossPaidLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  message: { code: 429, message: '操作太频繁，请稍后再试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
 
 // GET /api/pay/page/:userId — 公开收款页（老板访问，无需登录）
 router.get('/page/:userId', async (req: Request, res: Response) => {
@@ -25,7 +34,7 @@ router.get('/page/:userId', async (req: Request, res: Response) => {
 })
 
 // POST /api/pay/boss-paid — 老板申报已转账，创建订单
-router.post('/boss-paid', async (req: Request, res: Response) => {
+router.post('/boss-paid', bossPaidLimiter, async (req: Request, res: Response) => {
   const { userId, packageId, payerName, payerNote } = req.body
   if (!userId || !packageId || !payerName) {
     res.status(400).json({ code: 400, message: '缺少必要参数' }); return
@@ -74,35 +83,35 @@ router.get('/orders', authMiddleware, async (req: AuthRequest, res: Response) =>
   res.json({ code: 0, data: orders })
 })
 
-// POST /api/pay/orders/:id/confirm — 员工确认收款
+// POST /api/pay/orders/:id/confirm — 员工确认收款（原子操作防竞态）
 router.post('/orders/:id/confirm', authMiddleware, async (req: AuthRequest, res: Response) => {
   const order = await prisma.order.findUnique({ where: { id: req.params.id } })
   if (!order || order.userId !== req.userId) {
     res.status(404).json({ code: 404, message: '订单不存在' }); return
   }
-  if (order.status !== 'boss_paid') {
-    res.status(400).json({ code: 400, message: '订单状态不正确' }); return
-  }
-  await prisma.order.update({
-    where: { id: order.id },
+  const result = await prisma.order.updateMany({
+    where: { id: req.params.id, userId: req.userId!, status: 'boss_paid' },
     data: { status: 'confirmed', confirmedAt: new Date() }
   })
+  if (result.count === 0) {
+    res.status(409).json({ code: 409, message: '订单已处理或状态不正确' }); return
+  }
   res.json({ code: 0, message: '已确认收款' })
 })
 
-// POST /api/pay/orders/:id/reject — 员工拒绝（未收到钱）
+// POST /api/pay/orders/:id/reject — 员工拒绝（原子操作防竞态）
 router.post('/orders/:id/reject', authMiddleware, async (req: AuthRequest, res: Response) => {
   const order = await prisma.order.findUnique({ where: { id: req.params.id } })
   if (!order || order.userId !== req.userId) {
     res.status(404).json({ code: 404, message: '订单不存在' }); return
   }
-  if (order.status !== 'boss_paid') {
-    res.status(400).json({ code: 400, message: '订单状态不正确' }); return
-  }
-  await prisma.order.update({
-    where: { id: order.id },
+  const result = await prisma.order.updateMany({
+    where: { id: req.params.id, userId: req.userId!, status: 'boss_paid' },
     data: { status: 'rejected' }
   })
+  if (result.count === 0) {
+    res.status(409).json({ code: 409, message: '订单已处理或状态不正确' }); return
+  }
   res.json({ code: 0, message: '已拒绝' })
 })
 

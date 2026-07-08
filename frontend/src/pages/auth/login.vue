@@ -39,8 +39,7 @@ async function handleWechatLogin() {
   try {
     // #ifdef MP-WEIXIN
     const loginRes = await new Promise<WechatMiniprogram.LoginSuccessCallbackResult>((resolve, reject) => { wx.login({ success: resolve, fail: reject }) })
-    const profileRes = await new Promise<WechatMiniprogram.GetUserProfileSuccessCallbackResult>((resolve, reject) => { wx.getUserProfile({ desc: '用于展示你的昵称和头像', success: resolve, fail: reject }) })
-    const data = await post<{ token: string; user: any }>('/auth/wechat', { code: loginRes.code, nickname: profileRes.userInfo.nickName, avatar: profileRes.userInfo.avatarUrl }, false)
+    const data = await post<{ token: string; user: any }>('/auth/wechat', { code: loginRes.code }, false)
     // #endif
     // #ifdef H5
     const mockOpenId = 'mock_' + Math.random().toString(36).slice(2, 10)

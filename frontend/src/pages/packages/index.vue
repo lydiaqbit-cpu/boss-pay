@@ -45,8 +45,12 @@ const packages = ref<any[]>([])
 const userStore = useUserStore()
 
 function pkgPayLink(pkg: any) {
-  const base = location.origin
-  return `${base}/#/pages/pay/cashier?userId=${userStore.userInfo?.id}&packageId=${pkg.id}`
+  // #ifdef H5
+  return `${location.origin}/#/pages/pay/cashier?userId=${userStore.userInfo?.id}&packageId=${pkg.id}`
+  // #endif
+  // #ifdef MP-WEIXIN
+  return `/pages/pay/cashier?userId=${userStore.userInfo?.id}&packageId=${pkg.id}`
+  // #endif
 }
 
 function copyPkgLink(pkg: any) {

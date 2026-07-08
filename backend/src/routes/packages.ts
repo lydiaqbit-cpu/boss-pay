@@ -33,9 +33,10 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
     res.status(403).json({ code: 403, message: '无权操作' })
     return
   }
+  const { name, description, hours, price, sortOrder, isActive } = req.body
   const updated = await prisma.package.update({
     where: { id: req.params.id },
-    data: req.body
+    data: { name, description, hours: Number(hours), price: Number(price), sortOrder, isActive }
   })
   res.json({ code: 0, data: updated })
 })

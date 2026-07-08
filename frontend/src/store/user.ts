@@ -37,6 +37,4 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return { token, userInfo, setToken, setUser, fetchMe, logout }
-}, {
-  persist: true
 })
