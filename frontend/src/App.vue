@@ -7,10 +7,17 @@ onHide(() => {});
 
 <style lang="scss">
 /* ── 全局重置 ── */
+/* #ifdef H5 */
 page, body, * {
   font-family: 'Nunito', 'Noto Sans SC', 'PingFang SC', 'OPPO Sans', 'HarmonyOS Sans', -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+/* #endif */
+/* #ifndef H5 */
+page, view, text, input, button, image, scroll-view, swiper, textarea {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'HarmonyOS Sans', -apple-system, sans-serif;
+}
+/* #endif */
 page {
   background: #F2EBE0;
   color: #1E1A14;

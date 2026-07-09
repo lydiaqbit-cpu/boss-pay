@@ -12,7 +12,8 @@
       </view>
       <view class="user-row">
         <view class="avatar-wrap">
-          <text class="avatar-text">{{ avatarChar }}</text>
+          <image v-if="userStore.userInfo?.avatar" :src="userStore.userInfo.avatar" class="avatar-img" mode="aspectFill"/>
+          <text v-else class="avatar-text">{{ avatarChar }}</text>
         </view>
         <view class="user-text">
           <text class="nickname">{{ userStore.userInfo?.nickname || '打工人' }}</text>
@@ -329,6 +330,7 @@ page { background: #F2EBE0; }
   margin-right: 20rpx; flex-shrink: 0;
 }
 .avatar-text { font-size: 38rpx; font-weight: 700; color: #C4A882; }
+.avatar-img { width: 88rpx; height: 88rpx; border-radius: 44rpx; }
 .user-text { flex: 1; }
 .nickname { font-size: 34rpx; font-weight: 700; color: #F2EBE0; display: block; margin-bottom: 8rpx; }
 .bio-row { display: flex; align-items: center; }
