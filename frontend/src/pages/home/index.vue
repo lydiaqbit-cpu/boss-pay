@@ -60,7 +60,7 @@
       <text class="n-close">✕</text>
     </view>
 
-    <!-- 未设置收款方式 -->
+    <!-- Banner：未设置收款方式 / 已设置则显示复制链接 -->
     <view v-if="!hasPaymentMethod" class="setup-banner" @click="toPaymentSetting">
       <view class="setup-left">
         <view class="setup-icon">
@@ -92,15 +92,36 @@
       <text class="banner-arrow">›</text>
     </view>
 
-    <!-- 收款链接 -->
-    <view v-if="hasPaymentMethod" class="section-card link-card">
-      <view class="link-header">
-        <text class="link-title">我的收款链接</text>
-        <view class="badge-green">发给老板</view>
+    <view v-else class="ready-banner">
+      <view class="ready-left">
+        <view class="setup-icon">
+          <svg width="52" height="52" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="60" cy="100" rx="42" ry="28" fill="#8B6914"/>
+            <path d="M18 85 Q18 50 60 45 Q102 50 102 85 L102 100 Q102 128 60 128 Q18 128 18 100Z" fill="#C4A020"/>
+            <path d="M22 88 Q22 55 60 50 Q98 55 98 88" fill="#D4B030" opacity="0.4"/>
+            <ellipse cx="60" cy="46" rx="28" ry="10" fill="#8B6914"/>
+            <ellipse cx="60" cy="43" rx="22" ry="8" fill="#C4A020"/>
+            <path d="M38 43 Q60 30 82 43" fill="#A08010" stroke="none"/>
+            <path d="M42 40 Q60 22 78 40" fill="none" stroke="#8B6914" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="48" cy="26" r="5" fill="#C0392B"/>
+            <circle cx="60" cy="20" r="6" fill="#C0392B"/>
+            <circle cx="72" cy="26" r="5" fill="#C0392B"/>
+            <circle cx="48" cy="26" r="2.5" fill="#FF6B6B"/>
+            <circle cx="60" cy="20" r="3" fill="#FF6B6B"/>
+            <circle cx="72" cy="26" r="2.5" fill="#FF6B6B"/>
+            <text x="60" y="96" text-anchor="middle" font-size="22" font-weight="700" fill="#8B6914" font-family="sans-serif">錢</text>
+            <circle cx="38" cy="80" r="5" fill="#E8C040" opacity="0.6"/>
+            <circle cx="82" cy="90" r="4" fill="#E8C040" opacity="0.5"/>
+            <circle cx="50" cy="110" r="3.5" fill="#E8C040" opacity="0.4"/>
+          </svg>
+        </view>
+        <view class="ready-text-wrap">
+          <text class="setup-title">讨薪令已就绪，发给老板！</text>
+          <text class="ready-link-preview">{{ payLinkShort }}</text>
+        </view>
       </view>
-      <text class="link-url" selectable>{{ payLink }}</text>
-      <view class="copy-btn" :class="{ copied }" @click="copyLink">
-        <text>{{ copied ? '✓ 已复制' : '一键复制链接' }}</text>
+      <view class="ready-copy-btn" :class="{ copied }" @click="copyLink">
+        <text>{{ copied ? '✓ 已复制' : '复制链接' }}</text>
       </view>
     </view>
 
@@ -231,6 +252,16 @@ const payLink = computed(() => `${location.origin}/#/pages/pay/cashier?userId=${
 // #ifdef MP-WEIXIN
 const payLink = computed(() => `/pages/pay/cashier?userId=${userStore.userInfo?.id || ''}`)
 // #endif
+
+const payLinkShort = computed(() => {
+  const id = userStore.userInfo?.id || ''
+  // #ifdef H5
+  return `${location.hostname}/pay/${id.slice(0, 8)}…`
+  // #endif
+  // #ifdef MP-WEIXIN
+  return `小程序收款页 · ${id.slice(0, 8)}…`
+  // #endif
+})
 
 function triggerMoneyBurst() {
   for (let i = 0; i <= 4; i++) {
@@ -378,6 +409,24 @@ page { background: #F2EBE0; }
 .setup-title { font-size: 28rpx; font-weight: 700; color: #F2EBE0; display: block; }
 .setup-sub { font-size: 22rpx; color: rgba(196,168,130,0.85); margin-top: 6rpx; display: block; }
 .banner-arrow { font-size: 48rpx; color: rgba(196,168,130,0.6); flex-shrink: 0; }
+
+.ready-banner {
+  margin: 20rpx 28rpx 0;
+  background: linear-gradient(135deg, #3D3526, #1E1A14);
+  border-radius: 8rpx; padding: 24rpx;
+  display: flex; align-items: center; gap: 16rpx;
+  border: 1rpx solid rgba(196,168,130,0.3);
+}
+.ready-left { display: flex; align-items: center; gap: 14rpx; flex: 1; overflow: hidden; }
+.ready-text-wrap { flex: 1; overflow: hidden; }
+.ready-link-preview { font-size: 20rpx; color: rgba(196,168,130,0.7); margin-top: 6rpx; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ready-copy-btn {
+  flex-shrink: 0; background: #C0392B; color: #F2EBE0;
+  font-size: 24rpx; font-weight: 700; padding: 14rpx 24rpx;
+  border-radius: 6rpx; white-space: nowrap;
+  animation: pulse 2.5s infinite;
+}
+.ready-copy-btn.copied { background: #5A6A30; animation: none; }
 
 .section-card {
   margin: 20rpx 28rpx 0; background: #fff; border-radius: 8rpx;
