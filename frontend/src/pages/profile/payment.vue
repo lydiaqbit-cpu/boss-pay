@@ -120,45 +120,45 @@ async function handleSave() {
 </script>
 
 <style lang="scss">
-page { background: #F2EBE0; }
+page { background: #F7F4F0; }
 .page { min-height: 100vh; padding: 24rpx 24rpx 120rpx; }
 
 .method-card {
   background: #fff; border-radius: 8rpx; padding: 28rpx;
-  margin-bottom: 20rpx; border: 1rpx solid #D4C4A8;
+  margin-bottom: 20rpx; border: 1rpx solid #C8B89A;
   box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07);
   transition: border-color 0.2s;
 }
-.method-card.is-default { border-color: #C0392B; border-width: 2rpx; }
+.method-card.is-default { border-color: #D94F3D; border-width: 2rpx; }
 
 .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20rpx; }
 .card-title-row { display: flex; align-items: center; gap: 12rpx; }
 .method-icon { font-size: 36rpx; }
 .method-name { font-size: 30rpx; font-weight: 700; color: #1E1A14; }
-.status-dot { font-size: 20rpx; color: #8B3A2A; background: #F5EDE0; padding: 4rpx 14rpx; border-radius: 4rpx; border: 1rpx solid #D4C4A8; }
-.default-btn { font-size: 22rpx; color: #8B7355; border: 1rpx solid #D4C4A8; border-radius: 4rpx; padding: 8rpx 20rpx; }
-.default-btn.active { color: #8B3A2A; border-color: #C0392B; background: #FDF5EE; }
+.status-dot { font-size: 20rpx; color: #A8402E; background: #F0EAE2; padding: 4rpx 14rpx; border-radius: 4rpx; border: 1rpx solid #C8B89A; }
+.default-btn { font-size: 22rpx; color: #8B7355; border: 1rpx solid #C8B89A; border-radius: 4rpx; padding: 8rpx 20rpx; }
+.default-btn.active { color: #A8402E; border-color: #D94F3D; background: #FBF8F5; }
 
 .qr-upload { display: flex; justify-content: center; margin-bottom: 16rpx; }
-.qr-preview { width: 260rpx; height: 260rpx; border-radius: 6rpx; background: #FAF6F0; }
+.qr-preview { width: 260rpx; height: 260rpx; border-radius: 6rpx; background: #F8F5F2; }
 .qr-placeholder {
   width: 260rpx; height: 260rpx; border-radius: 6rpx;
-  border: 2rpx dashed #D4C4A8;
+  border: 2rpx dashed #C8B89A;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12rpx;
-  background: #FAF6F0;
+  background: #F8F5F2;
 }
-.qr-plus { font-size: 64rpx; color: #D4C4A8; line-height: 1; }
+.qr-plus { font-size: 64rpx; color: #C8B89A; line-height: 1; }
 .qr-hint { font-size: 24rpx; color: #8B7355; }
 .field-tip { font-size: 22rpx; color: #C4A882; display: block; text-align: center; }
-.reupload-tip { font-size: 22rpx; color: #8B3A2A; display: block; text-align: center; margin-top: 10rpx; }
+.reupload-tip { font-size: 22rpx; color: #A8402E; display: block; text-align: center; margin-top: 10rpx; }
 
 .btn-save {
   width: 100%; height: 100rpx;
   background: #1E1A14;
-  color: #F2EBE0; border-radius: 8rpx; font-size: 32rpx; font-weight: 800; border: none;
+  color: #F7F4F0; border-radius: 8rpx; font-size: 32rpx; font-weight: 800; border: none;
   margin-bottom: 24rpx; letter-spacing: 2rpx;
 }
 
-.tip-card { background: #FAF6F0; border-radius: 8rpx; padding: 20rpx 24rpx; border: 1rpx solid #D4C4A8; }
+.tip-card { background: #F8F5F2; border-radius: 8rpx; padding: 20rpx 24rpx; border: 1rpx solid #C8B89A; }
 .tip-text { font-size: 24rpx; color: #6B5040; line-height: 1.7; }
 </style>

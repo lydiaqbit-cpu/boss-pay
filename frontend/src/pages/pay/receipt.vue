@@ -159,7 +159,7 @@ onShareAppMessage(() => ({
 </script>
 
 <style lang="scss">
-page { background: #F2EBE0; }
+page { background: #F7F4F0; }
 .page { min-height: 100vh; padding: 0 0 60rpx; }
 
 .loading-wrap, .error-wrap {
@@ -185,7 +185,7 @@ page { background: #F2EBE0; }
   background: #FFFBF4;
   border-radius: 16rpx;
   overflow: hidden;
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
   box-shadow: 0 8rpx 32rpx rgba(60,40,20,0.12);
 }
 
@@ -209,11 +209,11 @@ page { background: #F2EBE0; }
 }
 .stamp-text { font-size: 22rpx; font-weight: 800; color: #C4A882; letter-spacing: 2rpx; }
 .header-texts { flex: 1; }
-.receipt-title { font-size: 32rpx; font-weight: 800; color: #F2EBE0; display: block; }
+.receipt-title { font-size: 32rpx; font-weight: 800; color: #F7F4F0; display: block; }
 .receipt-no { font-size: 20rpx; color: #8B7355; margin-top: 8rpx; display: block; font-family: monospace; }
 
 .divider-dots {
-  border-top: 3rpx dashed #D4C4A8;
+  border-top: 3rpx dashed #C8B89A;
   margin: 0 28rpx;
 }
 
@@ -227,12 +227,12 @@ page { background: #F2EBE0; }
   align-items: baseline;
   justify-content: center;
   gap: 4rpx;
-  .amount-unit { font-size: 36rpx; font-weight: 700; color: #C0392B; }
+  .amount-unit { font-size: 36rpx; font-weight: 700; color: #D94F3D; }
   .amount-val { font-size: 80rpx; font-weight: 900; color: #1E1A14; line-height: 1; }
 }
 .amount-sub { font-size: 20rpx; color: #8B7355; margin-top: 12rpx; display: block; }
 
-.divider-solid { height: 1rpx; background: #D4C4A8; margin: 0 28rpx; }
+.divider-solid { height: 1rpx; background: #C8B89A; margin: 0 28rpx; }
 
 .detail-list { padding: 8rpx 36rpx 8rpx; }
 .detail-row {
@@ -240,7 +240,7 @@ page { background: #F2EBE0; }
   justify-content: space-between;
   align-items: center;
   padding: 20rpx 0;
-  border-bottom: 1rpx solid #EDE0CC;
+  border-bottom: 1rpx solid #E5D8C4;
   &:last-child { border-bottom: none; }
 }
 .d-label { font-size: 26rpx; color: #8B7355; }
@@ -252,10 +252,10 @@ page { background: #F2EBE0; }
 }
 
 .receipt-footer {
-  background: #FAF6F0;
+  background: #F8F5F2;
   padding: 24rpx 36rpx;
   text-align: center;
-  border-top: 1rpx solid #D4C4A8;
+  border-top: 1rpx solid #C8B89A;
   .footer-seal { font-size: 20rpx; color: #6B5040; display: block; font-weight: 600; letter-spacing: 1rpx; }
   .footer-sub { font-size: 18rpx; color: #C4A882; margin-top: 8rpx; display: block; }
 }
@@ -263,7 +263,7 @@ page { background: #F2EBE0; }
 /* ── 操作按钮 ── */
 .actions { margin-top: 32rpx; display: flex; flex-direction: column; gap: 16rpx; }
 .btn-share {
-  background: #C0392B;
+  background: #D94F3D;
   border-radius: 8rpx;
   height: 96rpx;
   display: flex;
@@ -283,6 +283,6 @@ page { background: #F2EBE0; }
   justify-content: center;
   font-size: 28rpx;
   color: #8B7355;
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
 }
 </style>

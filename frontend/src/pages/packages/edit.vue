@@ -116,7 +116,7 @@ async function handleSave() {
 </script>
 
 <style lang="scss">
-page { background: #F2EBE0; }
+page { background: #F7F4F0; }
 .page { min-height: 100vh; padding: 28rpx 28rpx 80rpx; }
 
 .field {
@@ -125,9 +125,9 @@ page { background: #F2EBE0; }
   padding: 24rpx 28rpx;
   margin-bottom: 16rpx;
   position: relative;
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
   .label { font-size: 24rpx; color: #6B5040; display: block; margin-bottom: 12rpx; font-weight: 500; }
-  .req { color: #C0392B; }
+  .req { color: #D94F3D; }
   .char-count { position: absolute; right: 28rpx; bottom: 24rpx; font-size: 20rpx; color: #C4A882; }
 }
 .field-row {
@@ -140,7 +140,7 @@ page { background: #F2EBE0; }
   height: 80rpx;
   font-size: 30rpx;
   color: #1E1A14;
-  border-bottom: 1rpx solid #EDE0CC;
+  border-bottom: 1rpx solid #E5D8C4;
   box-sizing: border-box;
   background: transparent;
 }
@@ -154,12 +154,12 @@ page { background: #F2EBE0; }
   flex-wrap: wrap;
 }
 .preset-chip {
-  background: #F5EDE0;
-  color: #8B3A2A;
+  background: #F0EAE2;
+  color: #A8402E;
   font-size: 24rpx;
   padding: 12rpx 24rpx;
   border-radius: 6rpx;
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
 }
 
 .preview-card {
@@ -167,7 +167,7 @@ page { background: #F2EBE0; }
   border-radius: 8rpx;
   padding: 24rpx 28rpx;
   margin-bottom: 24rpx;
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
   .preview-label { font-size: 22rpx; color: #8B7355; display: block; margin-bottom: 16rpx; }
 }
 .preview-row {
@@ -176,14 +176,14 @@ page { background: #F2EBE0; }
   align-items: center;
   .preview-name { font-size: 30rpx; font-weight: 600; color: #1E1A14; display: block; }
   .preview-desc { font-size: 24rpx; color: #8B7355; margin-top: 4rpx; display: block; }
-  .preview-price { font-size: 38rpx; font-weight: 800; color: #C0392B; }
+  .preview-price { font-size: 38rpx; font-weight: 800; color: #D94F3D; }
 }
 
 .btn-save {
   width: 100%;
   height: 100rpx;
   background: #1E1A14;
-  color: #F2EBE0;
+  color: #F7F4F0;
   border-radius: 8rpx;
   font-size: 32rpx;
   font-weight: 800;

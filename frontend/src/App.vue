@@ -19,7 +19,7 @@ page, view, text, input, button, image, scroll-view, swiper, textarea {
 }
 /* #endif */
 page {
-  background: #F2EBE0;
+  background: #F7F4F0;
   color: #1E1A14;
 }
 

@@ -197,7 +197,7 @@ async function handleBossPaid() {
 </script>
 
 <style lang="scss">
-page { background: #F2EBE0; }
+page { background: #F7F4F0; }
 .page { min-height: 100vh; padding-bottom: 60rpx; }
 
 .cashier-header {
@@ -211,7 +211,7 @@ page { background: #F2EBE0; }
   background: rgba(196,168,130,0.2); display: flex; align-items: center; justify-content: center;
   text { font-size: 30rpx; color: #C4A882; font-weight: 700; }
 }
-.shop-name { font-size: 30rpx; font-weight: 800; color: #F2EBE0; display: block; }
+.shop-name { font-size: 30rpx; font-weight: 800; color: #F7F4F0; display: block; }
 .shop-sub { font-size: 22rpx; color: rgba(196,168,130,0.75); margin-top: 4rpx; display: block; }
 
 .amount-panel {
@@ -219,53 +219,53 @@ page { background: #F2EBE0; }
   border-radius: 8rpx; padding: 28rpx 32rpx;
   margin-top: -20rpx;
   box-shadow: 0 4rpx 20rpx rgba(30,26,20,0.12);
-  text-align: center; border: 1rpx solid #D4C4A8;
+  text-align: center; border: 1rpx solid #C8B89A;
 }
 .amount-label { font-size: 24rpx; color: #8B7355; display: block; margin-bottom: 8rpx; }
 .amount-row { display: flex; align-items: baseline; justify-content: center; gap: 4rpx; }
 .amount-currency { font-size: 32rpx; color: #1E1A14; font-weight: 700; }
 .amount-value { font-size: 72rpx; font-weight: 900; color: #1E1A14; line-height: 1; }
-.amount-panel.has-amount .amount-value { color: #C0392B; }
+.amount-panel.has-amount .amount-value { color: #D94F3D; }
 .amount-pkg-name { font-size: 24rpx; color: #8B7355; display: block; margin-top: 8rpx; }
 
-.pkg-list { background: #fff; margin: 16rpx 24rpx; border-radius: 8rpx; overflow: hidden; box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07); border: 1rpx solid #D4C4A8; }
-.pkg-item { display: flex; align-items: center; justify-content: space-between; padding: 24rpx; border-bottom: 1rpx solid #EDE0CC; }
+.pkg-list { background: #fff; margin: 16rpx 24rpx; border-radius: 8rpx; overflow: hidden; box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07); border: 1rpx solid #C8B89A; }
+.pkg-item { display: flex; align-items: center; justify-content: space-between; padding: 24rpx; border-bottom: 1rpx solid #E5D8C4; }
 .pkg-item:last-child { border-bottom: none; }
-.pkg-item.selected { background: #FAF6F0; }
+.pkg-item.selected { background: #F8F5F2; }
 .pkg-item.locked { pointer-events: none; }
 .pkg-item-left { display: flex; align-items: center; gap: 18rpx; flex: 1; }
 .pkg-radio {
   width: 40rpx; height: 40rpx; border-radius: 20rpx;
-  border: 2rpx solid #D4C4A8; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  border: 2rpx solid #C8B89A; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.pkg-radio.checked { border-color: #C0392B; background: #C0392B; }
+.pkg-radio.checked { border-color: #D94F3D; background: #D94F3D; }
 .pkg-radio-dot { width: 16rpx; height: 16rpx; border-radius: 8rpx; background: #fff; }
 .pkg-item-name { font-size: 28rpx; font-weight: 700; color: #1E1A14; display: block; }
 .pkg-item-desc { font-size: 22rpx; color: #8B7355; margin-top: 4rpx; display: block; }
-.pkg-item-price { font-size: 38rpx; font-weight: 900; color: #C0392B; flex-shrink: 0; }
+.pkg-item-price { font-size: 38rpx; font-weight: 900; color: #D94F3D; flex-shrink: 0; }
 
-.pay-panel { background: #fff; margin: 0 24rpx 20rpx; border-radius: 8rpx; overflow: hidden; box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07); border: 1rpx solid #D4C4A8; }
-.pay-panel-header { padding: 22rpx 24rpx 0; border-bottom: 1rpx solid #EDE0CC; }
+.pay-panel { background: #fff; margin: 0 24rpx 20rpx; border-radius: 8rpx; overflow: hidden; box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07); border: 1rpx solid #C8B89A; }
+.pay-panel-header { padding: 22rpx 24rpx 0; border-bottom: 1rpx solid #E5D8C4; }
 .pay-panel-title { font-size: 26rpx; font-weight: 700; color: #1E1A14; display: block; padding-bottom: 18rpx; }
 
-.method-tabs { display: flex; padding: 18rpx 24rpx; gap: 14rpx; border-bottom: 1rpx solid #EDE0CC; }
+.method-tabs { display: flex; padding: 18rpx 24rpx; gap: 14rpx; border-bottom: 1rpx solid #E5D8C4; }
 .method-tab {
   flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8rpx;
-  padding: 14rpx 10rpx; border-radius: 6rpx; border: 1rpx solid #D4C4A8; position: relative;
+  padding: 14rpx 10rpx; border-radius: 6rpx; border: 1rpx solid #C8B89A; position: relative;
 }
-.method-tab.active { border-color: #C0392B; background: #FDF5EE; }
+.method-tab.active { border-color: #D94F3D; background: #FBF8F5; }
 .method-tab-icon { font-size: 32rpx; }
 .method-tab-label { font-size: 22rpx; color: #8B7355; }
-.method-tab.active .method-tab-label { color: #C0392B; font-weight: 700; }
+.method-tab.active .method-tab-label { color: #D94F3D; font-weight: 700; }
 .default-tag {
   position: absolute; top: -1rpx; right: -1rpx;
-  background: #C0392B; color: #fff; font-size: 16rpx;
+  background: #D94F3D; color: #fff; font-size: 16rpx;
   padding: 3rpx 10rpx; border-radius: 0 6rpx 0 6rpx;
 }
 
 .qr-panel { padding: 28rpx 24rpx; text-align: center; }
 .qr-box {
-  display: inline-block; background: #fff; border: 1rpx solid #D4C4A8;
+  display: inline-block; background: #fff; border: 1rpx solid #C8B89A;
   border-radius: 8rpx; padding: 18rpx;
   box-shadow: 0 4rpx 12rpx rgba(30,26,20,0.08);
 }
@@ -273,15 +273,15 @@ page { background: #F2EBE0; }
 .scan-tip { font-size: 24rpx; color: #6B5040; display: block; margin-top: 18rpx; }
 .humor-tip { font-size: 22rpx; color: #C4A882; display: block; text-align: center; padding: 12rpx 0 20rpx; }
 
-.payer-row-wrap { padding: 0 24rpx; border-top: 1rpx solid #EDE0CC; }
-.payer-input { width: 100%; height: 88rpx; font-size: 28rpx; color: #1E1A14; border-bottom: 1rpx solid #EDE0CC; background: transparent; }
+.payer-row-wrap { padding: 0 24rpx; border-top: 1rpx solid #E5D8C4; }
+.payer-input { width: 100%; height: 88rpx; font-size: 28rpx; color: #1E1A14; border-bottom: 1rpx solid #E5D8C4; background: transparent; }
 .payer-input.note { border-bottom: none; }
 .ph { color: #C4A882; }
 
 .btn-paid {
   width: calc(100% - 48rpx); margin: 20rpx 24rpx 0;
   height: 100rpx; background: #1E1A14;
-  color: #F2EBE0; border-radius: 8rpx; font-size: 30rpx; font-weight: 800; border: none;
+  color: #F7F4F0; border-radius: 8rpx; font-size: 30rpx; font-weight: 800; border: none;
   letter-spacing: 1rpx;
 }
 .paid-tip { font-size: 22rpx; color: #C4A882; display: block; text-align: center; padding: 14rpx 0 20rpx; }

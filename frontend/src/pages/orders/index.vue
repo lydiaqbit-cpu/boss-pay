@@ -154,7 +154,7 @@ function pad(n: number) { return String(n).padStart(2, '0') }
 </script>
 
 <style lang="scss">
-page { background: #F2EBE0; }
+page { background: #F7F4F0; }
 .page { min-height: 100vh; padding-bottom: 40rpx; }
 
 .stats-card {
@@ -166,7 +166,7 @@ page { background: #F2EBE0; }
   margin-bottom: 24rpx;
 }
 .stat-item { flex: 1; text-align: center; }
-.stat-val { font-size: 40rpx; font-weight: 800; color: #F2EBE0; display: block; }
+.stat-val { font-size: 40rpx; font-weight: 800; color: #F7F4F0; display: block; }
 .stat-val.green { color: #C4A882; }
 .stat-val.orange { color: #E8A090; }
 .stat-key { font-size: 22rpx; color: rgba(196,168,130,0.7); margin-top: 6rpx; display: block; letter-spacing: 1rpx; }
@@ -182,7 +182,7 @@ page { background: #F2EBE0; }
   background: #fff; margin: 0 24rpx 16rpx;
   border-radius: 8rpx; overflow: hidden;
   box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07);
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
 }
 .order-header {
   display: flex; justify-content: space-between; align-items: flex-start;
@@ -191,48 +191,48 @@ page { background: #F2EBE0; }
 .payer-row { display: flex; align-items: flex-start; gap: 14rpx; flex: 1; }
 .payer-avatar {
   width: 68rpx; height: 68rpx; border-radius: 4rpx;
-  background: #F5EDE0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  text { font-size: 30rpx; color: #8B3A2A; font-weight: 800; }
+  background: #F0EAE2; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  text { font-size: 30rpx; color: #A8402E; font-weight: 800; }
 }
 .payer-info { flex: 1; }
 .payer-name { font-size: 28rpx; font-weight: 700; color: #1E1A14; display: block; }
 .order-pkg { font-size: 22rpx; color: #8B7355; margin-top: 4rpx; display: block; }
 .order-note { font-size: 22rpx; color: #C4A882; margin-top: 4rpx; display: block; }
 .right-col { text-align: right; flex-shrink: 0; }
-.order-amount { font-size: 36rpx; font-weight: 800; color: #C0392B; display: block; }
+.order-amount { font-size: 36rpx; font-weight: 800; color: #D94F3D; display: block; }
 .status-chip {
   font-size: 20rpx; padding: 4rpx 12rpx; border-radius: 4rpx;
   display: inline-block; margin-top: 6rpx;
 }
-.status-chip.boss_paid { color: #8B3A2A; background: #FDF5EE; border: 1rpx solid #E8C8A8; }
+.status-chip.boss_paid { color: #A8402E; background: #FBF8F5; border: 1rpx solid #E8C8A8; }
 .status-chip.confirmed { color: #5A6A30; background: #EEF2E0; border: 1rpx solid #C8D4A0; }
-.status-chip.rejected { color: #8B7355; background: #F5EDE0; border: 1rpx solid #D4C4A8; }
+.status-chip.rejected { color: #8B7355; background: #F0EAE2; border: 1rpx solid #C8B89A; }
 
 .action-bar { display: flex; gap: 12rpx; padding: 0 24rpx 16rpx; }
 .btn-reject {
   flex: 1; height: 72rpx; border-radius: 6rpx;
-  border: 1rpx solid #D4C4A8; color: #8B7355;
+  border: 1rpx solid #C8B89A; color: #8B7355;
   font-size: 26rpx; display: flex; align-items: center; justify-content: center;
-  background: #FAF6F0;
+  background: #F8F5F2;
 }
 .btn-confirm {
   flex: 2; height: 72rpx; border-radius: 6rpx;
-  background: #1E1A14; color: #F2EBE0;
+  background: #1E1A14; color: #F7F4F0;
   font-size: 26rpx; font-weight: 700; display: flex; align-items: center; justify-content: center;
   letter-spacing: 1rpx;
 }
 
 .order-footer {
-  background: #FAF6F0; padding: 14rpx 24rpx;
+  background: #F8F5F2; padding: 14rpx 24rpx;
   display: flex; justify-content: space-between; align-items: center;
-  border-top: 1rpx solid #EDE0CC;
+  border-top: 1rpx solid #E5D8C4;
 }
-.net-amount { font-size: 24rpx; color: #C0392B; font-weight: 700; }
+.net-amount { font-size: 24rpx; color: #D94F3D; font-weight: 700; }
 .footer-right { display: flex; align-items: center; gap: 14rpx; }
 .order-time { font-size: 22rpx; color: #C4A882; }
 .receipt-btn {
-  background: #F5EDE0; border: 1rpx solid #D4C4A8;
-  border-radius: 4rpx; padding: 6rpx 16rpx; font-size: 22rpx; color: #8B3A2A;
+  background: #F0EAE2; border: 1rpx solid #C8B89A;
+  border-radius: 4rpx; padding: 6rpx 16rpx; font-size: 22rpx; color: #A8402E;
 }
 .bottom-gap { height: 40rpx; }
 </style>

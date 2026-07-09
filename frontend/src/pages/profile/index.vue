@@ -131,7 +131,7 @@ function handleLogout() {
 </script>
 
 <style lang="scss">
-page { background: #F2EBE0; }
+page { background: #F7F4F0; }
 .page { min-height: 100vh; padding-bottom: 120rpx; }
 
 .profile-header {
@@ -150,30 +150,30 @@ page { background: #F2EBE0; }
 .avatar-edit-badge {
   position: absolute; bottom: 0; right: 0;
   width: 36rpx; height: 36rpx; border-radius: 18rpx;
-  background: #C0392B; display: flex; align-items: center; justify-content: center;
+  background: #D94F3D; display: flex; align-items: center; justify-content: center;
   border: 2rpx solid #1E1A14;
   text { font-size: 20rpx; }
 }
 .user-info { flex: 1; }
 .name-row { display: flex; align-items: center; gap: 12rpx; margin-bottom: 8rpx; }
-.nickname { font-size: 34rpx; font-weight: 700; color: #F2EBE0; }
+.nickname { font-size: 34rpx; font-weight: 700; color: #F7F4F0; }
 .bio { font-size: 24rpx; color: rgba(196,168,130,0.75); display: block; }
 
 .menu-section {
   background: #fff; margin: 20rpx 24rpx 0;
   border-radius: 8rpx; overflow: hidden;
   box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07);
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
 }
 .menu-item {
   display: flex; align-items: center; gap: 18rpx;
-  padding: 30rpx 24rpx; border-bottom: 1rpx solid #EDE0CC;
+  padding: 30rpx 24rpx; border-bottom: 1rpx solid #E5D8C4;
 }
 .menu-item:last-child { border-bottom: none; }
-.menu-item.danger .menu-label { color: #C0392B; }
+.menu-item.danger .menu-label { color: #D94F3D; }
 .menu-icon { font-size: 36rpx; flex-shrink: 0; }
 .menu-label { flex: 1; font-size: 28rpx; color: #1E1A14; }
-.menu-arrow { font-size: 36rpx; color: #D4C4A8; }
+.menu-arrow { font-size: 36rpx; color: #C8B89A; }
 
 .version { display: block; text-align: center; font-size: 22rpx; color: #C4A882; padding: 40rpx 0; letter-spacing: 1rpx; }
 </style>

@@ -55,9 +55,9 @@ async function handleWechatLogin() {
 </script>
 
 <style lang="scss">
-page { background: #F2EBE0; }
+page { background: #F7F4F0; }
 .page {
-  min-height: 100vh; background: #F2EBE0;
+  min-height: 100vh; background: #F7F4F0;
   display: flex; flex-direction: column; align-items: center;
   padding: 100rpx 40rpx 60rpx;
 }
@@ -73,7 +73,7 @@ page { background: #F2EBE0; }
   width: 100%; background: #fff; border-radius: 8rpx;
   padding: 48rpx 40rpx 44rpx;
   box-shadow: 0 4rpx 20rpx rgba(30,26,20,0.08);
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
 }
 
 .card-title { font-size: 32rpx; font-weight: 800; color: #1E1A14; display: block; text-align: center; margin-bottom: 10rpx; }

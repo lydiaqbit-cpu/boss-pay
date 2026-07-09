@@ -99,7 +99,7 @@ async function deletePkg(id: string) {
 </script>
 
 <style lang="scss">
-page { background: #F2EBE0; }
+page { background: #F7F4F0; }
 .page { min-height: 100vh; padding: 24rpx 28rpx 160rpx; }
 
 .empty {
@@ -118,21 +118,21 @@ page { background: #F2EBE0; }
   display: flex;
   align-items: center;
   gap: 20rpx;
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
 }
 .pkg-badge {
   width: 72rpx;
   height: 72rpx;
   border-radius: 6rpx;
-  background: #F5EDE0;
-  color: #8B3A2A;
+  background: #F0EAE2;
+  color: #A8402E;
   font-size: 22rpx;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
 }
 .pkg-body {
   flex: 1;
@@ -140,16 +140,16 @@ page { background: #F2EBE0; }
   .pkg-desc { font-size: 24rpx; color: #8B7355; margin-top: 6rpx; display: block; }
 }
 .pkg-right { text-align: right; flex-shrink: 0; }
-.pkg-price { font-size: 36rpx; font-weight: 800; color: #C0392B; display: block; }
+.pkg-price { font-size: 36rpx; font-weight: 800; color: #D94F3D; display: block; }
 .pkg-actions {
   display: flex;
   gap: 8rpx;
   margin-top: 8rpx;
   justify-content: flex-end;
-  .action-link { font-size: 24rpx; color: #8B3A2A; }
+  .action-link { font-size: 24rpx; color: #A8402E; }
   .action-edit { font-size: 24rpx; color: #8B7355; }
-  .action-sep { font-size: 24rpx; color: #D4C4A8; }
-  .action-del { font-size: 24rpx; color: #C0392B; }
+  .action-sep { font-size: 24rpx; color: #C8B89A; }
+  .action-del { font-size: 24rpx; color: #D94F3D; }
 }
 
 .add-btn {
@@ -162,16 +162,16 @@ page { background: #F2EBE0; }
   padding: 36rpx;
   margin-bottom: 24rpx;
   .add-icon { font-size: 36rpx; color: #C4A882; }
-  .add-text { font-size: 30rpx; font-weight: 800; color: #F2EBE0; letter-spacing: 2rpx; }
+  .add-text { font-size: 30rpx; font-weight: 800; color: #F7F4F0; letter-spacing: 2rpx; }
 }
 
 .tip-card {
-  background: #FAF6F0;
+  background: #F8F5F2;
   border-radius: 8rpx;
   padding: 20rpx 24rpx;
   display: flex;
   gap: 12rpx;
-  border: 1rpx solid #D4C4A8;
+  border: 1rpx solid #C8B89A;
   .tip-icon { font-size: 28rpx; flex-shrink: 0; }
   .tip-text { font-size: 24rpx; color: #6B5040; line-height: 1.6; }
 }
