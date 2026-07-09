@@ -30,17 +30,17 @@
       <view v-if="isSetupDone" class="stats-panel">
         <view class="stat-col">
           <text class="stat-val">¥{{ totalConfirmed }}</text>
-          <text class="stat-key">🪙 入账银两</text>
+          <text class="stat-key">🪙 累计到账</text>
         </view>
         <view class="stat-divider"/>
         <view class="stat-col">
           <text class="stat-val pending">{{ pendingCount }}</text>
-          <text class="stat-key">⌛ 东家未认</text>
+          <text class="stat-key">⌛ 待确认</text>
         </view>
         <view class="stat-divider"/>
         <view class="stat-col">
           <text class="stat-val">{{ confirmedCount }}</text>
-          <text class="stat-key">👨‍💼 东家出手</text>
+          <text class="stat-key">👨‍💼 已收款</text>
         </view>
       </view>
       <view v-else class="onboard-hint">
@@ -146,22 +146,22 @@
     <view class="action-grid">
       <view class="action-item" @click="toPackages">
         <view class="a-icon-wrap"><text class="a-icon">📜</text></view>
-        <text class="a-label">卖身价目</text>
+        <text class="a-label">加班套餐</text>
         <text class="a-sub">定好价，一字不让</text>
       </view>
       <view class="action-item" @click="toOrders">
         <view class="a-icon-wrap"><text class="a-icon">📖</text></view>
-        <text class="a-label">血汗账簿</text>
+        <text class="a-label">收款记录</text>
         <text class="a-sub">每笔都是泪</text>
       </view>
       <view class="action-item" @click="toPaymentSetting">
         <view class="a-icon-wrap"><text class="a-icon">🪙</text></view>
-        <text class="a-label">银两去处</text>
+        <text class="a-label">收款方式</text>
         <text class="a-sub">钱往哪打</text>
       </view>
       <view class="action-item" @click="previewCashier">
         <view class="a-icon-wrap"><text class="a-icon">🎭</text></view>
-        <text class="a-label">东家视角</text>
+        <text class="a-label">老板视角</text>
         <text class="a-sub">甲方看到啥</text>
       </view>
     </view>

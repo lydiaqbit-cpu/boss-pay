@@ -3,12 +3,12 @@
     <view class="stats-card">
       <view class="stat-item">
         <text class="stat-val">{{ confirmedOrders.length }}</text>
-        <text class="stat-key">东家认账笔数</text>
+        <text class="stat-key">已收款笔数</text>
       </view>
       <view class="stat-divider" />
       <view class="stat-item">
         <text class="stat-val green">¥{{ totalNet }}</text>
-        <text class="stat-key">累计入账银两</text>
+        <text class="stat-key">累计到账</text>
       </view>
       <view class="stat-divider" />
       <view class="stat-item">
@@ -59,8 +59,8 @@
           <ellipse cx="463" cy="432" rx="18" ry="14" fill="#D4A96A"/>
         </svg>
       </view>
-      <text class="e-tip">东家一文未付，账簿形同虚设</text>
-      <text class="e-sub">速将讨薪令牌甩给东家，今日不付来日加倍奉陪</text>
+      <text class="e-tip">老板一文未付，快去要钱</text>
+      <text class="e-sub">把收款链接甩给老板，今日不付来日加倍奉陪</text>
     </view>
 
     <view v-for="order in orders" :key="order.id" class="order-card">

@@ -17,12 +17,12 @@
     <view class="menu-section">
       <view class="menu-item" @click="toPayment">
         <text class="menu-icon">🪙</text>
-        <text class="menu-label">银两收取方式</text>
+        <text class="menu-label">收款方式</text>
         <text class="menu-arrow">›</text>
       </view>
       <view class="menu-item" @click="toPackages">
         <text class="menu-icon">📜</text>
-        <text class="menu-label">劳役价目管理</text>
+        <text class="menu-label">加班套餐管理</text>
         <text class="menu-arrow">›</text>
       </view>
       <view class="menu-item" @click="copyMyLink">

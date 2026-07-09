@@ -55,7 +55,7 @@
     {
       "path": "pages/orders/index",
       "style": {
-        "navigationBarTitleText": "血汗账簿",
+        "navigationBarTitleText": "账单",
         "navigationBarBackgroundColor": "#1E1A14",
         "navigationBarTextStyle": "white"
       }
@@ -93,19 +93,19 @@
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "聚宝堂",
+        "text": "首页",
         "iconPath": "static/tab-home.png",
         "selectedIconPath": "static/tab-home-active.png"
       },
       {
         "pagePath": "pages/orders/index",
-        "text": "讨债本",
+        "text": "账单",
         "iconPath": "static/tab-orders.png",
         "selectedIconPath": "static/tab-orders-active.png"
       },
       {
         "pagePath": "pages/profile/index",
-        "text": "劳役簿",
+        "text": "我的",
         "iconPath": "static/tab-profile.png",
         "selectedIconPath": "static/tab-profile-active.png"
       }
