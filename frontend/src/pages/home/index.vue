@@ -18,15 +18,16 @@
         <view class="user-text">
           <text class="nickname">{{ userStore.userInfo?.nickname || '打工人' }}</text>
           <view class="bio-row">
-            <view class="work-badge">
+            <view class="work-badge" :class="{ 'badge-ready': isSetupDone }">
               <view class="work-dot" />
-              <text class="work-badge-text">在线收钱中</text>
+              <text class="work-badge-text">{{ isSetupDone ? '在线收钱中' : '待激活' }}</text>
             </view>
           </view>
         </view>
       </view>
 
-      <view class="stats-panel">
+      <!-- 新用户：隐藏全零统计，改为激励文案 -->
+      <view v-if="isSetupDone" class="stats-panel">
         <view class="stat-col">
           <text class="stat-val">¥{{ totalConfirmed }}</text>
           <text class="stat-key">🪙 入账银两</text>
@@ -41,6 +42,9 @@
           <text class="stat-val">{{ confirmedCount }}</text>
           <text class="stat-key">👨‍💼 东家出手</text>
         </view>
+      </view>
+      <view v-else class="onboard-hint">
+        <text class="onboard-hint-text">完成下方 3 步，开始向老板讨钱 👇</text>
       </view>
     </view>
 
@@ -60,39 +64,52 @@
       <text class="n-close">✕</text>
     </view>
 
-    <!-- Banner：未设置收款方式 / 已设置则显示复制链接 -->
-    <view v-if="!hasPaymentMethod" class="setup-banner" @click="toPaymentSetting">
-      <view class="setup-left">
-        <view class="setup-icon">
-          <svg width="52" height="52" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="60" cy="100" rx="42" ry="28" fill="#8B6914"/>
-            <path d="M18 85 Q18 50 60 45 Q102 50 102 85 L102 100 Q102 128 60 128 Q18 128 18 100Z" fill="#C4A020"/>
-            <path d="M22 88 Q22 55 60 50 Q98 55 98 88" fill="#D4B030" opacity="0.4"/>
-            <ellipse cx="60" cy="46" rx="28" ry="10" fill="#8B6914"/>
-            <ellipse cx="60" cy="43" rx="22" ry="8" fill="#C4A020"/>
-            <path d="M38 43 Q60 30 82 43" fill="#A08010" stroke="none"/>
-            <path d="M42 40 Q60 22 78 40" fill="none" stroke="#8B6914" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="48" cy="26" r="5" fill="#C0392B"/>
-            <circle cx="60" cy="20" r="6" fill="#C0392B"/>
-            <circle cx="72" cy="26" r="5" fill="#C0392B"/>
-            <circle cx="48" cy="26" r="2.5" fill="#FF6B6B"/>
-            <circle cx="60" cy="20" r="3" fill="#FF6B6B"/>
-            <circle cx="72" cy="26" r="2.5" fill="#FF6B6B"/>
-            <text x="60" y="96" text-anchor="middle" font-size="22" font-weight="700" fill="#8B6914" font-family="sans-serif">錢</text>
-            <circle cx="38" cy="80" r="5" fill="#E8C040" opacity="0.6"/>
-            <circle cx="82" cy="90" r="4" fill="#E8C040" opacity="0.5"/>
-            <circle cx="50" cy="110" r="3.5" fill="#E8C040" opacity="0.4"/>
-          </svg>
-        </view>
-        <view>
-          <text class="setup-title">老板的钱还在他口袋里！</text>
-          <text class="setup-sub">设置收款码，让它乖乖转移到你这来 👉</text>
-        </view>
+    <!-- 新用户引导 checklist -->
+    <view v-if="!isSetupDone" class="onboard-card">
+      <view class="onboard-title-row">
+        <text class="onboard-title">🚀 3 步开始收钱</text>
+        <text class="onboard-progress">{{ setupProgress }}/3 完成</text>
       </view>
-      <text class="banner-arrow">›</text>
+
+      <view class="onboard-step" :class="{ done: hasPaymentMethod }" @click="!hasPaymentMethod && toPaymentSetting()">
+        <view class="step-check" :class="{ done: hasPaymentMethod }">
+          <text class="check-icon">{{ hasPaymentMethod ? '✓' : '1' }}</text>
+        </view>
+        <view class="step-body">
+          <text class="step-label">设置收款码</text>
+          <text class="step-desc">{{ hasPaymentMethod ? '微信/支付宝收款码已就位' : '上传你的收款二维码' }}</text>
+        </view>
+        <text v-if="!hasPaymentMethod" class="step-arrow">›</text>
+      </view>
+
+      <view class="onboard-step" :class="{ done: packages.length > 0 }" @click="packages.length === 0 && toPackages()">
+        <view class="step-check" :class="{ done: packages.length > 0 }">
+          <text class="check-icon">{{ packages.length > 0 ? '✓' : '2' }}</text>
+        </view>
+        <view class="step-body">
+          <text class="step-label">添加加班套餐</text>
+          <text class="step-desc">{{ packages.length > 0 ? `已添加 ${packages.length} 个套餐` : '定好价，老板别想赖账' }}</text>
+        </view>
+        <text v-if="packages.length === 0" class="step-arrow">›</text>
+      </view>
+
+      <view class="onboard-step" :class="{ done: false, disabled: !hasPaymentMethod || packages.length === 0 }" @click="copyLinkOnboard">
+        <view class="step-check">
+          <text class="check-icon">3</text>
+        </view>
+        <view class="step-body">
+          <text class="step-label">复制链接发老板</text>
+          <text class="step-desc">{{ (!hasPaymentMethod || packages.length === 0) ? '完成前两步后解锁' : '点这里复制，发进群里' }}</text>
+        </view>
+        <view v-if="hasPaymentMethod && packages.length > 0" class="step-copy-btn" :class="{ copied }">
+          <text>{{ copied ? '✓ 已复制' : '复制' }}</text>
+        </view>
+        <text v-else class="step-lock">🔒</text>
+      </view>
     </view>
 
-    <view v-else class="ready-banner">
+    <!-- 已完成引导：显示复制链接 banner -->
+    <view v-if="isSetupDone" class="ready-banner">
       <view class="ready-left">
         <view class="setup-icon">
           <svg width="52" height="52" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
@@ -236,6 +253,15 @@ const hasPaymentMethod = computed(() => {
   return !!(p?.wechatQrUrl || p?.alipayQrUrl)
 })
 
+const isSetupDone = computed(() => hasPaymentMethod.value && packages.value.length > 0)
+
+const setupProgress = computed(() => {
+  let n = 0
+  if (hasPaymentMethod.value) n++
+  if (packages.value.length > 0) n++
+  return n
+})
+
 interface MoneyBurst { id: number; x: number; y: number }
 const moneyBursts = ref<MoneyBurst[]>([])
 let burstId = 0
@@ -313,10 +339,17 @@ function connectWS() {
 function toPackages() { uni.navigateTo({ url: '/pages/packages/index' }) }
 function toOrders() { uni.switchTab({ url: '/pages/orders/index' }) }
 function toPaymentSetting() { uni.navigateTo({ url: '/pages/profile/payment' }) }
+
 function copyLink() {
   uni.setClipboardData({ data: payLink.value, success: () => { copied.value = true; setTimeout(() => { copied.value = false }, 2000) } })
   track('copy_pay_link')
 }
+
+function copyLinkOnboard() {
+  if (!hasPaymentMethod.value || packages.value.length === 0) return
+  copyLink()
+}
+
 function previewCashier() { uni.navigateTo({ url: `/pages/pay/cashier?userId=${userStore.userInfo?.id}` }) }
 
 onShareAppMessage(() => ({
@@ -340,6 +373,10 @@ page { background: #F2EBE0; }
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.02); }
+}
+@keyframes stepIn {
+  from { opacity: 0; transform: translateX(-12rpx); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .header-card {
@@ -366,8 +403,11 @@ page { background: #F2EBE0; }
 .nickname { font-size: 34rpx; font-weight: 700; color: #F2EBE0; display: block; margin-bottom: 8rpx; }
 .bio-row { display: flex; align-items: center; }
 .work-badge { display: flex; align-items: center; gap: 6rpx; background: rgba(196,168,130,0.2); padding: 4rpx 14rpx; border-radius: 4rpx; }
+.work-badge.badge-ready { background: rgba(80,160,80,0.2); }
 .work-dot { width: 10rpx; height: 10rpx; border-radius: 5rpx; background: #C0392B; }
+.badge-ready .work-dot { background: #5AA050; }
 .work-badge-text { font-size: 20rpx; color: #C4A882; font-weight: 600; letter-spacing: 1rpx; }
+.badge-ready .work-badge-text { color: #90C880; }
 
 .stats-panel { background: rgba(0,0,0,0.2); border-radius: 8rpx; padding: 20rpx 24rpx; display: flex; align-items: center; border: 1rpx solid rgba(196,168,130,0.2); }
 .stat-col { flex: 1; text-align: center; }
@@ -375,6 +415,59 @@ page { background: #F2EBE0; }
 .stat-val.pending { color: #E8A090; }
 .stat-key { font-size: 19rpx; color: rgba(196,168,130,0.7); margin-top: 4rpx; display: block; white-space: nowrap; }
 .stat-divider { width: 1rpx; height: 44rpx; background: rgba(196,168,130,0.25); }
+
+.onboard-hint {
+  background: rgba(0,0,0,0.15); border-radius: 8rpx; padding: 16rpx 20rpx;
+  border: 1rpx dashed rgba(196,168,130,0.3);
+}
+.onboard-hint-text { font-size: 24rpx; color: rgba(196,168,130,0.8); text-align: center; display: block; }
+
+/* 新用户引导 checklist */
+.onboard-card {
+  margin: 20rpx 28rpx 0; background: #fff;
+  border-radius: 12rpx; overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(30,26,20,0.1);
+  border: 1rpx solid #D4C4A8;
+}
+.onboard-title-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 24rpx 28rpx 18rpx; background: #FAF6F0;
+  border-bottom: 1rpx solid #EDE0CC;
+}
+.onboard-title { font-size: 28rpx; font-weight: 700; color: #1E1A14; }
+.onboard-progress { font-size: 22rpx; color: #8B7355; font-weight: 600; }
+
+.onboard-step {
+  display: flex; align-items: center; gap: 18rpx;
+  padding: 24rpx 28rpx; border-bottom: 1rpx solid #F0E8DC;
+  animation: stepIn 0.3s ease both;
+}
+.onboard-step:last-child { border-bottom: none; }
+.onboard-step.disabled { opacity: 0.45; }
+.onboard-step.done { background: #F8FFF6; }
+
+.step-check {
+  width: 48rpx; height: 48rpx; border-radius: 24rpx;
+  background: #EDE0CC; border: 2rpx solid #C4A882;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.step-check.done { background: #5AA050; border-color: #5AA050; }
+.check-icon { font-size: 22rpx; font-weight: 700; color: #8B7355; }
+.step-check.done .check-icon { color: #fff; }
+
+.step-body { flex: 1; }
+.step-label { font-size: 28rpx; font-weight: 600; color: #1E1A14; display: block; }
+.onboard-step.done .step-label { color: #5AA050; }
+.step-desc { font-size: 22rpx; color: #8B7355; margin-top: 4rpx; display: block; }
+
+.step-arrow { font-size: 40rpx; color: #C4A882; }
+.step-lock { font-size: 28rpx; }
+.step-copy-btn {
+  background: #C0392B; color: #fff; font-size: 24rpx; font-weight: 700;
+  padding: 10rpx 22rpx; border-radius: 6rpx; flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+.step-copy-btn.copied { background: #5AA050; animation: none; }
 
 .pending-banner {
   margin: 20rpx 28rpx 0;
@@ -397,19 +490,6 @@ page { background: #F2EBE0; }
 .n-text { font-size: 24rpx; color: #3D3526; margin-top: 2rpx; display: block; }
 .n-close { font-size: 28rpx; color: #C4A882; }
 
-.setup-banner {
-  margin: 20rpx 28rpx 0;
-  background: linear-gradient(135deg, #3D3526, #1E1A14);
-  border-radius: 8rpx; padding: 28rpx 24rpx;
-  display: flex; align-items: center;
-  border: 1rpx solid rgba(196,168,130,0.3);
-}
-.setup-left { display: flex; align-items: center; gap: 18rpx; flex: 1; }
-.setup-icon { flex-shrink: 0; display: flex; align-items: center; }
-.setup-title { font-size: 28rpx; font-weight: 700; color: #F2EBE0; display: block; }
-.setup-sub { font-size: 22rpx; color: rgba(196,168,130,0.85); margin-top: 6rpx; display: block; }
-.banner-arrow { font-size: 48rpx; color: rgba(196,168,130,0.6); flex-shrink: 0; }
-
 .ready-banner {
   margin: 20rpx 28rpx 0;
   background: linear-gradient(135deg, #3D3526, #1E1A14);
@@ -418,7 +498,9 @@ page { background: #F2EBE0; }
   border: 1rpx solid rgba(196,168,130,0.3);
 }
 .ready-left { display: flex; align-items: center; gap: 14rpx; flex: 1; overflow: hidden; }
+.setup-icon { flex-shrink: 0; display: flex; align-items: center; }
 .ready-text-wrap { flex: 1; overflow: hidden; }
+.setup-title { font-size: 28rpx; font-weight: 700; color: #F2EBE0; display: block; }
 .ready-link-preview { font-size: 20rpx; color: rgba(196,168,130,0.7); margin-top: 6rpx; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ready-copy-btn {
   flex-shrink: 0; background: #C0392B; color: #F2EBE0;
@@ -427,6 +509,7 @@ page { background: #F2EBE0; }
   animation: pulse 2.5s infinite;
 }
 .ready-copy-btn.copied { background: #5A6A30; animation: none; }
+.banner-arrow { font-size: 48rpx; color: rgba(196,168,130,0.6); flex-shrink: 0; }
 
 .section-card {
   margin: 20rpx 28rpx 0; background: #fff; border-radius: 8rpx;
@@ -436,22 +519,6 @@ page { background: #F2EBE0; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx; }
 .section-title { font-size: 28rpx; font-weight: 700; color: #1E1A14; }
 .section-more { font-size: 24rpx; color: #8B3A2A; }
-
-.link-header { display: flex; align-items: center; gap: 12rpx; margin-bottom: 14rpx; }
-.link-title { font-size: 28rpx; font-weight: 700; color: #1E1A14; }
-.badge-green { background: #F5EDE0; color: #8B3A2A; font-size: 20rpx; font-weight: 600; padding: 4rpx 14rpx; border-radius: 4rpx; border: 1rpx solid #D4C4A8; }
-.link-url {
-  display: block; font-size: 22rpx; color: #8B7355; word-break: break-all; line-height: 1.7;
-  background: #FAF6F0; border-radius: 6rpx; padding: 14rpx 16rpx; margin-bottom: 18rpx;
-  border: 1rpx solid #D4C4A8;
-}
-.copy-btn {
-  height: 88rpx; background: #1E1A14;
-  color: #F2EBE0; border-radius: 8rpx; font-size: 28rpx; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  letter-spacing: 2rpx; animation: pulse 2.5s infinite;
-}
-.copy-btn.copied { background: #5A6A30; animation: none; }
 
 .action-grid { display: flex; gap: 14rpx; margin: 20rpx 28rpx 0; }
 .action-item {
