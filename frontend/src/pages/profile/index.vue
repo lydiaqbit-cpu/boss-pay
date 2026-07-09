@@ -1,8 +1,11 @@
 <template>
   <view class="page">
     <view class="profile-header">
-      <image v-if="user.avatar" :src="user.avatar" class="avatar" mode="aspectFill"/>
-      <view v-else class="avatar-placeholder"><text>{{ user.nickname?.[0] }}</text></view>
+      <view class="avatar-wrap" @click="uploadAvatar">
+        <image v-if="user.avatar" :src="user.avatar" class="avatar" mode="aspectFill"/>
+        <view v-else class="avatar-placeholder"><text>{{ user.nickname?.[0] }}</text></view>
+        <view class="avatar-edit-badge"><text>📷</text></view>
+      </view>
       <view class="user-info">
         <view class="name-row">
           <text class="nickname">{{ user.nickname }}</text>
@@ -53,7 +56,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { get } from '../../utils/request'
+import { get, put } from '../../utils/request'
 import { useUserStore } from '../../store/user'
 
 const userStore = useUserStore()
@@ -69,6 +72,53 @@ onMounted(async () => {
     vipExpiry.value = sub.expiry
   } catch {}
 })
+
+function uploadAvatar() {
+  uni.chooseImage({
+    count: 1, sizeType: ['compressed'], sourceType: ['album', 'camera'],
+    success: (res) => {
+      const path = res.tempFilePaths[0]
+      // #ifdef H5
+      const img = new Image()
+      img.onload = async () => {
+        const canvas = document.createElement('canvas')
+        const MAX = 400
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height))
+        canvas.width = img.width * scale
+        canvas.height = img.height * scale
+        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height)
+        const b64 = canvas.toDataURL('image/jpeg', 0.8)
+        await saveAvatar(b64)
+      }
+      img.src = path
+      // #endif
+      // #ifdef MP-WEIXIN
+      uni.getFileSystemManager().readFile({
+        filePath: path, encoding: 'base64',
+        success: async (r) => {
+          const b64 = 'data:image/jpeg;base64,' + r.data
+          await saveAvatar(b64)
+        },
+        fail: () => uni.showToast({ title: '图片读取失败，请重试', icon: 'none' })
+      })
+      // #endif
+    }
+  })
+}
+
+async function saveAvatar(avatar: string) {
+  try {
+    uni.showLoading({ title: '上传中...' })
+    await put('/user/profile', { avatar })
+    user.value = { ...user.value, avatar }
+    userStore.setUser({ ...userStore.userInfo, avatar })
+    uni.hideLoading()
+    uni.showToast({ title: '头像已更新', icon: 'success' })
+  } catch {
+    uni.hideLoading()
+    uni.showToast({ title: '上传失败，请重试', icon: 'none' })
+  }
+}
 
 function toPayment() { uni.navigateTo({ url: '/pages/profile/payment' }) }
 function toPackages() { uni.navigateTo({ url: '/pages/packages/index' }) }
@@ -112,11 +162,19 @@ page { background: #F2EBE0; }
   display: flex; align-items: center; gap: 24rpx;
   border-radius: 0 0 40rpx 40rpx;
 }
+.avatar-wrap { position: relative; flex-shrink: 0; width: 110rpx; height: 110rpx; }
 .avatar { width: 110rpx; height: 110rpx; border-radius: 55rpx; border: 3rpx solid rgba(196,168,130,0.5); }
 .avatar-placeholder {
   width: 110rpx; height: 110rpx; border-radius: 55rpx;
-  background: rgba(196,168,130,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background: rgba(196,168,130,0.2); display: flex; align-items: center; justify-content: center;
   text { font-size: 48rpx; color: #C4A882; font-weight: 700; }
+}
+.avatar-edit-badge {
+  position: absolute; bottom: 0; right: 0;
+  width: 36rpx; height: 36rpx; border-radius: 18rpx;
+  background: #C0392B; display: flex; align-items: center; justify-content: center;
+  border: 2rpx solid #1E1A14;
+  text { font-size: 20rpx; }
 }
 .user-info { flex: 1; }
 .name-row { display: flex; align-items: center; gap: 12rpx; margin-bottom: 8rpx; }
