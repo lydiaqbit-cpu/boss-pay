@@ -17,46 +17,55 @@
     <view class="menu-section">
       <view class="menu-item" @click="toPayment">
         <view class="menu-icon">
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="16" cy="16" r="11" stroke="#8B6040" stroke-width="1.8"/>
-            <rect x="13" y="13" width="6" height="6" rx="0.5" stroke="#A8402E" stroke-width="1.6"/>
-            <line x1="16" y1="4" x2="16" y2="7" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="16" y1="25" x2="16" y2="28" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="4" y1="16" x2="7" y2="16" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="25" y1="16" x2="28" y2="16" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- QR code: 3 corner squares + data dots -->
+            <rect x="3" y="3" width="9" height="9" rx="1.5" stroke="#8B6040" stroke-width="1.8" fill="none"/>
+            <rect x="5.5" y="5.5" width="4" height="4" fill="#8B6040"/>
+            <rect x="16" y="3" width="9" height="9" rx="1.5" stroke="#8B6040" stroke-width="1.8" fill="none"/>
+            <rect x="18.5" y="5.5" width="4" height="4" fill="#8B6040"/>
+            <rect x="3" y="16" width="9" height="9" rx="1.5" stroke="#8B6040" stroke-width="1.8" fill="none"/>
+            <rect x="5.5" y="18.5" width="4" height="4" fill="#8B6040"/>
+            <rect x="16" y="16" width="4" height="4" fill="#A8402E"/>
+            <rect x="21" y="16" width="4" height="4" fill="#8B6040"/>
+            <rect x="16" y="21" width="4" height="4" fill="#8B6040"/>
+            <rect x="21" y="21" width="4" height="4" fill="#A8402E"/>
           </svg>
         </view>
-        <text class="menu-label">收款方式</text>
+        <view class="menu-text">
+          <text class="menu-label">收款方式</text>
+          <text class="menu-sub">微信 / 支付宝收款码</text>
+        </view>
         <text class="menu-arrow">›</text>
       </view>
       <view class="menu-item" @click="toPackages">
         <view class="menu-icon">
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="8" y="5" width="16" height="2.5" rx="1.2" fill="#8B6040" opacity="0.4"/>
-            <rect x="8" y="24.5" width="16" height="2.5" rx="1.2" fill="#8B6040" opacity="0.4"/>
-            <line x1="11.5" y1="7.5" x2="11.5" y2="24.5" stroke="#8B6040" stroke-width="2" stroke-linecap="round"/>
-            <line x1="16" y1="7.5" x2="16" y2="24.5" stroke="#8B6040" stroke-width="2" stroke-linecap="round"/>
-            <line x1="20.5" y1="7.5" x2="20.5" y2="24.5" stroke="#8B6040" stroke-width="2" stroke-linecap="round"/>
-            <line x1="8" y1="13.5" x2="24" y2="13.5" stroke="#A8402E" stroke-width="1.2" stroke-linecap="round"/>
-            <line x1="8" y1="18.5" x2="24" y2="18.5" stroke="#A8402E" stroke-width="1.2" stroke-linecap="round"/>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Price tag -->
+            <path d="M5 4 L19 4 L25 14 L19 24 L5 24 Z" stroke="#8B6040" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+            <circle cx="9" cy="14" r="2" stroke="#8B6040" stroke-width="1.8" fill="none"/>
+            <line x1="13" y1="9" x2="22" y2="9" stroke="#A8402E" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="13" y1="14" x2="22" y2="14" stroke="#8B6040" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="13" y1="19" x2="20" y2="19" stroke="#8B6040" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </view>
-        <text class="menu-label">加班套餐管理</text>
+        <view class="menu-text">
+          <text class="menu-label">加班套餐</text>
+          <text class="menu-sub">设置加班费价目表</text>
+        </view>
         <text class="menu-arrow">›</text>
       </view>
       <view class="menu-item" @click="copyMyLink">
         <view class="menu-icon">
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="12" y="3" width="8" height="6" rx="1" stroke="#8B6040" stroke-width="1.8"/>
-            <rect x="10" y="9" width="12" height="4" rx="0" stroke="#8B6040" stroke-width="1.5"/>
-            <rect x="8" y="13" width="16" height="14" rx="1" stroke="#8B6040" stroke-width="1.8"/>
-            <line x1="8" y1="17.5" x2="24" y2="17.5" stroke="#A8402E" stroke-width="1"/>
-            <line x1="8" y1="21.5" x2="24" y2="21.5" stroke="#A8402E" stroke-width="1"/>
-            <line x1="12.5" y1="13" x2="12.5" y2="27" stroke="#A8402E" stroke-width="1"/>
-            <line x1="19.5" y1="13" x2="19.5" y2="27" stroke="#A8402E" stroke-width="1"/>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Chain link / share icon -->
+            <path d="M5 14 Q5 8 10 8 L14 8 Q19 8 19 14 Q19 20 14 20 L10 20 Q5 20 5 14 Z" stroke="#8B6040" stroke-width="1.8" fill="none"/>
+            <path d="M9 14 Q9 8 14 8 L18 8 Q23 8 23 14 Q23 20 18 20 L14 20 Q9 20 9 14 Z" stroke="#A8402E" stroke-width="1.8" fill="none"/>
           </svg>
         </view>
-        <text class="menu-label">复制讨薪令牌</text>
+        <view class="menu-text">
+          <text class="menu-label">收款链接</text>
+          <text class="menu-sub">复制后发给老板扫码付款</text>
+        </view>
         <text class="menu-arrow">›</text>
       </view>
     </view>
@@ -64,15 +73,18 @@
     <view class="menu-section">
       <view class="menu-item danger" @click="handleLogout">
         <view class="menu-icon">
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="22" cy="6" r="3" stroke="#A8402E" stroke-width="1.8"/>
-            <path d="M22 9 L20 17 M20 17 L15 23 M20 17 L25 20 M20 13 L24 11 M20 13 L16 11" stroke="#A8402E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="5" y1="13" x2="9" y2="13" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="4" y1="17" x2="8" y2="17" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="5" y1="21" x2="9" y2="21" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Exit door -->
+            <path d="M11 4 L6 4 L6 24 L11 24" stroke="#8B6040" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="14" y1="14" x2="24" y2="14" stroke="#D94F3D" stroke-width="2" stroke-linecap="round"/>
+            <path d="M20 10 L24 14 L20 18" stroke="#D94F3D" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="10" cy="14" r="1.5" fill="#8B6040"/>
           </svg>
         </view>
-        <text class="menu-label">溜了溜了</text>
+        <view class="menu-text">
+          <text class="menu-label danger-label">退出登录</text>
+          <text class="menu-sub">下次记得回来要钱</text>
+        </view>
         <text class="menu-arrow">›</text>
       </view>
     </view>
@@ -204,12 +216,14 @@ page { background: #F7F4F0; }
 }
 .menu-item {
   display: flex; align-items: center; gap: 18rpx;
-  padding: 30rpx 24rpx; border-bottom: 1rpx solid #E5D8C4;
+  padding: 26rpx 24rpx; border-bottom: 1rpx solid #E5D8C4;
 }
 .menu-item:last-child { border-bottom: none; }
-.menu-item.danger .menu-label { color: #D94F3D; }
 .menu-icon { width: 56rpx; height: 56rpx; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.menu-label { flex: 1; font-size: 28rpx; color: #1E1A14; }
+.menu-text { flex: 1; display: flex; flex-direction: column; gap: 5rpx; }
+.menu-label { font-size: 28rpx; color: #1E1A14; }
+.menu-label.danger-label { color: #D94F3D; }
+.menu-sub { font-size: 22rpx; color: #8B7355; }
 .menu-arrow { font-size: 36rpx; color: #C8B89A; }
 
 .version { display: block; text-align: center; font-size: 22rpx; color: #C4A882; padding: 40rpx 0; letter-spacing: 1rpx; }
