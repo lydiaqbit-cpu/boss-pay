@@ -38,6 +38,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { get, del as apiDel } from '../../utils/request'
 import { useUserStore } from '../../store/user'
 
@@ -61,6 +62,7 @@ function copyPkgLink(pkg: any) {
 }
 
 onMounted(loadPackages)
+onShow(loadPackages)
 
 async function loadPackages() {
   try {
