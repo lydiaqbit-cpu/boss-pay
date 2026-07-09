@@ -57,14 +57,17 @@
       <view class="menu-item" @click="copyMyLink">
         <view class="menu-icon">
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Chain link / share icon -->
-            <path d="M5 14 Q5 8 10 8 L14 8 Q19 8 19 14 Q19 20 14 20 L10 20 Q5 20 5 14 Z" stroke="#8B6040" stroke-width="1.8" fill="none"/>
-            <path d="M9 14 Q9 8 14 8 L18 8 Q23 8 23 14 Q23 20 18 20 L14 20 Q9 20 9 14 Z" stroke="#A8402E" stroke-width="1.8" fill="none"/>
+            <!-- Share icon: node + 2 connections -->
+            <circle cx="22" cy="7" r="3.5" stroke="#8B6040" stroke-width="1.8" fill="none"/>
+            <circle cx="22" cy="21" r="3.5" stroke="#8B6040" stroke-width="1.8" fill="none"/>
+            <circle cx="8" cy="14" r="3.5" stroke="#A8402E" stroke-width="1.8" fill="none"/>
+            <line x1="11" y1="12.5" x2="19" y2="8.5" stroke="#8B6040" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="11" y1="15.5" x2="19" y2="19.5" stroke="#8B6040" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </view>
         <view class="menu-text">
           <text class="menu-label">收款链接</text>
-          <text class="menu-sub">复制后发给老板扫码付款</text>
+          <text class="menu-sub">发给老板，扫码付款</text>
         </view>
         <text class="menu-arrow">›</text>
       </view>
