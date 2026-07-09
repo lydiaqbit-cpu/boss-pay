@@ -108,6 +108,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import { track } from '../../utils/track'
 
 const userId = ref('')
 const lockedPackageId = ref('')
@@ -183,6 +184,7 @@ async function handleBossPaid() {
         success: r => resolve(r.data), fail: reject })
     )
     if (json.code === 0) {
+      track('boss_paid', { amount: selectedPkg.value?.price, packageId: selectedId.value })
       uni.showToast({ title: '已通知，等确认 🎉', icon: 'success' })
       setTimeout(() => uni.navigateTo({ url: `/pages/pay/receipt?orderId=${json.data.orderId}&readonly=1` }), 1200)
     }

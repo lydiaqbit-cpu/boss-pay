@@ -51,6 +51,7 @@
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { post, put } from '../../utils/request'
+import { track } from '../../utils/track'
 
 const isEdit = ref(false)
 const pkgId = ref('')
@@ -102,6 +103,7 @@ async function handleSave() {
     } else {
       await post('/packages', payload)
     }
+    track(isEdit.value ? 'edit_package' : 'create_package', { price: payload.price })
     uni.showToast({ title: isEdit.value ? '修改成功' : '创建成功', icon: 'success' })
     // 通知上一页刷新（EventChannel）
     const eventChannel = uni.getOpenerEventChannel()

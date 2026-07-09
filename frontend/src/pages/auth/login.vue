@@ -30,6 +30,7 @@
 import { ref } from 'vue'
 import { post } from '../../utils/request'
 import { useUserStore } from '../../store/user'
+import { track } from '../../utils/track'
 
 const userStore = useUserStore()
 const wxLoading = ref(false)
@@ -46,6 +47,7 @@ async function handleWechatLogin() {
     const data = await post<{ token: string; user: any }>('/auth/wechat-mock', { openId: mockOpenId, nickname: '微信打工人' }, false)
     // #endif
     userStore.setToken(data.token); userStore.setUser(data.user)
+    track('login', { userId: data.user.id })
     uni.switchTab({ url: '/pages/home/index' })
   } catch { uni.showToast({ title: '登录失败，再试一次吧 😅', icon: 'none' }) }
   finally { wxLoading.value = false }

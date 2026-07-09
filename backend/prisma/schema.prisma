@@ -38,6 +38,15 @@ model Package {
   orders      Order[]
 }
 
+model Event {
+  id        String   @id @default(uuid())
+  userId    String?
+  event     String
+  page      String?
+  extra     String?
+  createdAt DateTime @default(now())
+}
+
 model Order {
   id          String    @id @default(uuid())
   userId      String

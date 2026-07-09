@@ -8,6 +8,8 @@ import authRouter from './routes/auth'
 import packagesRouter from './routes/packages'
 import payRouter from './routes/pay'
 import userRouter from './routes/user'
+import trackRouter from './routes/track'
+import adminRouter from './routes/admin'
 
 const app = express()
 const server = http.createServer(app)
@@ -29,6 +31,12 @@ app.use('/api/pay', payRouter)
 
 // User routes — all protected
 app.use('/api/user', userRouter)
+
+// 埋点（无需登录）
+app.use('/api/track', trackRouter)
+
+// 管理后台（x-admin-secret 鉴权）
+app.use('/api/admin', adminRouter)
 
 // Health check
 app.get('/health', (_req, res) => res.json({ ok: true }))

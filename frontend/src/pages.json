@@ -2,47 +2,95 @@
   "pages": [
     {
       "path": "pages/home/index",
-      "style": { "navigationBarTitleText": "工作台", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "工作台",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/auth/login",
-      "style": { "navigationBarTitleText": "登录", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/auth/register",
-      "style": { "navigationBarTitleText": "注册", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "注册",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/packages/index",
-      "style": { "navigationBarTitleText": "套餐管理", "navigationBarBackgroundColor": "#0d0d1a", "navigationBarTextStyle": "white" }
+      "style": {
+        "navigationBarTitleText": "套餐管理",
+        "navigationBarBackgroundColor": "#0d0d1a",
+        "navigationBarTextStyle": "white"
+      }
     },
     {
       "path": "pages/packages/edit",
-      "style": { "navigationBarTitleText": "编辑套餐", "navigationBarBackgroundColor": "#0d0d1a", "navigationBarTextStyle": "white" }
+      "style": {
+        "navigationBarTitleText": "编辑套餐",
+        "navigationBarBackgroundColor": "#0d0d1a",
+        "navigationBarTextStyle": "white"
+      }
     },
     {
       "path": "pages/pay/cashier",
-      "style": { "navigationBarTitleText": "老板请付牛马钱", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "老板请付牛马钱",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/pay/receipt",
-      "style": { "navigationBarTitleText": "收款凭证", "navigationBarBackgroundColor": "#1a1008", "navigationBarTextStyle": "white" }
+      "style": {
+        "navigationBarTitleText": "收款凭证",
+        "navigationBarBackgroundColor": "#1a1008",
+        "navigationBarTextStyle": "white"
+      }
     },
     {
       "path": "pages/orders/index",
-      "style": { "navigationBarTitleText": "血汗账簿", "navigationBarBackgroundColor": "#1E1A14", "navigationBarTextStyle": "white" }
+      "style": {
+        "navigationBarTitleText": "血汗账簿",
+        "navigationBarBackgroundColor": "#1E1A14",
+        "navigationBarTextStyle": "white"
+      }
     },
     {
       "path": "pages/profile/index",
-      "style": { "navigationBarTitleText": "我的", "navigationBarBackgroundColor": "#0d0d1a", "navigationBarTextStyle": "white" }
+      "style": {
+        "navigationBarTitleText": "我的",
+        "navigationBarBackgroundColor": "#0d0d1a",
+        "navigationBarTextStyle": "white"
+      }
     },
     {
       "path": "pages/profile/payment",
-      "style": { "navigationBarTitleText": "收款方式", "navigationBarBackgroundColor": "#0d0d1a", "navigationBarTextStyle": "white" }
+      "style": {
+        "navigationBarTitleText": "收款方式",
+        "navigationBarBackgroundColor": "#0d0d1a",
+        "navigationBarTextStyle": "white"
+      }
     },
     {
       "path": "pages/subscribe/index",
-      "style": { "navigationBarTitleText": "开通会员", "navigationBarBackgroundColor": "#1a1008", "navigationBarTextStyle": "white" }
+      "style": {
+        "navigationBarTitleText": "开通会员",
+        "navigationBarBackgroundColor": "#1a1008",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/admin/index",
+      "style": {
+        "navigationBarTitleText": "管理后台",
+        "navigationBarBackgroundColor": "#1E1A14",
+        "navigationBarTextStyle": "white"
+      }
     }
   ],
   "tabBar": {

@@ -102,6 +102,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { get, post } from '../../utils/request'
+import { track } from '../../utils/track'
 
 const orders = ref<any[]>([])
 const confirmedOrders = computed(() => orders.value.filter(o => o.status === 'confirmed'))
@@ -126,7 +127,7 @@ async function handleConfirm(orderId: string) {
     title: '确认收款', content: '确认已收到这笔转账？',
     success: async (res) => {
       if (!res.confirm) return
-      try { await post(`/pay/orders/${orderId}/confirm`, {}); uni.showToast({ title: '已确认收款！', icon: 'success' }); await loadOrders() }
+      try { await post(`/pay/orders/${orderId}/confirm`, {}); track('confirm_order'); uni.showToast({ title: '已确认收款！', icon: 'success' }); await loadOrders() }
       catch { uni.showToast({ title: '操作失败', icon: 'none' }) }
     }
   })
@@ -137,7 +138,7 @@ async function handleReject(orderId: string) {
     title: '拒绝收款', content: '确认未收到这笔转账？',
     success: async (res) => {
       if (!res.confirm) return
-      try { await post(`/pay/orders/${orderId}/reject`, {}); uni.showToast({ title: '已拒绝', icon: 'none' }); await loadOrders() }
+      try { await post(`/pay/orders/${orderId}/reject`, {}); track('reject_order'); uni.showToast({ title: '已拒绝', icon: 'none' }); await loadOrders() }
       catch { uni.showToast({ title: '操作失败', icon: 'none' }) }
     }
   })

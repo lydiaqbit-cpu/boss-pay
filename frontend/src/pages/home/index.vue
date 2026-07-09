@@ -199,6 +199,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { onShareAppMessage } from '@dcloudio/uni-app'
 import { useUserStore } from '../../store/user'
 import { get } from '../../utils/request'
+import { track } from '../../utils/track'
 
 const userStore = useUserStore()
 const packages = ref<any[]>([])
@@ -282,6 +283,7 @@ function toOrders() { uni.switchTab({ url: '/pages/orders/index' }) }
 function toPaymentSetting() { uni.navigateTo({ url: '/pages/profile/payment' }) }
 function copyLink() {
   uni.setClipboardData({ data: payLink.value, success: () => { copied.value = true; setTimeout(() => { copied.value = false }, 2000) } })
+  track('copy_pay_link')
 }
 function previewCashier() { uni.navigateTo({ url: `/pages/pay/cashier?userId=${userStore.userInfo?.id}` }) }
 

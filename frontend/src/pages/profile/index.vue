@@ -58,6 +58,7 @@
 import { ref, onMounted } from 'vue'
 import { get, put } from '../../utils/request'
 import { useUserStore } from '../../store/user'
+import { track } from '../../utils/track'
 
 const userStore = useUserStore()
 const user = ref<any>({})
@@ -132,6 +133,7 @@ function copyMyLink() {
   const link = `/pages/pay/cashier?userId=${user.value.id}`
   // #endif
   uni.setClipboardData({ data: link, success: () => uni.showToast({ title: '讨薪令牌已复制', icon: 'success' }) })
+  track('copy_my_link')
 }
 
 function handleLogout() {
