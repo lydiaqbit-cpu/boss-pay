@@ -253,8 +253,15 @@ async function loadOrders() { try { orders.value = await get<any[]>('/pay/orders
 async function loadPaymentInfo() { try { paymentInfo.value = await get<any>('/user/payment') } catch {} }
 
 function connectWS() {
-  if (!userStore.userInfo?.id) return
-  const wsBase = (import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:3000').replace(/\/$/, '')
+  if (!userStore.userInfo?.id || !userStore.token) return
+  // #ifdef H5
+  const wsBase = (import.meta.env.VITE_WS_BASE_URL || '').replace(/\/$/, '')
+  if (!wsBase) return
+  // #endif
+  // #ifdef MP-WEIXIN
+  const wsBase = (import.meta.env.VITE_WS_BASE_URL || '').replace(/\/$/, '')
+  if (!wsBase) return
+  // #endif
   ws = uni.connectSocket({ url: `${wsBase}/ws?token=${userStore.token}`, complete: () => {} })
   ws.onMessage((res) => {
     try {
@@ -267,6 +274,7 @@ function connectWS() {
       }
     } catch {}
   })
+  ws.onError(() => { ws = null })
 }
 
 function toPackages() { uni.navigateTo({ url: '/pages/packages/index' }) }

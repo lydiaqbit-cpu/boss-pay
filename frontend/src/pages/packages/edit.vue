@@ -103,10 +103,9 @@ async function handleSave() {
       await post('/packages', payload)
     }
     uni.showToast({ title: isEdit.value ? '修改成功' : '创建成功', icon: 'success' })
-    // 通知上一页刷新
-    const pages = getCurrentPages()
-    const prevPage = pages[pages.length - 2] as any
-    if (prevPage?.$vm?.refresh) prevPage.$vm.refresh()
+    // 通知上一页刷新（EventChannel）
+    const eventChannel = uni.getOpenerEventChannel()
+    eventChannel.emit('refresh')
     setTimeout(() => uni.navigateBack(), 800)
   } finally {
     loading.value = false

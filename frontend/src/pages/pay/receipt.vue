@@ -51,7 +51,7 @@
           </view>
           <view class="detail-row">
             <text class="d-label">付款时间</text>
-            <text class="d-val">{{ fmtTime(order.paidAt) }}</text>
+            <text class="d-val">{{ fmtTime(order.confirmedAt || order.createdAt) }}</text>
           </view>
           <view class="detail-row">
             <text class="d-label">状态</text>
@@ -94,18 +94,26 @@ import { useUserStore } from '../../store/user'
 const order = ref<any>(null)
 const orderId = ref('')
 const loading = ref(true)
+const isReadonly = ref(false)
 const userStore = useUserStore()
 
-onLoad((opt: any) => { orderId.value = opt?.orderId || '' })
+onLoad((opt: any) => {
+  orderId.value = opt?.orderId || ''
+  isReadonly.value = opt?.readonly === '1'
+})
 
 onMounted(async () => {
   if (!orderId.value) { loading.value = false; return }
   try {
-    // 从员工自己的订单列表里找（已含 package 信息，且有权限）
-    const orders = await get<any[]>('/pay/orders')
-    order.value = orders.find((o: any) => o.id === orderId.value) || null
-    // 补充员工昵称
-    if (order.value) order.value.user = { nickname: userStore.userInfo?.nickname }
+    if (isReadonly.value) {
+      // 老板付款后查看：用公开凭证接口，无需登录
+      order.value = await get<any>(`/pay/receipt/${orderId.value}`, false)
+    } else {
+      // 员工查看：从自己的订单列表里找
+      const orders = await get<any[]>('/pay/orders')
+      order.value = orders.find((o: any) => o.id === orderId.value) || null
+      if (order.value) order.value.user = { nickname: userStore.userInfo?.nickname }
+    }
   } catch {}
   loading.value = false
 })

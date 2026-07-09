@@ -33,6 +33,12 @@ app.use('/api/user', userRouter)
 // Health check
 app.get('/health', (_req, res) => res.json({ ok: true }))
 
+// Global error handler — catches errors thrown from asyncHandler routes
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('[error]', err?.message || err)
+  res.status(500).json({ code: 500, message: '服务器内部错误，请稍后重试' })
+})
+
 // WebSocket
 setupWS(server)
 

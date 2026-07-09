@@ -3,9 +3,12 @@ import rateLimit from 'express-rate-limit'
 import { authMiddleware, AuthRequest } from '../middleware/auth'
 import { prisma } from '../utils/prisma'
 import { notifyUser } from '../ws/notifier'
+import { asyncHandler } from '../utils/asyncHandler'
 
 const router = Router()
-const FEE_RATE = Number(process.env.PLATFORM_FEE_RATE || 0.05)
+
+const rawRate = Number(process.env.PLATFORM_FEE_RATE ?? '0.05')
+const FEE_RATE = isNaN(rawRate) || rawRate < 0 || rawRate > 1 ? 0.05 : rawRate
 
 const bossPaidLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -16,13 +19,10 @@ const bossPaidLimiter = rateLimit({
 })
 
 // GET /api/pay/page/:userId — 公开收款页（老板访问，无需登录）
-router.get('/page/:userId', async (req: Request, res: Response) => {
+router.get('/page/:userId', asyncHandler(async (req: Request, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { id: req.params.userId },
-    select: {
-      id: true, nickname: true, avatar: true, bio: true,
-      wechatQrUrl: true, alipayQrUrl: true, defaultPaymentMethod: true
-    }
+    select: { id: true, nickname: true, avatar: true, bio: true, wechatQrUrl: true, alipayQrUrl: true, defaultPaymentMethod: true }
   })
   if (!user) { res.status(404).json({ code: 404, message: '收款页不存在' }); return }
 
@@ -31,10 +31,25 @@ router.get('/page/:userId', async (req: Request, res: Response) => {
     orderBy: { sortOrder: 'asc' }
   })
   res.json({ code: 0, data: { user, packages } })
-})
+}))
+
+// GET /api/pay/receipt/:orderId — 公开凭证（老板付款后查看，无需登录）
+router.get('/receipt/:orderId', asyncHandler(async (req: Request, res: Response) => {
+  const order = await prisma.order.findUnique({
+    where: { id: req.params.orderId },
+    select: {
+      id: true, amount: true, netAmount: true, payerName: true, payerNote: true,
+      status: true, createdAt: true, confirmedAt: true,
+      package: { select: { name: true, hours: true } },
+      user: { select: { nickname: true } }
+    }
+  })
+  if (!order) { res.status(404).json({ code: 404, message: '凭证不存在' }); return }
+  res.json({ code: 0, data: order })
+}))
 
 // POST /api/pay/boss-paid — 老板申报已转账，创建订单
-router.post('/boss-paid', bossPaidLimiter, async (req: Request, res: Response) => {
+router.post('/boss-paid', bossPaidLimiter, asyncHandler(async (req: Request, res: Response) => {
   const { userId, packageId, payerName, payerNote } = req.body
   if (!userId || !packageId || !payerName) {
     res.status(400).json({ code: 400, message: '缺少必要参数' }); return
@@ -45,20 +60,15 @@ router.post('/boss-paid', bossPaidLimiter, async (req: Request, res: Response) =
     res.status(400).json({ code: 400, message: '套餐不存在' }); return
   }
 
-  const platformFee = Number((pkg.price * FEE_RATE).toFixed(2))
-  const netAmount = Number((pkg.price - platformFee).toFixed(2))
+  // 用整数分运算避免浮点误差
+  const priceCents = Math.round(pkg.price * 100)
+  const feeCents = Math.round(priceCents * FEE_RATE)
+  const netCents = priceCents - feeCents
+  const platformFee = feeCents / 100
+  const netAmount = netCents / 100
 
   const order = await prisma.order.create({
-    data: {
-      userId,
-      packageId,
-      payerName,
-      payerNote: payerNote || '',
-      amount: pkg.price,
-      platformFee,
-      netAmount,
-      status: 'boss_paid'
-    }
+    data: { userId, packageId, payerName, payerNote: payerNote || '', amount: pkg.price, platformFee, netAmount, status: 'boss_paid' }
   })
 
   notifyUser(userId, {
@@ -70,10 +80,10 @@ router.post('/boss-paid', bossPaidLimiter, async (req: Request, res: Response) =
   })
 
   res.json({ code: 0, data: { orderId: order.id } })
-})
+}))
 
 // GET /api/pay/orders — 员工查看自己的订单（需登录）
-router.get('/orders', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.get('/orders', authMiddleware, asyncHandler(async (req: AuthRequest, res: Response) => {
   const orders = await prisma.order.findMany({
     where: { userId: req.userId! },
     include: { package: { select: { name: true, hours: true } } },
@@ -81,10 +91,10 @@ router.get('/orders', authMiddleware, async (req: AuthRequest, res: Response) =>
     take: 50
   })
   res.json({ code: 0, data: orders })
-})
+}))
 
 // POST /api/pay/orders/:id/confirm — 员工确认收款（原子操作防竞态）
-router.post('/orders/:id/confirm', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.post('/orders/:id/confirm', authMiddleware, asyncHandler(async (req: AuthRequest, res: Response) => {
   const order = await prisma.order.findUnique({ where: { id: req.params.id } })
   if (!order || order.userId !== req.userId) {
     res.status(404).json({ code: 404, message: '订单不存在' }); return
@@ -97,10 +107,10 @@ router.post('/orders/:id/confirm', authMiddleware, async (req: AuthRequest, res:
     res.status(409).json({ code: 409, message: '订单已处理或状态不正确' }); return
   }
   res.json({ code: 0, message: '已确认收款' })
-})
+}))
 
 // POST /api/pay/orders/:id/reject — 员工拒绝（原子操作防竞态）
-router.post('/orders/:id/reject', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.post('/orders/:id/reject', authMiddleware, asyncHandler(async (req: AuthRequest, res: Response) => {
   const order = await prisma.order.findUnique({ where: { id: req.params.id } })
   if (!order || order.userId !== req.userId) {
     res.status(404).json({ code: 404, message: '订单不存在' }); return
@@ -113,6 +123,6 @@ router.post('/orders/:id/reject', authMiddleware, async (req: AuthRequest, res: 
     res.status(409).json({ code: 409, message: '订单已处理或状态不正确' }); return
   }
   res.json({ code: 0, message: '已拒绝' })
-})
+}))
 
 export default router

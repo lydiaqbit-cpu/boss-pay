@@ -27,9 +27,6 @@ export function setupWS(server: Server) {
     ws.on('close', cleanup)
     ws.on('error', cleanup)
 
-    ws.on('close', () => clients.delete(userId))
-    ws.on('error', () => clients.delete(userId))
-
     ws.send(JSON.stringify({ type: 'connected', message: '实时推送已连接' }))
   })
 }
