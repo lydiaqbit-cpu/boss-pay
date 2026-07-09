@@ -77,14 +77,6 @@
       }
     },
     {
-      "path": "pages/subscribe/index",
-      "style": {
-        "navigationBarTitleText": "开通会员",
-        "navigationBarBackgroundColor": "#1a1008",
-        "navigationBarTextStyle": "white"
-      }
-    },
-    {
       "path": "pages/admin/index",
       "style": {
         "navigationBarTitleText": "管理后台",

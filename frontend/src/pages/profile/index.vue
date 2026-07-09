@@ -9,19 +9,9 @@
       <view class="user-info">
         <view class="name-row">
           <text class="nickname">{{ user.nickname }}</text>
-          <view v-if="isVip" class="vip-badge">VIP</view>
         </view>
         <text class="bio">{{ user.bio || '加班人，收款中' }}</text>
       </view>
-    </view>
-
-    <view class="vip-card" @click="toSubscribe">
-      <view class="vip-icon">✨</view>
-      <view class="vip-left">
-        <text class="vip-title">{{ isVip ? '令牌有效，身价已定 · ' + fmtDate(vipExpiry) + ' 到期' : '纳贡升级，解锁全部功能' }}</text>
-        <text class="vip-sub">{{ isVip ? '尊贵牛马，已享免徭役特权 🐂' : '无限套餐 · 优先待诏 · 更多特权' }}</text>
-      </view>
-      <text class="vip-arrow">›</text>
     </view>
 
     <view class="menu-section">
@@ -56,22 +46,15 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { get, put } from '../../utils/request'
+import { put } from '../../utils/request'
 import { useUserStore } from '../../store/user'
 import { track } from '../../utils/track'
 
 const userStore = useUserStore()
 const user = ref<any>({})
-const isVip = ref(false)
-const vipExpiry = ref('')
 
-onMounted(async () => {
+onMounted(() => {
   user.value = userStore.userInfo || {}
-  try {
-    const sub = await get<any>('/user/subscribe')
-    isVip.value = sub.isVip
-    vipExpiry.value = sub.expiry
-  } catch {}
 })
 
 function uploadAvatar() {
@@ -123,7 +106,6 @@ async function saveAvatar(avatar: string) {
 
 function toPayment() { uni.navigateTo({ url: '/pages/profile/payment' }) }
 function toPackages() { uni.navigateTo({ url: '/pages/packages/index' }) }
-function toSubscribe() { uni.navigateTo({ url: '/pages/subscribe/index' }) }
 
 function copyMyLink() {
   // #ifdef H5
@@ -145,12 +127,6 @@ function handleLogout() {
       uni.reLaunch({ url: '/pages/auth/login' })
     }
   })
-}
-
-function fmtDate(t: string) {
-  if (!t) return ''
-  const d = new Date(t)
-  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
 }
 </script>
 
@@ -182,25 +158,6 @@ page { background: #F2EBE0; }
 .name-row { display: flex; align-items: center; gap: 12rpx; margin-bottom: 8rpx; }
 .nickname { font-size: 34rpx; font-weight: 700; color: #F2EBE0; }
 .bio { font-size: 24rpx; color: rgba(196,168,130,0.75); display: block; }
-.vip-badge {
-  background: #C4A882; color: #1E1A14;
-  font-size: 20rpx; font-weight: 800; padding: 4rpx 14rpx; border-radius: 4rpx;
-}
-
-.vip-card {
-  margin: 24rpx 24rpx 0;
-  background: #fff; border-radius: 8rpx;
-  border-left: 5rpx solid #C0392B;
-  padding: 28rpx 24rpx;
-  display: flex; align-items: center; gap: 16rpx;
-  box-shadow: 0 2rpx 10rpx rgba(30,26,20,0.08);
-  border-top: 1rpx solid #D4C4A8; border-right: 1rpx solid #D4C4A8; border-bottom: 1rpx solid #D4C4A8;
-}
-.vip-icon { font-size: 40rpx; flex-shrink: 0; }
-.vip-left { flex: 1; }
-.vip-title { font-size: 28rpx; font-weight: 700; color: #1E1A14; display: block; }
-.vip-sub { font-size: 22rpx; color: #8B7355; margin-top: 6rpx; display: block; }
-.vip-arrow { font-size: 40rpx; color: #D4C4A8; }
 
 .menu-section {
   background: #fff; margin: 20rpx 24rpx 0;
