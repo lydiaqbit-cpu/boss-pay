@@ -87,12 +87,16 @@ function editPkg(pkg: any) {
 async function deletePkg(id: string) {
   uni.showModal({
     title: '确认删除',
-    content: '删除后老板将看不到这个套餐',
+    content: '此套餐将不再显示给老板，已有订单记录不受影响',
     success: async (res) => {
       if (!res.confirm) return
-      await apiDel(`/packages/${id}`)
-      await loadPackages()
-      uni.showToast({ title: '已删除', icon: 'success' })
+      try {
+        await apiDel(`/packages/${id}`)
+        await loadPackages()
+        uni.showToast({ title: '已删除', icon: 'success' })
+      } catch {
+        uni.showToast({ title: '删除失败，请重试', icon: 'none' })
+      }
     }
   })
 }

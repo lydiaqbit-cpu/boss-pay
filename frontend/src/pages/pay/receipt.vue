@@ -30,7 +30,6 @@
             <text class="amount-unit">¥</text>
             <text class="amount-val">{{ order.amount }}</text>
           </view>
-          <text class="amount-sub">打工人到账 ¥{{ order.netAmount }}（已扣平台 5% 管理费）</text>
         </view>
 
         <view class="divider-solid" />
@@ -103,13 +102,17 @@ onLoad((opt: any) => {
 })
 
 onMounted(async () => {
+  // H5 fallback：onLoad 可能晚于 onMounted，直接从 URL 解析
+  if (!orderId.value) {
+    const params = new URLSearchParams(location.search || location.hash.split('?')[1] || '')
+    orderId.value = params.get('orderId') || ''
+    isReadonly.value = params.get('readonly') === '1'
+  }
   if (!orderId.value) { loading.value = false; return }
   try {
     if (isReadonly.value) {
-      // 老板付款后查看：用公开凭证接口，无需登录
       order.value = await get<any>(`/pay/receipt/${orderId.value}`, false)
     } else {
-      // 员工查看：从自己的订单列表里找
       const orders = await get<any[]>('/pay/orders')
       order.value = orders.find((o: any) => o.id === orderId.value) || null
       if (order.value) order.value.user = { nickname: userStore.userInfo?.nickname }

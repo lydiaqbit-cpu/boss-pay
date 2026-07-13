@@ -13,6 +13,9 @@ router.post('/register', asyncHandler(async (req: Request, res: Response) => {
   if (!phone || !password || !nickname) {
     res.status(400).json({ code: 400, message: '手机号、密码、昵称不能为空' }); return
   }
+  if (password.length < 6) {
+    res.status(400).json({ code: 400, message: '密码不能少于 6 位' }); return
+  }
   const exists = await prisma.user.findUnique({ where: { phone } })
   if (exists) {
     res.status(400).json({ code: 400, message: '该手机号已注册' }); return

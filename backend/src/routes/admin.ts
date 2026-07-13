@@ -4,6 +4,16 @@ import { asyncHandler } from '../utils/asyncHandler'
 
 const router = Router()
 
+// 管理端防暴力破解
+import rateLimit from 'express-rate-limit'
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  message: { code: 429, message: '请求太频繁，请稍后再试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
 // 管理员鉴权中间件
 function adminAuth(req: Request, res: Response, next: NextFunction) {
   const secret = req.headers['x-admin-secret']
@@ -13,7 +23,19 @@ function adminAuth(req: Request, res: Response, next: NextFunction) {
   next()
 }
 
-router.use(adminAuth)
+router.use(adminLimiter, adminAuth)
+
+// 提取公共时间范围计算
+function getPeriodRange(period: string): { since: Date; groupFormat: string } {
+  const now = new Date()
+  if (period === 'month') {
+    return { since: new Date(now.getFullYear(), now.getMonth() - 11, 1), groupFormat: '%Y-%m' }
+  } else if (period === 'week') {
+    return { since: new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000), groupFormat: '%Y-%W' }
+  } else {
+    return { since: new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000), groupFormat: '%Y-%m-%d' }
+  }
+}
 
 // GET /api/admin/overview — 总览数字
 router.get('/overview', asyncHandler(async (_req: Request, res: Response) => {
@@ -33,23 +55,7 @@ router.get('/overview', asyncHandler(async (_req: Request, res: Response) => {
 
 // GET /api/admin/registrations?period=day|week|month — 注册趋势
 router.get('/registrations', asyncHandler(async (req: Request, res: Response) => {
-  const period = (req.query.period as string) || 'day'
-  const now = new Date()
-  let since: Date
-  let groupFormat: string
-
-  if (period === 'month') {
-    since = new Date(now.getFullYear(), now.getMonth() - 11, 1)
-    groupFormat = '%Y-%m'
-  } else if (period === 'week') {
-    since = new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000)
-    groupFormat = '%Y-%W'
-  } else {
-    since = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
-    groupFormat = '%Y-%m-%d'
-  }
-
-  // Turso/SQLite raw query for date grouping
+  const { since, groupFormat } = getPeriodRange((req.query.period as string) || 'day')
   const rows = await prisma.$queryRawUnsafe<{ label: string; count: bigint }[]>(
     `SELECT strftime('${groupFormat}', createdAt) as label, COUNT(*) as count
      FROM User WHERE createdAt >= ? GROUP BY label ORDER BY label`,
@@ -60,35 +66,18 @@ router.get('/registrations', asyncHandler(async (req: Request, res: Response) =>
 
 // GET /api/admin/events?period=day|week|month — 功能点击统计
 router.get('/events', asyncHandler(async (req: Request, res: Response) => {
-  const period = (req.query.period as string) || 'day'
-  const now = new Date()
-  let since: Date
-  let groupFormat: string
-
-  if (period === 'month') {
-    since = new Date(now.getFullYear(), now.getMonth() - 11, 1)
-    groupFormat = '%Y-%m'
-  } else if (period === 'week') {
-    since = new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000)
-    groupFormat = '%Y-%W'
-  } else {
-    since = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
-    groupFormat = '%Y-%m-%d'
-  }
-
-  // 按事件类型汇总总数
-  const byType = await prisma.$queryRawUnsafe<{ event: string; count: bigint }[]>(
-    `SELECT event, COUNT(*) as count FROM Event WHERE createdAt >= ? GROUP BY event ORDER BY count DESC`,
-    since.toISOString()
-  )
-
-  // 趋势（所有事件合计，按时间分组）
-  const trend = await prisma.$queryRawUnsafe<{ label: string; count: bigint }[]>(
-    `SELECT strftime('${groupFormat}', createdAt) as label, COUNT(*) as count
-     FROM Event WHERE createdAt >= ? GROUP BY label ORDER BY label`,
-    since.toISOString()
-  )
-
+  const { since, groupFormat } = getPeriodRange((req.query.period as string) || 'day')
+  const [byType, trend] = await Promise.all([
+    prisma.$queryRawUnsafe<{ event: string; count: bigint }[]>(
+      `SELECT event, COUNT(*) as count FROM Event WHERE createdAt >= ? GROUP BY event ORDER BY count DESC`,
+      since.toISOString()
+    ),
+    prisma.$queryRawUnsafe<{ label: string; count: bigint }[]>(
+      `SELECT strftime('${groupFormat}', createdAt) as label, COUNT(*) as count
+       FROM Event WHERE createdAt >= ? GROUP BY label ORDER BY label`,
+      since.toISOString()
+    )
+  ])
   res.json({
     code: 0,
     data: {

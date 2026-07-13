@@ -20,8 +20,15 @@ router.post('/', asyncHandler(async (req: AuthRequest, res: Response) => {
   if (!name || !hours || !price) {
     res.status(400).json({ code: 400, message: '套餐名称、时长、价格不能为空' }); return
   }
+  const parsedPrice = Number(price)
+  if (isNaN(parsedPrice) || parsedPrice <= 0) {
+    res.status(400).json({ code: 400, message: '套餐价格必须大于 0' }); return
+  }
+  if (parsedPrice > 100000) {
+    res.status(400).json({ code: 400, message: '套餐价格不能超过 10 万' }); return
+  }
   const pkg = await prisma.package.create({
-    data: { userId: req.userId!, name, description, hours: Number(hours), price: Number(price), sortOrder: sortOrder ?? 0 }
+    data: { userId: req.userId!, name, description, hours: Number(hours), price: parsedPrice, sortOrder: sortOrder ?? 0 }
   })
   res.json({ code: 0, data: pkg })
 }))

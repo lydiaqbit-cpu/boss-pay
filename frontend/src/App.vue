@@ -9,7 +9,7 @@ onHide(() => {});
 /* ── 全局重置 ── */
 /* #ifdef H5 */
 page, body, * {
-  font-family: 'Nunito', 'Noto Sans SC', 'PingFang SC', 'OPPO Sans', 'HarmonyOS Sans', -apple-system, sans-serif;
+  font-family: 'LXGW WenKai Screen', 'Noto Sans SC', 'PingFang SC', -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 /* #endif */

@@ -17,7 +17,19 @@
       </view>
     </view>
 
-    <view v-if="orders.length === 0" class="empty">
+    <view v-if="loading" class="skeleton-list">
+      <view v-for="i in 3" :key="i" class="skeleton-card">
+        <view class="sk-row">
+          <view class="sk-avatar" />
+          <view class="sk-lines">
+            <view class="sk-line wide" />
+            <view class="sk-line short" />
+          </view>
+          <view class="sk-price" />
+        </view>
+      </view>
+    </view>
+    <view v-else-if="orders.length === 0" class="empty">
       <view class="beggar-wrap">
         <image src="/static/cat-hungry.png" class="cat-img" mode="aspectFit"/>
       </view>
@@ -25,7 +37,9 @@
       <text class="e-sub">把收款链接甩给老板，今日不付来日加倍奉陪</text>
     </view>
 
-    <view v-for="order in orders" :key="order.id" class="order-card">
+    <template v-for="group in groupedOrders" :key="group.label">
+      <view class="group-label">{{ group.label }}</view>
+      <view v-for="order in group.items" :key="order.id" class="order-card">
       <view class="order-header">
         <view class="payer-row">
           <view class="payer-avatar"><text>{{ order.payerName?.charAt(0) || '?' }}</text></view>
@@ -57,6 +71,7 @@
       </view>
     </view>
 
+    </template>
     <view class="bottom-gap" />
   </view>
 </template>
@@ -67,14 +82,34 @@ import { get, post } from '../../utils/request'
 import { track } from '../../utils/track'
 
 const orders = ref<any[]>([])
+const loading = ref(true)
 const confirmedOrders = computed(() => orders.value.filter(o => o.status === 'confirmed'))
 const pendingOrders = computed(() => orders.value.filter(o => o.status === 'boss_paid'))
 const totalNet = computed(() => confirmedOrders.value.reduce((s, o) => s + o.netAmount, 0).toFixed(2))
+
+const groupedOrders = computed(() => {
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  const yesterday = today - 86400000
+  const groups: { label: string; items: any[] }[] = []
+  const map = new Map<string, any[]>()
+  for (const o of orders.value) {
+    const t = new Date(o.confirmedAt || o.createdAt).getTime()
+    const label = t >= today ? '今天' : t >= yesterday ? '昨天' : '更早'
+    if (!map.has(label)) map.set(label, [])
+    map.get(label)!.push(o)
+  }
+  for (const label of ['今天', '昨天', '更早']) {
+    if (map.has(label)) groups.push({ label, items: map.get(label)! })
+  }
+  return groups
+})
 
 onMounted(loadOrders)
 
 async function loadOrders() {
   try { orders.value = await get<any[]>('/pay/orders') } catch {}
+  loading.value = false
 }
 
 function statusText(status: string) {
@@ -106,7 +141,7 @@ async function handleReject(orderId: string) {
   })
 }
 
-function viewReceipt(orderId: string) { uni.navigateTo({ url: `/pages/pay/receipt?orderId=${orderId}` }) }
+function viewReceipt(orderId: string) { uni.navigateTo({ url: `/pages/pay/receipt?orderId=${orderId}&readonly=1` }) }
 function fmtTime(t: string) {
   if (!t) return '-'
   const d = new Date(t)
@@ -130,16 +165,17 @@ page { background: #F7F4F0; }
 .stat-item { flex: 1; text-align: center; }
 .stat-val { font-size: 40rpx; font-weight: 800; color: #F7F4F0; display: block; }
 .stat-val.green { color: #C4A882; }
-.stat-val.orange { color: #E8A090; }
+.stat-val.orange { color: #C4A882; }
 .stat-key { font-size: 22rpx; color: rgba(196,168,130,0.7); margin-top: 6rpx; display: block; letter-spacing: 1rpx; }
 .stat-divider { width: 1rpx; height: 56rpx; background: rgba(196,168,130,0.25); }
 
+.group-label { font-size: 22rpx; color: #8B7355; padding: 20rpx 24rpx 8rpx; letter-spacing: 1rpx; }
 .empty { text-align: center; padding: 80rpx 0; }
 .e-tip { font-size: 30rpx; font-weight: 600; color: #1E1A14; margin-top: 20rpx; display: block; }
 .e-sub { font-size: 24rpx; color: #8B7355; margin-top: 10rpx; display: block; padding: 0 40rpx; line-height: 1.6; }
 
 .beggar-wrap { display: flex; justify-content: center; margin-bottom: 8rpx; }
-.cat-img { width: 240rpx; height: 240rpx; }
+.cat-img { width: 280rpx; height: 280rpx; }
 
 .order-card {
   background: #fff; margin: 0 24rpx 16rpx;
@@ -198,4 +234,21 @@ page { background: #F7F4F0; }
   border-radius: 4rpx; padding: 6rpx 16rpx; font-size: 22rpx; color: #A8402E;
 }
 .bottom-gap { height: 40rpx; }
+
+@keyframes shimmer {
+  0% { background-position: -400rpx 0; }
+  100% { background-position: 400rpx 0; }
+}
+.skeleton-list { padding: 16rpx 0; }
+.skeleton-card {
+  background: #fff; margin: 0 24rpx 16rpx; border-radius: 8rpx;
+  padding: 24rpx; border: 1rpx solid #C8B89A;
+}
+.sk-row { display: flex; align-items: center; gap: 14rpx; }
+.sk-avatar { width: 68rpx; height: 68rpx; border-radius: 4rpx; flex-shrink: 0; background: linear-gradient(90deg, #E5D8C4 25%, #F0EAE2 50%, #E5D8C4 75%); background-size: 400rpx 100%; animation: shimmer 1.4s infinite; }
+.sk-lines { flex: 1; display: flex; flex-direction: column; gap: 12rpx; }
+.sk-line { height: 24rpx; border-radius: 4rpx; background: linear-gradient(90deg, #E5D8C4 25%, #F0EAE2 50%, #E5D8C4 75%); background-size: 400rpx 100%; animation: shimmer 1.4s infinite; }
+.sk-line.wide { width: 70%; }
+.sk-line.short { width: 40%; }
+.sk-price { width: 80rpx; height: 40rpx; border-radius: 4rpx; background: linear-gradient(90deg, #E5D8C4 25%, #F0EAE2 50%, #E5D8C4 75%); background-size: 400rpx 100%; animation: shimmer 1.4s infinite; flex-shrink: 0; }
 </style>

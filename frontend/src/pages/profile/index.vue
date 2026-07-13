@@ -4,7 +4,12 @@
       <view class="avatar-wrap" @click="uploadAvatar">
         <image v-if="user.avatar" :src="user.avatar" class="avatar" mode="aspectFill"/>
         <view v-else class="avatar-placeholder"><text>{{ user.nickname?.[0] }}</text></view>
-        <view class="avatar-edit-badge"><text>📷</text></view>
+        <view class="avatar-edit-badge">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 3 L6 5 L2 5 Q1 5 1 6 L1 15 Q1 16 2 16 L16 16 Q17 16 17 15 L17 6 Q17 5 16 5 L12 5 L11 3 Z" stroke="#F7F4F0" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+          <circle cx="9" cy="10.5" r="2.8" stroke="#F7F4F0" stroke-width="1.3" fill="none"/>
+        </svg>
+      </view>
       </view>
       <view class="user-info">
         <view class="name-row">
@@ -197,13 +202,13 @@ page { background: #F7F4F0; }
 .avatar-placeholder {
   width: 110rpx; height: 110rpx; border-radius: 55rpx;
   background: rgba(196,168,130,0.2); display: flex; align-items: center; justify-content: center;
-  text { font-size: 48rpx; color: #C4A882; font-weight: 700; }
+  text { font-size: 48rpx; color: #FFFFFF; font-weight: 700; }
 }
 .avatar-edit-badge {
   position: absolute; bottom: 0; right: 0;
   width: 36rpx; height: 36rpx; border-radius: 18rpx;
-  background: #D94F3D; display: flex; align-items: center; justify-content: center;
-  border: 2rpx solid #1E1A14;
+  background: #3D3526; display: flex; align-items: center; justify-content: center;
+  border: 2rpx solid rgba(196,168,130,0.4);
   text { font-size: 20rpx; }
 }
 .user-info { flex: 1; }

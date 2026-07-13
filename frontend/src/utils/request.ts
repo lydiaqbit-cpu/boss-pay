@@ -30,12 +30,17 @@ export function request<T = any>(url: string, options: RequestOptions = {}): Pro
           uni.reLaunch({ url: '/pages/auth/login' })
           reject(new Error(body.message))
         } else {
-          uni.showToast({ title: body.message || '请求失败', icon: 'none' })
-          reject(new Error(body.message))
+          const msg = body.message || '请求失败'
+          uni.showToast({ title: msg, icon: 'none' })
+          // eslint-disable-next-line no-console
+          if (process.env.NODE_ENV !== 'production') console.error('[request]', url, msg)
+          reject(new Error(msg))
         }
       },
-      fail: () => {
+      fail: (err: any) => {
         uni.showToast({ title: '网络异常，请检查连接', icon: 'none' })
+        // eslint-disable-next-line no-console
+        if (process.env.NODE_ENV !== 'production') console.error('[request fail]', url, err)
         reject(new Error('network error'))
       }
     })

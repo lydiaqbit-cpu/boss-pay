@@ -9,7 +9,7 @@ const router = Router()
 router.put('/profile', authMiddleware, asyncHandler(async (req: AuthRequest, res: Response) => {
   const { nickname, avatar, bio } = req.body
   const data = Object.fromEntries(
-    Object.entries({ nickname, avatar, bio }).filter(([, v]) => v !== undefined)
+    Object.entries({ nickname, avatar, bio }).filter(([, v]) => v !== undefined && v !== null)
   )
   const user = await prisma.user.update({
     where: { id: req.userId! },

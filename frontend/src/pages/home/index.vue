@@ -112,24 +112,12 @@
     <view v-if="isSetupDone" class="ready-banner">
       <view class="ready-left">
         <view class="setup-icon">
-          <svg width="52" height="52" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="60" cy="100" rx="42" ry="28" fill="#8B6914"/>
-            <path d="M18 85 Q18 50 60 45 Q102 50 102 85 L102 100 Q102 128 60 128 Q18 128 18 100Z" fill="#C4A020"/>
-            <path d="M22 88 Q22 55 60 50 Q98 55 98 88" fill="#D4B030" opacity="0.4"/>
-            <ellipse cx="60" cy="46" rx="28" ry="10" fill="#8B6914"/>
-            <ellipse cx="60" cy="43" rx="22" ry="8" fill="#C4A020"/>
-            <path d="M38 43 Q60 30 82 43" fill="#A08010" stroke="none"/>
-            <path d="M42 40 Q60 22 78 40" fill="none" stroke="#8B6914" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="48" cy="26" r="5" fill="#D94F3D"/>
-            <circle cx="60" cy="20" r="6" fill="#D94F3D"/>
-            <circle cx="72" cy="26" r="5" fill="#D94F3D"/>
-            <circle cx="48" cy="26" r="2.5" fill="#FF6B6B"/>
-            <circle cx="60" cy="20" r="3" fill="#FF6B6B"/>
-            <circle cx="72" cy="26" r="2.5" fill="#FF6B6B"/>
-            <text x="60" y="96" text-anchor="middle" font-size="22" font-weight="700" fill="#8B6914" font-family="sans-serif">錢</text>
-            <circle cx="38" cy="80" r="5" fill="#E8C040" opacity="0.6"/>
-            <circle cx="82" cy="90" r="4" fill="#E8C040" opacity="0.5"/>
-            <circle cx="50" cy="110" r="3.5" fill="#E8C040" opacity="0.4"/>
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="36" cy="12" r="6" stroke="#C4A882" stroke-width="2" fill="none"/>
+            <circle cx="36" cy="36" r="6" stroke="#C4A882" stroke-width="2" fill="none"/>
+            <circle cx="12" cy="24" r="6" stroke="#C4A882" stroke-width="2" fill="none"/>
+            <line x1="17.5" y1="21" x2="30.5" y2="14.5" stroke="#C4A882" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="17.5" y1="27" x2="30.5" y2="33.5" stroke="#C4A882" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </view>
         <view class="ready-text-wrap">
@@ -211,14 +199,20 @@
         <text class="section-title">加班价目表</text>
         <text class="section-more" @click="toPackages">管理 →</text>
       </view>
-      <view v-if="packages.length === 0" class="empty-state">
+      <view v-if="loading" class="skeleton-wrap">
+        <view v-for="i in 2" :key="i" class="skeleton-row">
+          <view class="skeleton-line short" />
+          <view class="skeleton-price" />
+        </view>
+      </view>
+      <view v-else-if="packages.length === 0" class="empty-state">
         <view class="beggar-wrap">
           <image src="/static/cat-hungry.png" class="cat-img" mode="aspectFit"/>
         </view>
         <text class="empty-text">碗都空了，快去定套餐！</text>
         <view class="empty-btn" @click="toPackages">立即定价，要钱要命</view>
       </view>
-      <view v-for="(pkg, i) in packages" :key="pkg.id" class="pkg-row">
+      <view v-else v-for="(pkg, i) in packages" :key="pkg.id" class="pkg-row">
         <view class="pkg-left">
           <view class="pkg-index">{{ i + 1 }}</view>
           <view>
@@ -236,7 +230,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { onShareAppMessage } from '@dcloudio/uni-app'
+import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
 import { useUserStore } from '../../store/user'
 import { get } from '../../utils/request'
 import { track } from '../../utils/track'
@@ -246,6 +240,7 @@ const packages = ref<any[]>([])
 const orders = ref<any[]>([])
 const latestNotify = ref<string | null>(null)
 const copied = ref(false)
+const loading = ref(true)
 const paymentInfo = ref<any>(null)
 let ws: UniApp.SocketTask | null = null
 
@@ -303,7 +298,13 @@ function triggerMoneyBurst() {
 onMounted(async () => {
   await userStore.fetchMe()
   await Promise.all([loadPackages(), loadOrders(), loadPaymentInfo()])
+  loading.value = false
   connectWS()
+})
+
+onShow(async () => {
+  await Promise.all([loadPackages(), loadPaymentInfo()])
+  connectWS() // ws 内部有 if(ws) return，不会重复
 })
 
 onUnmounted(() => { ws?.close() })
@@ -314,6 +315,7 @@ async function loadPaymentInfo() { try { paymentInfo.value = await get<any>('/us
 
 function connectWS() {
   if (!userStore.userInfo?.id || !userStore.token) return
+  if (ws) return // 已有连接，不重复建立
   // #ifdef H5
   const wsBase = (import.meta.env.VITE_WS_BASE_URL || '').replace(/\/$/, '')
   if (!wsBase) return
@@ -335,6 +337,7 @@ function connectWS() {
     } catch {}
   })
   ws.onError(() => { ws = null })
+  ws.onClose(() => { ws = null })
 }
 
 function toPackages() { uni.navigateTo({ url: '/pages/packages/index' }) }
@@ -464,7 +467,7 @@ page { background: #F7F4F0; }
 .step-arrow { font-size: 40rpx; color: #C4A882; }
 .step-lock { font-size: 28rpx; }
 .step-copy-btn {
-  background: #D94F3D; color: #fff; font-size: 24rpx; font-weight: 700;
+  background: #1E1A14; color: #F7F4F0; font-size: 24rpx; font-weight: 700;
   padding: 10rpx 22rpx; border-radius: 6rpx; flex-shrink: 0;
   animation: pulse 2s infinite;
 }
@@ -504,7 +507,7 @@ page { background: #F7F4F0; }
 .setup-title { font-size: 28rpx; font-weight: 700; color: #F7F4F0; display: block; }
 .ready-link-preview { font-size: 20rpx; color: rgba(196,168,130,0.7); margin-top: 6rpx; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ready-copy-btn {
-  flex-shrink: 0; background: #D94F3D; color: #F7F4F0;
+  flex-shrink: 0; background: #1E1A14; color: #F7F4F0;
   font-size: 24rpx; font-weight: 700; padding: 14rpx 24rpx;
   border-radius: 6rpx; white-space: nowrap;
   animation: pulse 2.5s infinite;
@@ -526,7 +529,9 @@ page { background: #F7F4F0; }
   flex: 1; background: #fff; border-radius: 8rpx; padding: 24rpx 10rpx;
   display: flex; flex-direction: column; align-items: center;
   box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07); border: 1rpx solid #C8B89A;
+  transition: transform 0.1s, box-shadow 0.1s;
 }
+.action-item:active { transform: scale(0.95); box-shadow: none; }
 .a-icon-wrap { width: 72rpx; height: 72rpx; border-radius: 8rpx; background: #F0EAE2; display: flex; align-items: center; justify-content: center; margin-bottom: 10rpx; }
 .a-label { font-size: 19rpx; color: #6B5040; font-weight: 600; white-space: nowrap; }
 .a-sub { font-size: 17rpx; color: #C4A882; margin-top: 4rpx; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -537,14 +542,25 @@ page { background: #F7F4F0; }
 .pkg-index { width: 40rpx; height: 40rpx; border-radius: 4rpx; background: #F0EAE2; color: #A8402E; font-size: 22rpx; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1rpx solid #C8B89A; }
 .pkg-name { font-size: 28rpx; font-weight: 600; color: #1E1A14; display: block; }
 .pkg-desc { font-size: 22rpx; color: #8B7355; margin-top: 4rpx; display: block; }
-.pkg-price { font-size: 32rpx; font-weight: 700; color: #D94F3D; }
+.pkg-price { font-size: 40rpx; font-weight: 800; color: #D94F3D; }
 
 .empty-state { text-align: center; padding: 36rpx 0; }
 .empty-text { font-size: 26rpx; color: #8B7355; margin-top: 14rpx; display: block; }
 .empty-btn { display: inline-block; margin-top: 18rpx; background: #1E1A14; color: #F7F4F0; font-size: 26rpx; font-weight: 600; padding: 12rpx 32rpx; border-radius: 6rpx; }
 
 .beggar-wrap { display: flex; justify-content: center; margin-bottom: 8rpx; }
-.cat-img { width: 220rpx; height: 220rpx; }
+.cat-img { width: 320rpx; height: 320rpx; }
 
 .footer-gap { height: 60rpx; }
+
+@keyframes shimmer {
+  0% { background-position: -400rpx 0; }
+  100% { background-position: 400rpx 0; }
+}
+.skeleton-wrap { padding: 8rpx 0; }
+.skeleton-row { display: flex; justify-content: space-between; align-items: center; padding: 20rpx 0; border-bottom: 1rpx solid #E5D8C4; }
+.skeleton-row:last-child { border-bottom: none; }
+.skeleton-line { height: 28rpx; border-radius: 4rpx; background: linear-gradient(90deg, #E5D8C4 25%, #F0EAE2 50%, #E5D8C4 75%); background-size: 400rpx 100%; animation: shimmer 1.4s infinite; }
+.skeleton-line.short { width: 180rpx; }
+.skeleton-price { width: 90rpx; height: 36rpx; border-radius: 4rpx; background: linear-gradient(90deg, #E5D8C4 25%, #F0EAE2 50%, #E5D8C4 75%); background-size: 400rpx 100%; animation: shimmer 1.4s infinite; }
 </style>

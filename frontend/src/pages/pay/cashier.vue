@@ -90,7 +90,11 @@
         <input v-model="payerNote" class="payer-input note" placeholder="备注（可选）" placeholder-class="ph"/>
       </view>
 
-      <button class="btn-paid" :loading="submitting" @click="handleBossPaid">
+    </view>
+
+    <!-- 固定底部按钮 -->
+    <view v-if="selectedId && hasPayment" class="bottom-bar">
+      <button class="btn-paid" :loading="submitting" :disabled="submitting" @click="handleBossPaid">
         ✅ 已转账，通知收款方确认
       </button>
       <text class="paid-tip">对方确认收款后，双方均可查看凭证</text>
@@ -198,7 +202,7 @@ async function handleBossPaid() {
 
 <style lang="scss">
 page { background: #F7F4F0; }
-.page { min-height: 100vh; padding-bottom: 60rpx; }
+.page { min-height: 100vh; padding-bottom: 220rpx; }
 
 .cashier-header {
   background: linear-gradient(160deg, #1E1A14, #3D3526);
@@ -228,7 +232,7 @@ page { background: #F7F4F0; }
 .amount-panel.has-amount .amount-value { color: #D94F3D; }
 .amount-pkg-name { font-size: 24rpx; color: #8B7355; display: block; margin-top: 8rpx; }
 
-.pkg-list { background: #fff; margin: 16rpx 24rpx; border-radius: 8rpx; overflow: hidden; box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07); border: 1rpx solid #C8B89A; }
+.pkg-list { background: #fff; margin: 16rpx 24rpx; border-radius: 8rpx; overflow-y: auto; max-height: 360rpx; box-shadow: 0 2rpx 8rpx rgba(30,26,20,0.07); border: 1rpx solid #C8B89A; }
 .pkg-item { display: flex; align-items: center; justify-content: space-between; padding: 24rpx; border-bottom: 1rpx solid #E5D8C4; }
 .pkg-item:last-child { border-bottom: none; }
 .pkg-item.selected { background: #F8F5F2; }
@@ -278,13 +282,20 @@ page { background: #F7F4F0; }
 .payer-input.note { border-bottom: none; }
 .ph { color: #C4A882; }
 
+.bottom-bar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 390px; max-width: 100vw;
+  background: #F7F4F0; padding: 16rpx 24rpx 40rpx;
+  border-top: 1rpx solid #E5D8C4;
+  box-shadow: 0 -4rpx 16rpx rgba(30,26,20,0.08);
+}
 .btn-paid {
-  width: calc(100% - 48rpx); margin: 20rpx 24rpx 0;
+  width: 100%;
   height: 100rpx; background: #1E1A14;
   color: #F7F4F0; border-radius: 8rpx; font-size: 30rpx; font-weight: 800; border: none;
   letter-spacing: 1rpx;
 }
-.paid-tip { font-size: 22rpx; color: #C4A882; display: block; text-align: center; padding: 14rpx 0 20rpx; }
+.paid-tip { font-size: 22rpx; color: #C4A882; display: block; text-align: center; padding: 10rpx 0 0; }
 
 .no-payment { text-align: center; padding: 80rpx 40rpx; }
 .no-icon { font-size: 80rpx; display: block; }
