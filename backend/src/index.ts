@@ -1,4 +1,8 @@
 import 'dotenv/config'
+
+process.on('uncaughtException', (err) => console.error('[uncaughtException]', err))
+process.on('unhandledRejection', (err) => console.error('[unhandledRejection]', err))
+
 import express from 'express'
 import cors from 'cors'
 import http from 'http'
