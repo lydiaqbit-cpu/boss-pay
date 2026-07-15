@@ -58,4 +58,12 @@ const PORT = process.env.PORT || 3000
 server.listen(PORT, () => {
   console.log(`🚀 老板请付费后端启动: http://localhost:${PORT}`)
   console.log(`📡 WebSocket: ws://localhost:${PORT}/ws?userId=<id>`)
+
+  // 每14分钟自 ping 防止 Render 免费版休眠
+  if (process.env.RENDER_EXTERNAL_URL) {
+    setInterval(() => {
+      const url = `${process.env.RENDER_EXTERNAL_URL}/health`
+      require('https').get(url, () => {}).on('error', () => {})
+    }, 14 * 60 * 1000)
+  }
 })
