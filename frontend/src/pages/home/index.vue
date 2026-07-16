@@ -33,9 +33,9 @@
           <text class="stat-key">累计到账</text>
         </view>
         <view class="stat-divider"/>
-        <view class="stat-col">
+        <view class="stat-col" @click="toOrders">
           <text class="stat-val pending">{{ pendingCount }}</text>
-          <text class="stat-key">待确认</text>
+          <text class="stat-key">待确认 ›</text>
         </view>
         <view class="stat-divider"/>
         <view class="stat-col">
