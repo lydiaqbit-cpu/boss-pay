@@ -103,15 +103,21 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { put } from '../../utils/request'
+import { put, get } from '../../utils/request'
 import { useUserStore } from '../../store/user'
 import { track } from '../../utils/track'
 
 const userStore = useUserStore()
 const user = ref<any>({})
 
-onMounted(() => {
+onMounted(async () => {
   user.value = userStore.userInfo || {}
+  if (userStore.userInfo?.hasAvatar && !user.value.avatar) {
+    try {
+      const res = await get<any>('/auth/avatar')
+      user.value = { ...user.value, avatar: res.avatar }
+    } catch {}
+  }
 })
 
 function uploadAvatar() {

@@ -258,6 +258,7 @@ function triggerMoneyBurst() {
 
 onMounted(async () => {
   await userStore.fetchMe()
+  if (userStore.userInfo?.hasAvatar) loadAvatar()
   await Promise.all([loadPackages(), loadOrders(), loadPaymentInfo()])
   loading.value = false
   connectWS()
@@ -270,6 +271,12 @@ onShow(async () => {
 
 onUnmounted(() => { ws?.close() })
 
+async function loadAvatar() {
+  try {
+    const res = await get<any>('/auth/avatar')
+    userStore.setUser({ ...userStore.userInfo, avatar: res.avatar })
+  } catch {}
+}
 async function loadPackages() { try { packages.value = await get<any[]>('/packages') } catch {} }
 async function loadOrders() { try { orders.value = await get<any[]>('/pay/orders') } catch {} }
 async function loadPaymentInfo() { try { paymentInfo.value = await get<any>('/user/payment') } catch {} }

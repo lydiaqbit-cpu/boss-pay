@@ -1,13 +1,30 @@
 import { Router, Response } from 'express'
+import sharp from 'sharp'
 import { authMiddleware, AuthRequest } from '../middleware/auth'
 import { prisma } from '../utils/prisma'
 import { asyncHandler } from '../utils/asyncHandler'
 
 const router = Router()
 
+async function compressBase64(dataUrl: string, maxDim = 600, quality = 60): Promise<string> {
+  try {
+    const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/)
+    if (!match) return dataUrl
+    const buf = Buffer.from(match[2], 'base64')
+    const compressed = await sharp(buf)
+      .resize(maxDim, maxDim, { fit: 'inside', withoutEnlargement: true })
+      .jpeg({ quality })
+      .toBuffer()
+    return 'data:image/jpeg;base64,' + compressed.toString('base64')
+  } catch {
+    return dataUrl
+  }
+}
+
 // PUT /api/user/profile — 更新昵称/头像/介绍（只更新传入的字段）
 router.put('/profile', authMiddleware, asyncHandler(async (req: AuthRequest, res: Response) => {
-  const { nickname, avatar, bio } = req.body
+  let { nickname, avatar, bio } = req.body
+  if (avatar && avatar.startsWith('data:')) avatar = await compressBase64(avatar, 400, 70)
   const data = Object.fromEntries(
     Object.entries({ nickname, avatar, bio }).filter(([, v]) => v !== undefined && v !== null)
   )
@@ -21,7 +38,9 @@ router.put('/profile', authMiddleware, asyncHandler(async (req: AuthRequest, res
 
 // PUT /api/user/payment — 保存收款方式（只更新传入的字段）
 router.put('/payment', authMiddleware, asyncHandler(async (req: AuthRequest, res: Response) => {
-  const { wechatQrUrl, alipayQrUrl, defaultPaymentMethod } = req.body
+  let { wechatQrUrl, alipayQrUrl, defaultPaymentMethod } = req.body
+  if (wechatQrUrl?.startsWith('data:')) wechatQrUrl = await compressBase64(wechatQrUrl, 600, 60)
+  if (alipayQrUrl?.startsWith('data:')) alipayQrUrl = await compressBase64(alipayQrUrl, 600, 60)
   const data = Object.fromEntries(
     Object.entries({ wechatQrUrl, alipayQrUrl, defaultPaymentMethod }).filter(([, v]) => v !== undefined)
   )

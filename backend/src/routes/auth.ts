@@ -93,6 +93,15 @@ router.post('/wechat-mock', asyncHandler(async (req: Request, res: Response) => 
   res.json({ code: 0, data: { token, user: { id: user.id, nickname: user.nickname, phone: user.phone, avatar: user.avatar, bio: user.bio } } })
 }))
 
+// GET /api/auth/avatar — 单独获取头像（按需加载，避免 /me 体积过大）
+router.get('/avatar', authMiddleware, asyncHandler(async (req: AuthRequest, res: Response) => {
+  const user = await prisma.user.findUnique({
+    where: { id: req.userId! },
+    select: { avatar: true }
+  })
+  res.json({ code: 0, data: { avatar: user?.avatar || '' } })
+}))
+
 // GET /api/auth/me  (protected)
 router.get('/me', authMiddleware, asyncHandler(async (req: AuthRequest, res: Response) => {
   const user = await prisma.user.findUnique({
@@ -100,7 +109,8 @@ router.get('/me', authMiddleware, asyncHandler(async (req: AuthRequest, res: Res
     select: { id: true, nickname: true, phone: true, avatar: true, bio: true }
   })
   if (!user) { res.status(404).json({ code: 404, message: '用户不存在' }); return }
-  res.json({ code: 0, data: user })
+  const { avatar, ...rest } = user
+  res.json({ code: 0, data: { ...rest, hasAvatar: !!avatar } })
 }))
 
 export default router
