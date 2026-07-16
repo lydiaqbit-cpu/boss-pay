@@ -19,18 +19,40 @@ const bossPaidLimiter = rateLimit({
 })
 
 // GET /api/pay/page/:userId — 公开收款页（老板访问，无需登录）
+// 不返回 base64 图片，减少响应体积
 router.get('/page/:userId', asyncHandler(async (req: Request, res: Response) => {
+  const [userRow, packages] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: req.params.userId },
+      select: { id: true, nickname: true, avatar: true, bio: true,
+        defaultPaymentMethod: true, wechatQrUrl: true, alipayQrUrl: true }
+    }),
+    prisma.package.findMany({
+      where: { userId: req.params.userId, isActive: true },
+      orderBy: { sortOrder: 'asc' }
+    })
+  ])
+  if (!userRow) { res.status(404).json({ code: 404, message: '收款页不存在' }); return }
+
+  // 剥掉大体积 base64，只返回标志位；图片走 /pay/qr/:userId 单独拉
+  const { wechatQrUrl, alipayQrUrl, ...userInfo } = userRow
+  res.json({
+    code: 0,
+    data: {
+      user: { ...userInfo, hasWechat: !!wechatQrUrl, hasAlipay: !!alipayQrUrl },
+      packages
+    }
+  })
+}))
+
+// GET /api/pay/qr/:userId — 单独返回收款码图片（按需加载）
+router.get('/qr/:userId', asyncHandler(async (req: Request, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { id: req.params.userId },
-    select: { id: true, nickname: true, avatar: true, bio: true, wechatQrUrl: true, alipayQrUrl: true, defaultPaymentMethod: true }
+    select: { wechatQrUrl: true, alipayQrUrl: true }
   })
-  if (!user) { res.status(404).json({ code: 404, message: '收款页不存在' }); return }
-
-  const packages = await prisma.package.findMany({
-    where: { userId: req.params.userId, isActive: true },
-    orderBy: { sortOrder: 'asc' }
-  })
-  res.json({ code: 0, data: { user, packages } })
+  if (!user) { res.status(404).json({ code: 404, message: '用户不存在' }); return }
+  res.json({ code: 0, data: { wechatQrUrl: user.wechatQrUrl, alipayQrUrl: user.alipayQrUrl } })
 }))
 
 // GET /api/pay/receipt/:orderId — 公开凭证（老板付款后查看，无需登录）

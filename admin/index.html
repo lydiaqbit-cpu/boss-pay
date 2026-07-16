@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>牛马加班吧 · 管理后台</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --surface2: #f0f1f7;
+  --border: #e4e6ef;
+  --text: #1a1d2e;
+  --text-2: #6b7280;
+  --text-3: #9ca3af;
+  --accent: #4f46e5;
+  --accent-light: #eef2ff;
+  --green: #10b981;
+  --green-light: #ecfdf5;
+  --orange: #f59e0b;
+  --orange-light: #fffbeb;
+  --red: #ef4444;
+  --red-light: #fef2f2;
+  --blue: #3b82f6;
+  --blue-light: #eff6ff;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d2e;
+    --surface2: #252840;
+    --border: #2d3148;
+    --text: #f1f2f8;
+    --text-2: #9ca3af;
+    --text-3: #6b7280;
+    --accent-light: #1e1b4b;
+    --green-light: #022c22;
+    --orange-light: #1c1407;
+    --red-light: #1f0e0e;
+    --blue-light: #0c1a35;
+    --shadow: 0 1px 3px rgba(0,0,0,.3);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.3);
+  }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── Login screen ── */
+#login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+.login-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 40px;
+  width: 100%;
+  max-width: 380px;
+}
+.login-card h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.login-card p { color: var(--text-2); margin-bottom: 28px; font-size: 13px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-2); }
+.field input {
+  width: 100%; padding: 10px 14px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 14px; color: var(--text);
+  outline: none; transition: border-color .15s;
+}
+.field input:focus { border-color: var(--accent); }
+.btn-primary {
+  width: 100%; padding: 11px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius-sm);
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: opacity .15s;
+}
+.btn-primary:hover { opacity: .88; }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+.login-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
+
+/* ── App shell ── */
+#app { display: none; }
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 10;
+  box-shadow: var(--shadow);
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.logo { font-size: 18px; font-weight: 700; }
+.logo span { color: var(--accent); }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.btn-logout {
+  padding: 6px 14px; border-radius: var(--radius-sm);
+  background: var(--surface2); border: 1px solid var(--border);
+  font-size: 13px; color: var(--text-2); cursor: pointer;
+}
+.btn-logout:hover { color: var(--red); border-color: var(--red); }
+.btn-refresh {
+  padding: 6px 14px; border-radius: var(--radius-sm);
+  background: var(--accent-light); border: none;
+  font-size: 13px; color: var(--accent); cursor: pointer; font-weight: 500;
+}
+.btn-refresh:hover { opacity: .85; }
+
+main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+
+/* ── Period tabs ── */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.section-title { font-size: 16px; font-weight: 600; }
+.tabs { display: flex; gap: 4px; background: var(--surface2); border-radius: var(--radius-sm); padding: 3px; }
+.tab {
+  padding: 5px 14px; border-radius: 6px; border: none;
+  background: transparent; color: var(--text-2);
+  font-size: 13px; cursor: pointer; font-weight: 500; transition: all .15s;
+}
+.tab.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+
+/* ── Stat tiles ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.stat-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.stat-body { flex: 1; min-width: 0; }
+.stat-label { font-size: 12px; color: var(--text-2); margin-bottom: 4px; }
+.stat-value { font-size: 26px; font-weight: 700; line-height: 1.1; }
+.stat-sub { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+.stat-sub b { color: var(--green); font-weight: 600; }
+
+/* ── Charts ── */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+@media (max-width: 768px) { .charts-row { grid-template-columns: 1fr; } }
+.chart-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.chart-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+canvas { width: 100% !important; }
+
+/* ── Bar chart for events ── */
+.events-list { display: flex; flex-direction: column; gap: 10px; }
+.event-row { display: flex; align-items: center; gap: 10px; }
+.event-name { width: 120px; font-size: 12px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.event-bar-wrap { flex: 1; height: 10px; background: var(--surface2); border-radius: 5px; overflow: hidden; }
+.event-bar { height: 100%; border-radius: 5px; background: var(--accent); transition: width .5s ease; }
+.event-count { width: 40px; text-align: right; font-size: 12px; font-weight: 600; color: var(--text); }
+
+/* ── Users table ── */
+.table-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+.table-header {
+  padding: 18px 20px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.table-header-title { font-size: 14px; font-weight: 600; }
+table { width: 100%; border-collapse: collapse; }
+th { padding: 11px 16px; text-align: left; font-size: 12px; font-weight: 500; color: var(--text-2); border-bottom: 1px solid var(--border); background: var(--surface2); }
+td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--accent); }
+.user-cell { display: flex; align-items: center; gap: 10px; }
+.user-info .name { font-weight: 500; }
+.user-info .phone { font-size: 12px; color: var(--text-3); }
+.badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-blue { background: var(--blue-light); color: var(--blue); }
+
+/* ── Pagination ── */
+.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 16px; }
+.page-btn {
+  padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-2); cursor: pointer; font-size: 13px;
+  transition: all .15s;
+}
+.page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.page-btn:disabled { opacity: .4; cursor: not-allowed; }
+.page-info { font-size: 13px; color: var(--text-2); }
+
+/* ── Loading / Empty ── */
+.skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.loading-row td { padding: 14px 16px; }
+
+.empty-state { padding: 40px; text-align: center; color: var(--text-3); font-size: 13px; }
+
+/* ── Tooltip ── */
+#tooltip {
+  position: fixed; pointer-events: none; z-index: 999;
+  background: var(--text); color: var(--surface);
+  padding: 8px 12px; border-radius: 8px; font-size: 12px;
+  box-shadow: var(--shadow-md); display: none; max-width: 200px; line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<div id="tooltip"></div>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1>🐮 管理后台</h1>
+    <p>牛马加班吧 · 数据看板</p>
+    <div class="field">
+      <label>管理密钥</label>
+      <input type="password" id="secret-input" placeholder="输入 Admin Secret" />
+    </div>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">进入后台</button>
+    <p class="login-err" id="login-err">密钥错误，请重试</p>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <header>
+    <div class="header-left">
+      <div class="logo">🐮 <span>牛马加班吧</span> 管理后台</div>
+    </div>
+    <div class="header-right">
+      <button class="btn-refresh" onclick="loadAll()">刷新数据</button>
+      <button class="btn-logout" onclick="logout()">退出</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Overview stats -->
+    <div style="margin-bottom:20px;">
+      <div class="section-title" style="margin-bottom:16px;">数据概览</div>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card"><div class="stat-icon" style="background:var(--accent-light)">👥</div><div class="stat-body"><div class="stat-label">注册用户</div><div class="stat-value skeleton" style="height:32px;width:60px"></div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--green-light)">📦</div><div class="stat-body"><div class="stat-label">总订单数</div><div class="stat-value skeleton" style="height:32px;width:60px"></div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--orange-light)">💰</div><div class="stat-body"><div class="stat-label">已确认收入</div><div class="stat-value skeleton" style="height:32px;width:80px"></div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--blue-light)">📊</div><div class="stat-body"><div class="stat-label">埋点事件</div><div class="stat-value skeleton" style="height:32px;width:60px"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row">
+      <!-- 注册趋势 -->
+      <div class="chart-card">
+        <div class="section-header">
+          <div class="chart-title">注册趋势</div>
+          <div class="tabs">
+            <button class="tab active" onclick="switchPeriod('reg','day',this)">近30天</button>
+            <button class="tab" onclick="switchPeriod('reg','week',this)">近12周</button>
+            <button class="tab" onclick="switchPeriod('reg','month',this)">近12月</button>
+          </div>
+        </div>
+        <canvas id="reg-chart" height="180"></canvas>
+      </div>
+
+      <!-- 功能使用 -->
+      <div class="chart-card">
+        <div class="section-header">
+          <div class="chart-title">功能使用排行</div>
+          <div class="tabs">
+            <button class="tab active" onclick="switchPeriod('evt','day',this)">近30天</button>
+            <button class="tab" onclick="switchPeriod('evt','week',this)">近12周</button>
+            <button class="tab" onclick="switchPeriod('evt','month',this)">近12月</button>
+          </div>
+        </div>
+        <div class="events-list" id="events-list">
+          <div class="event-row" style="height:14px"><div class="event-bar-wrap skeleton" style="height:14px"></div></div>
+          <div class="event-row" style="height:14px"><div class="event-bar-wrap skeleton" style="height:14px"></div></div>
+          <div class="event-row" style="height:14px"><div class="event-bar-wrap skeleton" style="height:14px"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users table -->
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-header-title">用户列表</div>
+        <div id="user-total" style="font-size:13px;color:var(--text-2)">加载中…</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>用户</th>
+              <th>套餐数</th>
+              <th>订单数</th>
+              <th>注册时间</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <tr class="loading-row"><td colspan="4"><div class="skeleton" style="height:14px;width:70%"></div></td></tr>
+            <tr class="loading-row"><td colspan="4"><div class="skeleton" style="height:14px;width:55%"></div></td></tr>
+            <tr class="loading-row"><td colspan="4"><div class="skeleton" style="height:14px;width:80%"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <button class="page-btn" id="prev-btn" onclick="changePage(-1)" disabled>← 上一页</button>
+        <span class="page-info" id="page-info">-</span>
+        <button class="page-btn" id="next-btn" onclick="changePage(1)" disabled>下一页 →</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const API = 'https://boss-pay.onrender.com/api/admin'
+let secret = ''
+let regPeriod = 'day'
+let evtPeriod = 'day'
+let userPage = 1
+let userTotal = 0
+const PAGE_SIZE = 20
+
+// ── tiny canvas chart ──────────────────────────────────────────
+const IS_DARK = () => document.documentElement.getAttribute('data-theme') === 'dark'
+  || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+function drawLineChart(canvasId, labels, values) {
+  const canvas = document.getElementById(canvasId)
+  const ctx = canvas.getContext('2d')
+  const dpr = window.devicePixelRatio || 1
+  const W = canvas.parentElement.clientWidth - 40
+  const H = 180
+  canvas.width = W * dpr; canvas.height = H * dpr
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px'
+  ctx.scale(dpr, dpr)
+  ctx.clearRect(0, 0, W, H)
+
+  const dark = IS_DARK()
+  const gridColor = dark ? '#2d3148' : '#e4e6ef'
+  const textColor = dark ? '#6b7280' : '#9ca3af'
+  const accentColor = '#4f46e5'
+  const fillColor = dark ? 'rgba(79,70,229,0.15)' : 'rgba(79,70,229,0.08)'
+
+  const pad = { top: 12, right: 8, bottom: 36, left: 32 }
+  const cW = W - pad.left - pad.right
+  const cH = H - pad.top - pad.bottom
+
+  if (!values.length) {
+    ctx.fillStyle = textColor; ctx.textAlign = 'center'; ctx.font = '13px sans-serif'
+    ctx.fillText('暂无数据', W / 2, H / 2); return
+  }
+
+  const maxV = Math.max(...values, 1)
+  const gridLines = 4
+  ctx.strokeStyle = gridColor; ctx.lineWidth = 1
+  for (let i = 0; i <= gridLines; i++) {
+    const y = pad.top + cH - (i / gridLines) * cH
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cW, y); ctx.stroke()
+    ctx.fillStyle = textColor; ctx.textAlign = 'right'; ctx.font = `11px sans-serif`
+    ctx.fillText(Math.round((i / gridLines) * maxV), pad.left - 4, y + 4)
+  }
+
+  const stepX = values.length > 1 ? cW / (values.length - 1) : cW
+
+  // fill
+  ctx.beginPath()
+  ctx.moveTo(pad.left, pad.top + cH)
+  values.forEach((v, i) => {
+    const x = pad.left + i * stepX
+    const y = pad.top + cH - (v / maxV) * cH
+    i === 0 ? ctx.lineTo(x, y) : ctx.lineTo(x, y)
+  })
+  ctx.lineTo(pad.left + (values.length - 1) * stepX, pad.top + cH)
+  ctx.closePath(); ctx.fillStyle = fillColor; ctx.fill()
+
+  // line
+  ctx.beginPath()
+  values.forEach((v, i) => {
+    const x = pad.left + i * stepX
+    const y = pad.top + cH - (v / maxV) * cH
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+  })
+  ctx.strokeStyle = accentColor; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke()
+
+  // dots
+  values.forEach((v, i) => {
+    const x = pad.left + i * stepX
+    const y = pad.top + cH - (v / maxV) * cH
+    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2)
+    ctx.fillStyle = accentColor; ctx.fill()
+    ctx.strokeStyle = dark ? '#1a1d2e' : '#fff'; ctx.lineWidth = 1.5; ctx.stroke()
+  })
+
+  // x labels — show max 8
+  const step = Math.ceil(labels.length / 8)
+  ctx.fillStyle = textColor; ctx.textAlign = 'center'; ctx.font = '10px sans-serif'
+  labels.forEach((lbl, i) => {
+    if (i % step !== 0 && i !== labels.length - 1) return
+    const x = pad.left + i * stepX
+    ctx.fillText(lbl.length > 6 ? lbl.slice(5) : lbl, x, pad.top + cH + 18)
+  })
+
+  // hover
+  canvas._data = { values, labels, pad, cW, cH, maxV, stepX }
+}
+
+function setupHover(canvasId) {
+  const canvas = document.getElementById(canvasId)
+  const tip = document.getElementById('tooltip')
+  canvas.onmousemove = (e) => {
+    const d = canvas._data; if (!d) return
+    const rect = canvas.getBoundingClientRect()
+    const mx = e.clientX - rect.left - d.pad.left
+    const idx = Math.round(mx / d.stepX)
+    if (idx < 0 || idx >= d.values.length) { tip.style.display = 'none'; return }
+    tip.style.display = 'block'
+    tip.style.left = (e.clientX + 12) + 'px'
+    tip.style.top = (e.clientY - 32) + 'px'
+    tip.innerHTML = `<b>${d.labels[idx]}</b><br>新增 ${d.values[idx]} 人`
+  }
+  canvas.onmouseleave = () => { tip.style.display = 'none' }
+}
+
+// ── Auth ──────────────────────────────────────────────────────
+function doLogin() {
+  const input = document.getElementById('secret-input').value.trim()
+  if (!input) return
+  secret = input
+  document.getElementById('login-btn').disabled = true
+  document.getElementById('login-btn').textContent = '验证中…'
+  fetch(`${API}/overview`, { headers: { 'x-admin-secret': secret } })
+    .then(r => r.json())
+    .then(j => {
+      if (j.code === 0) {
+        localStorage.setItem('admin_secret', secret)
+        showApp(j.data)
+      } else {
+        showLoginErr()
+      }
+    })
+    .catch(() => showLoginErr())
+}
+
+function showLoginErr() {
+  document.getElementById('login-btn').disabled = false
+  document.getElementById('login-btn').textContent = '进入后台'
+  const err = document.getElementById('login-err')
+  err.style.display = 'block'
+  setTimeout(() => { err.style.display = 'none' }, 3000)
+}
+
+function logout() {
+  localStorage.removeItem('admin_secret')
+  secret = ''
+  document.getElementById('app').style.display = 'none'
+  document.getElementById('login-screen').style.display = 'flex'
+}
+
+document.getElementById('secret-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin()
+})
+
+// ── API helpers ───────────────────────────────────────────────
+function api(path) {
+  return fetch(`${API}${path}`, { headers: { 'x-admin-secret': secret } }).then(r => r.json())
+}
+
+// ── Data loading ──────────────────────────────────────────────
+function showApp(overviewData) {
+  document.getElementById('login-screen').style.display = 'none'
+  document.getElementById('app').style.display = 'block'
+  renderOverview(overviewData)
+  loadRegistrations()
+  loadEvents()
+  loadUsers()
+}
+
+function loadAll() {
+  api('/overview').then(j => { if (j.code === 0) renderOverview(j.data) })
+  loadRegistrations()
+  loadEvents()
+  loadUsers()
+}
+
+function renderOverview(d) {
+  const grid = document.getElementById('stats-grid')
+  grid.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--accent-light)">👥</div>
+      <div class="stat-body">
+        <div class="stat-label">注册用户</div>
+        <div class="stat-value">${d.totalUsers.toLocaleString()}</div>
+        <div class="stat-sub">今日新增 <b>+${d.todayUsers}</b></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--green-light)">📦</div>
+      <div class="stat-body">
+        <div class="stat-label">总订单数</div>
+        <div class="stat-value">${d.totalOrders.toLocaleString()}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--orange-light)">💰</div>
+      <div class="stat-body">
+        <div class="stat-label">已确认收入</div>
+        <div class="stat-value">¥${Number(d.totalRevenue).toFixed(2)}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--blue-light)">📊</div>
+      <div class="stat-body">
+        <div class="stat-label">埋点事件</div>
+        <div class="stat-value">${d.totalEvents.toLocaleString()}</div>
+      </div>
+    </div>
+  `
+}
+
+function loadRegistrations() {
+  api(`/registrations?period=${regPeriod}`).then(j => {
+    if (j.code !== 0) return
+    const labels = j.data.map(r => r.label)
+    const values = j.data.map(r => r.count)
+    drawLineChart('reg-chart', labels, values)
+    setupHover('reg-chart')
+  })
+}
+
+function loadEvents() {
+  api(`/events?period=${evtPeriod}`).then(j => {
+    if (j.code !== 0) return
+    const list = j.data.byType.slice(0, 10)
+    const max = list[0]?.count || 1
+    const el = document.getElementById('events-list')
+    if (!list.length) { el.innerHTML = '<div class="empty-state">暂无事件数据</div>'; return }
+    el.innerHTML = list.map(r => `
+      <div class="event-row">
+        <div class="event-name" title="${r.event}">${r.event}</div>
+        <div class="event-bar-wrap">
+          <div class="event-bar" style="width:${Math.round(r.count/max*100)}%"></div>
+        </div>
+        <div class="event-count">${r.count}</div>
+      </div>
+    `).join('')
+  })
+}
+
+function loadUsers() {
+  api(`/users?page=${userPage}&size=${PAGE_SIZE}`).then(j => {
+    if (j.code !== 0) return
+    userTotal = j.data.total
+    const tbody = document.getElementById('users-tbody')
+    const users = j.data.users
+    document.getElementById('user-total').textContent = `共 ${userTotal} 位用户`
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">暂无用户</div></td></tr>'; return }
+    tbody.innerHTML = users.map(u => {
+      const initial = (u.nickname || u.phone || '?')[0].toUpperCase()
+      const avatar = u.avatar
+        ? `<img src="${u.avatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'">`
+        : `<div class="avatar">${initial}</div>`
+      const date = new Date(u.createdAt).toLocaleDateString('zh-CN')
+      return `
+        <tr>
+          <td>
+            <div class="user-cell">
+              ${avatar}
+              <div class="user-info">
+                <div class="name">${u.nickname || '未设置'}</div>
+                <div class="phone">${u.phone}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge-blue">${u._count.packages} 个</span></td>
+          <td>${u._count.orders}</td>
+          <td style="color:var(--text-2)">${date}</td>
+        </tr>
+      `
+    }).join('')
+    const totalPages = Math.ceil(userTotal / PAGE_SIZE)
+    document.getElementById('page-info').textContent = `第 ${userPage} / ${totalPages} 页`
+    document.getElementById('prev-btn').disabled = userPage <= 1
+    document.getElementById('next-btn').disabled = userPage >= totalPages
+  })
+}
+
+function changePage(delta) {
+  userPage = Math.max(1, userPage + delta)
+  loadUsers()
+}
+
+function switchPeriod(type, period, btn) {
+  // update active tab
+  btn.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+  btn.classList.add('active')
+  if (type === 'reg') { regPeriod = period; loadRegistrations() }
+  else { evtPeriod = period; loadEvents() }
+}
+
+// ── Init ──────────────────────────────────────────────────────
+const saved = localStorage.getItem('admin_secret')
+if (saved) {
+  secret = saved
+  fetch(`${API}/overview`, { headers: { 'x-admin-secret': secret } })
+    .then(r => r.json())
+    .then(j => {
+      if (j.code === 0) showApp(j.data)
+    })
+    .catch(() => {})
+}
+</script>
+</body>
+</html>

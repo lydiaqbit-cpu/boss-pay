@@ -133,61 +133,22 @@
     <!-- 快捷操作 -->
     <view class="action-grid">
       <view class="action-item" @click="toPackages">
-        <view class="a-icon-wrap">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="8" y="5" width="16" height="2.5" rx="1.2" fill="#8B6040" opacity="0.4"/>
-            <rect x="8" y="24.5" width="16" height="2.5" rx="1.2" fill="#8B6040" opacity="0.4"/>
-            <line x1="11.5" y1="7.5" x2="11.5" y2="24.5" stroke="#8B6040" stroke-width="2" stroke-linecap="round"/>
-            <line x1="16" y1="7.5" x2="16" y2="24.5" stroke="#8B6040" stroke-width="2" stroke-linecap="round"/>
-            <line x1="20.5" y1="7.5" x2="20.5" y2="24.5" stroke="#8B6040" stroke-width="2" stroke-linecap="round"/>
-            <line x1="8" y1="13.5" x2="24" y2="13.5" stroke="#A8402E" stroke-width="1.2" stroke-linecap="round"/>
-            <line x1="8" y1="18.5" x2="24" y2="18.5" stroke="#A8402E" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-        </view>
+        <view class="a-icon-wrap"><text class="a-emoji">📋</text></view>
         <text class="a-label">加班套餐</text>
         <text class="a-sub">定好价，一字不让</text>
       </view>
       <view class="action-item" @click="toOrders">
-        <view class="a-icon-wrap">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="7" y="5" width="3" height="22" rx="1.5" fill="#8B6040" opacity="0.35"/>
-            <rect x="10" y="5" width="15" height="22" rx="1" stroke="#8B6040" stroke-width="1.8"/>
-            <line x1="13" y1="11" x2="22" y2="11" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="13" y1="15" x2="22" y2="15" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="13" y1="19" x2="19" y2="19" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <circle cx="20.5" cy="22" r="2.5" stroke="#A8402E" stroke-width="1.4"/>
-            <line x1="20.5" y1="19.8" x2="20.5" y2="24.2" stroke="#A8402E" stroke-width="0.9" stroke-linecap="round"/>
-            <line x1="18.3" y1="22" x2="22.7" y2="22" stroke="#A8402E" stroke-width="0.9" stroke-linecap="round"/>
-          </svg>
-        </view>
+        <view class="a-icon-wrap"><text class="a-emoji">📒</text></view>
         <text class="a-label">收款记录</text>
         <text class="a-sub">每笔都是泪</text>
       </view>
       <view class="action-item" @click="toPaymentSetting">
-        <view class="a-icon-wrap">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="16" cy="16" r="11" stroke="#8B6040" stroke-width="1.8"/>
-            <rect x="13" y="13" width="6" height="6" rx="0.5" stroke="#A8402E" stroke-width="1.6"/>
-            <line x1="16" y1="4" x2="16" y2="7" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="16" y1="25" x2="16" y2="28" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="4" y1="16" x2="7" y2="16" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-            <line x1="25" y1="16" x2="28" y2="16" stroke="#8B6040" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-        </view>
+        <view class="a-icon-wrap"><text class="a-emoji">💳</text></view>
         <text class="a-label">收款方式</text>
         <text class="a-sub">钱往哪打</text>
       </view>
       <view class="action-item" @click="previewCashier">
-        <view class="a-icon-wrap">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 16 Q10 7 16 7 Q22 7 29 16 Q22 25 16 25 Q10 25 3 16Z" stroke="#8B6040" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="16" cy="16" r="4.5" stroke="#8B6040" stroke-width="1.6"/>
-            <circle cx="16" cy="16" r="2" fill="#A8402E"/>
-            <line x1="10.5" y1="8.5" x2="9.5" y2="6.5" stroke="#8B6040" stroke-width="1.2" stroke-linecap="round"/>
-            <line x1="16" y1="7" x2="16" y2="5" stroke="#8B6040" stroke-width="1.2" stroke-linecap="round"/>
-            <line x1="21.5" y1="8.5" x2="22.5" y2="6.5" stroke="#8B6040" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-        </view>
+        <view class="a-icon-wrap"><text class="a-emoji">👁️</text></view>
         <text class="a-label">老板视角</text>
         <text class="a-sub">甲方看到啥</text>
       </view>
@@ -344,9 +305,39 @@ function toPackages() { uni.navigateTo({ url: '/pages/packages/index' }) }
 function toOrders() { uni.switchTab({ url: '/pages/orders/index' }) }
 function toPaymentSetting() { uni.navigateTo({ url: '/pages/profile/payment' }) }
 
-function copyLink() {
-  uni.setClipboardData({ data: payLink.value, success: () => { copied.value = true; setTimeout(() => { copied.value = false }, 2000) } })
+function buildLink(pkgId?: string) {
+  const uid = userStore.userInfo?.id || ''
+  // #ifdef H5
+  return `${location.origin}/#/pages/pay/cashier?userId=${uid}${pkgId ? `&packageId=${pkgId}` : ''}`
+  // #endif
+  // #ifdef MP-WEIXIN
+  return `/pages/pay/cashier?userId=${uid}${pkgId ? `&packageId=${pkgId}` : ''}`
+  // #endif
+}
+
+function doCopy(link: string) {
+  uni.setClipboardData({ data: link, success: () => { copied.value = true; setTimeout(() => { copied.value = false }, 2000) } })
   track('copy_pay_link')
+}
+
+function copyLink() {
+  const pkgs = packages.value
+  if (pkgs.length === 0) {
+    doCopy(buildLink())
+  } else if (pkgs.length === 1) {
+    doCopy(buildLink(pkgs[0].id))
+  } else {
+    uni.showActionSheet({
+      itemList: pkgs.map(p => `${p.name}  ¥${p.price}`).concat(['复制通用链接（不指定套餐）']),
+      success: (res) => {
+        if (res.tapIndex < pkgs.length) {
+          doCopy(buildLink(pkgs[res.tapIndex].id))
+        } else {
+          doCopy(buildLink())
+        }
+      }
+    })
+  }
 }
 
 function copyLinkOnboard() {
@@ -533,6 +524,7 @@ page { background: #F7F4F0; }
 }
 .action-item:active { transform: scale(0.95); box-shadow: none; }
 .a-icon-wrap { width: 72rpx; height: 72rpx; border-radius: 8rpx; background: #F0EAE2; display: flex; align-items: center; justify-content: center; margin-bottom: 10rpx; }
+.a-emoji { font-size: 36rpx; line-height: 1; }
 .a-label { font-size: 19rpx; color: #6B5040; font-weight: 600; white-space: nowrap; }
 .a-sub { font-size: 17rpx; color: #C4A882; margin-top: 4rpx; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 

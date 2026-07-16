@@ -121,10 +121,22 @@ function uploadQr(type: 'wechat' | 'alipay') {
       img.src = path
       // #endif
       // #ifdef MP-WEIXIN
-      uni.getFileSystemManager().readFile({
-        filePath: path, encoding: 'base64',
-        success: (r) => applyQr(type, 'data:image/jpeg;base64,' + r.data),
-        fail: () => uni.showToast({ title: '图片读取失败，请重试', icon: 'none' })
+      uni.compressImage({
+        src: path, quality: 40,
+        success: (compressed) => {
+          uni.getFileSystemManager().readFile({
+            filePath: compressed.tempFilePath, encoding: 'base64',
+            success: (r) => applyQr(type, 'data:image/jpeg;base64,' + r.data),
+            fail: () => uni.showToast({ title: '图片读取失败，请重试', icon: 'none' })
+          })
+        },
+        fail: () => {
+          uni.getFileSystemManager().readFile({
+            filePath: path, encoding: 'base64',
+            success: (r) => applyQr(type, 'data:image/jpeg;base64,' + r.data),
+            fail: () => uni.showToast({ title: '图片读取失败，请重试', icon: 'none' })
+          })
+        }
       })
       // #endif
     }

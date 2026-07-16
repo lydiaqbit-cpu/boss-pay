@@ -94,20 +94,20 @@
       {
         "pagePath": "pages/home/index",
         "text": "首页",
-        "iconPath": "static/tab-home.svg",
-        "selectedIconPath": "static/tab-home-active.svg"
+        "iconPath": "static/tab-home.png",
+        "selectedIconPath": "static/tab-home-active.png"
       },
       {
         "pagePath": "pages/orders/index",
         "text": "账单",
-        "iconPath": "static/tab-orders.svg",
-        "selectedIconPath": "static/tab-orders-active.svg"
+        "iconPath": "static/tab-orders.png",
+        "selectedIconPath": "static/tab-orders-active.png"
       },
       {
         "pagePath": "pages/profile/index",
         "text": "我的",
-        "iconPath": "static/tab-profile.svg",
-        "selectedIconPath": "static/tab-profile-active.svg"
+        "iconPath": "static/tab-profile.png",
+        "selectedIconPath": "static/tab-profile-active.png"
       }
     ]
   },

@@ -104,11 +104,31 @@ async function handleSave() {
       await post('/packages', payload)
     }
     track(isEdit.value ? 'edit_package' : 'create_package', { price: payload.price })
-    uni.showToast({ title: isEdit.value ? '修改成功' : '创建成功', icon: 'success' })
     // 通知上一页刷新（EventChannel）
     const eventChannel = uni.getOpenerEventChannel()
     eventChannel.emit('refresh')
-    setTimeout(() => uni.navigateBack(), 800)
+
+    if (!isEdit.value) {
+      // 新建套餐：引导去首页复制链接
+      setTimeout(() => {
+        uni.showModal({
+          title: '套餐创建成功 🎉',
+          content: '现在去首页复制收款链接，发给老板让他付钱！',
+          confirmText: '去复制链接',
+          cancelText: '再建一个',
+          success: (res) => {
+            if (res.confirm) {
+              uni.switchTab({ url: '/pages/home/index' })
+            } else {
+              uni.navigateBack()
+            }
+          }
+        })
+      }, 300)
+    } else {
+      uni.showToast({ title: '修改成功', icon: 'success' })
+      setTimeout(() => uni.navigateBack(), 800)
+    }
   } finally {
     loading.value = false
   }

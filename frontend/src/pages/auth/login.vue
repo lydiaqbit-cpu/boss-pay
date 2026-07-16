@@ -20,6 +20,8 @@
         <text class="tip-item">✅ 一键开始</text>
         <text class="tip-item">✅ 老板直接转</text>
       </view>
+
+      <button class="btn-skip" @click="handleSkip">暂不登录</button>
     </view>
 
     <text class="footer-tip">已帮 2,381 位打工人成功要回加班费 💰</text>
@@ -34,6 +36,15 @@ import { track } from '../../utils/track'
 
 const userStore = useUserStore()
 const wxLoading = ref(false)
+
+function handleSkip() {
+  // #ifdef MP-WEIXIN
+  wx.exitMiniProgram({ fail: () => uni.navigateBack() })
+  // #endif
+  // #ifdef H5
+  uni.navigateBack()
+  // #endif
+}
 
 async function handleWechatLogin() {
   wxLoading.value = true
@@ -91,6 +102,12 @@ page { background: #F7F4F0; }
   display: flex; justify-content: center; gap: 24rpx; margin-top: 28rpx;
 }
 .tip-item { font-size: 22rpx; color: #8B7355; }
+
+.btn-skip {
+  width: 100%; height: 80rpx; background: transparent;
+  color: #8B7355; border: 1rpx solid #C8B89A; border-radius: 8rpx;
+  font-size: 28rpx; margin-top: 24rpx;
+}
 
 .footer-tip { font-size: 22rpx; color: #C4A882; margin-top: 48rpx; letter-spacing: 1rpx; text-align: center; }
 </style>

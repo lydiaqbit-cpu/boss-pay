@@ -48,11 +48,11 @@
     <!-- 支付方式区 -->
     <view v-if="selectedId && hasPayment" class="pay-panel">
       <view class="pay-panel-header">
-        <text class="pay-panel-title">选择付款方式</text>
+        <text class="pay-panel-title">{{ availableTabs.length > 1 ? '选择付款方式' : '扫码付款' }}</text>
       </view>
 
-      <!-- 方式 tab -->
-      <view class="method-tabs">
+      <!-- 只有多种方式时才显示 tab -->
+      <view v-if="availableTabs.length > 1" class="method-tabs">
         <view
           v-for="tab in availableTabs"
           :key="tab.key"
@@ -66,19 +66,28 @@
         </view>
       </view>
 
+      <!-- 收款码加载中 -->
+      <view v-if="qrLoading" class="qr-loading"><text>收款码加载中…</text></view>
+
       <!-- 微信收款码 -->
-      <view v-if="activeTab === 'wechat'" class="qr-panel">
+      <view v-if="!qrLoading && qrData.wechatQrUrl && (activeTab === 'wechat' || availableTabs.length === 1)" class="qr-panel">
+        <view class="qr-label-row" v-if="availableTabs.length === 1">
+          <text class="qr-method-label">💚 微信扫码付款</text>
+        </view>
         <view class="qr-box">
-          <image :src="pageData.user?.wechatQrUrl" class="qr-img" mode="aspectFit"/>
+          <image :src="qrData.wechatQrUrl" class="qr-img" mode="aspectFit"/>
         </view>
         <text class="scan-tip">📱 长按识别二维码扫码付款</text>
         <text class="humor-tip">转账备注"{{ selectedPkg?.name }}"，老板有情有义 😇</text>
       </view>
 
       <!-- 支付宝收款码 -->
-      <view v-if="activeTab === 'alipay'" class="qr-panel">
+      <view v-if="!qrLoading && qrData.alipayQrUrl && (activeTab === 'alipay' || availableTabs.length === 1)" class="qr-panel">
+        <view class="qr-label-row" v-if="availableTabs.length === 1">
+          <text class="qr-method-label">💙 支付宝扫码付款</text>
+        </view>
         <view class="qr-box">
-          <image :src="pageData.user?.alipayQrUrl" class="qr-img" mode="aspectFit"/>
+          <image :src="qrData.alipayQrUrl" class="qr-img" mode="aspectFit"/>
         </view>
         <text class="scan-tip">📱 长按识别二维码扫码付款</text>
         <text class="humor-tip">转账备注"{{ selectedPkg?.name }}"，老板仁义 💙</text>
@@ -117,6 +126,8 @@ import { track } from '../../utils/track'
 const userId = ref('')
 const lockedPackageId = ref('')
 const pageData = ref<any>({ user: null, packages: [] })
+const qrData = ref<any>({ wechatQrUrl: '', alipayQrUrl: '' })
+const qrLoading = ref(false)
 const selectedId = ref('')
 const payerName = ref('')
 const payerNote = ref('')
@@ -125,24 +136,54 @@ const submitting = ref(false)
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
 
+// #ifdef MP-WEIXIN
 onLoad((options: any) => {
   userId.value = options?.userId || ''
   lockedPackageId.value = options?.packageId || ''
 })
+// #endif
 
 onMounted(async () => {
-  if (!userId.value) return
+  // #ifdef H5
+  const hash = location.hash || ''
+  const qIndex = hash.indexOf('?')
+  const params = new URLSearchParams(qIndex >= 0 ? hash.slice(qIndex + 1) : location.search)
+  userId.value = params.get('userId') || ''
+  lockedPackageId.value = params.get('packageId') || ''
+  // #endif
+
+  const uid = userId.value
+  if (!uid) return
   try {
     const json = await new Promise<any>((resolve, reject) =>
-      uni.request({ url: `${API_BASE}/pay/page/${userId.value}`, method: 'GET', success: r => resolve(r.data), fail: reject })
+      uni.request({ url: `${API_BASE}/pay/page/${uid}`, method: 'GET', success: r => resolve(r.data), fail: reject })
     )
     if (json.code === 0) {
       pageData.value = json.data
-      if (lockedPackageId.value) selectedId.value = lockedPackageId.value
+      if (pkgId) selectedId.value = pkgId
       initTab(json.data.user)
+      // 主数据加载完后，异步拉取 QR 图片（体积大，单独请求）
+      loadQr(uid)
+    } else {
+      uni.showToast({ title: json.message || '加载失败', icon: 'none' })
     }
-  } catch { uni.showToast({ title: '加载失败，请重试', icon: 'none' }) }
+  } catch (e) {
+    console.error('[cashier] load failed', e)
+    uni.showToast({ title: '网络异常，请刷新重试', icon: 'none' })
+  }
 })
+
+async function loadQr(uid: string) {
+  qrLoading.value = true
+  try {
+    const json = await new Promise<any>((resolve, reject) =>
+      uni.request({ url: `${API_BASE}/pay/qr/${uid}`, method: 'GET', success: r => resolve(r.data), fail: reject })
+    )
+    if (json.code === 0) qrData.value = json.data
+  } catch {} finally {
+    qrLoading.value = false
+  }
+}
 
 function initTab(u: any) {
   if (!u) return
@@ -165,8 +206,8 @@ const availableTabs = computed(() => {
   const u = pageData.value.user
   if (!u) return []
   const tabs: any[] = []
-  if (u.wechatQrUrl) tabs.push({ key: 'wechat', label: '微信', icon: '💚', isDefault: def.value === 'wechat' })
-  if (u.alipayQrUrl) tabs.push({ key: 'alipay', label: '支付宝', icon: '💙', isDefault: def.value === 'alipay' })
+  if (u.hasWechat) tabs.push({ key: 'wechat', label: '微信', icon: '💚', isDefault: def.value === 'wechat' })
+  if (u.hasAlipay) tabs.push({ key: 'alipay', label: '支付宝', icon: '💙', isDefault: def.value === 'alipay' })
   return tabs
 })
 
@@ -267,6 +308,8 @@ page { background: #F7F4F0; }
   padding: 3rpx 10rpx; border-radius: 0 6rpx 0 6rpx;
 }
 
+.qr-label-row { padding: 18rpx 0 0; }
+.qr-method-label { font-size: 26rpx; font-weight: 600; color: #1E1A14; }
 .qr-panel { padding: 28rpx 24rpx; text-align: center; }
 .qr-box {
   display: inline-block; background: #fff; border: 1rpx solid #C8B89A;
@@ -301,4 +344,5 @@ page { background: #F7F4F0; }
 .no-icon { font-size: 80rpx; display: block; }
 .no-text { font-size: 26rpx; color: #8B7355; margin-top: 20rpx; display: block; line-height: 1.7; }
 .loading { text-align: center; padding: 200rpx 0; color: #C4A882; }
+.qr-loading { text-align: center; padding: 40rpx 0; color: #C4A882; font-size: 26rpx; }
 </style>
