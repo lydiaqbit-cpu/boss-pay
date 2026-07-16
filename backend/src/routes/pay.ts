@@ -42,7 +42,7 @@ router.get('/page/:userId', asyncHandler(async (req: Request, res: Response) => 
   const [userRow, packages] = await Promise.all([
     prisma.user.findUnique({
       where: { id: req.params.userId },
-      select: { id: true, nickname: true, avatar: true, bio: true,
+      select: { id: true, nickname: true, bio: true,
         defaultPaymentMethod: true, wechatQrUrl: true, alipayQrUrl: true }
     }),
     prisma.package.findMany({
