@@ -147,4 +147,20 @@ router.post('/orders/:id/reject', authMiddleware, asyncHandler(async (req: AuthR
   res.json({ code: 0, message: '已拒绝' })
 }))
 
+// POST /api/pay/orders/:id/restore — 员工撤销拒绝，恢复为待确认
+router.post('/orders/:id/restore', authMiddleware, asyncHandler(async (req: AuthRequest, res: Response) => {
+  const order = await prisma.order.findUnique({ where: { id: req.params.id } })
+  if (!order || order.userId !== req.userId) {
+    res.status(404).json({ code: 404, message: '订单不存在' }); return
+  }
+  const result = await prisma.order.updateMany({
+    where: { id: req.params.id, userId: req.userId!, status: 'rejected' },
+    data: { status: 'boss_paid' }
+  })
+  if (result.count === 0) {
+    res.status(409).json({ code: 409, message: '订单状态不正确' }); return
+  }
+  res.json({ code: 0, message: '已恢复待确认' })
+}))
+
 export default router

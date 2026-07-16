@@ -35,6 +35,7 @@
       </view>
       <text class="e-tip">老板一文未付，快去要钱</text>
       <text class="e-sub">把收款链接甩给老板，今日不付来日加倍奉陪</text>
+      <view class="empty-btn" @click="goHome">去复制链接，现在就要 →</view>
     </view>
 
     <template v-for="group in groupedOrders" :key="group.label">
@@ -58,6 +59,9 @@
       <view v-if="order.status === 'boss_paid'" class="action-bar">
         <view class="btn-reject" @click="handleReject(order.id)">未收到，拒绝</view>
         <view class="btn-confirm" @click="handleConfirm(order.id)">已收到，确认</view>
+      </view>
+      <view v-if="order.status === 'rejected'" class="action-bar">
+        <view class="btn-restore" @click="handleRestore(order.id)">撤销拒绝，重新待确认</view>
       </view>
 
       <view class="order-footer">
@@ -136,6 +140,19 @@ async function handleReject(orderId: string) {
     success: async (res) => {
       if (!res.confirm) return
       try { await post(`/pay/orders/${orderId}/reject`, {}); track('reject_order'); uni.showToast({ title: '已拒绝', icon: 'none' }); await loadOrders() }
+      catch { uni.showToast({ title: '操作失败', icon: 'none' }) }
+    }
+  })
+}
+
+function goHome() { uni.switchTab({ url: '/pages/home/index' }) }
+
+async function handleRestore(orderId: string) {
+  uni.showModal({
+    title: '撤销拒绝', content: '将此订单恢复为「待确认」状态？',
+    success: async (res) => {
+      if (!res.confirm) return
+      try { await post(`/pay/orders/${orderId}/restore`, {}); uni.showToast({ title: '已恢复待确认', icon: 'success' }); await loadOrders() }
       catch { uni.showToast({ title: '操作失败', icon: 'none' }) }
     }
   })
@@ -232,6 +249,17 @@ page { background: #F7F4F0; }
 .receipt-btn {
   background: #F0EAE2; border: 1rpx solid #C8B89A;
   border-radius: 4rpx; padding: 6rpx 16rpx; font-size: 22rpx; color: #A8402E;
+}
+.btn-restore {
+  flex: 1; height: 72rpx; border-radius: 6rpx;
+  border: 1rpx solid #C8B89A; color: #A8402E;
+  font-size: 26rpx; display: flex; align-items: center; justify-content: center;
+  background: #FBF8F5;
+}
+.empty-btn {
+  margin-top: 24rpx; padding: 18rpx 40rpx;
+  background: #1E1A14; color: #F7F4F0;
+  border-radius: 8rpx; font-size: 28rpx; font-weight: 600;
 }
 .bottom-gap { height: 40rpx; }
 
