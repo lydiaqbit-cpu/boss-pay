@@ -4,12 +4,7 @@
       <view class="avatar-wrap" @click="uploadAvatar">
         <image v-if="user.avatar" :src="user.avatar" class="avatar" mode="aspectFill"/>
         <view v-else class="avatar-placeholder"><text>{{ user.nickname?.[0] }}</text></view>
-        <view class="avatar-edit-badge">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M7 3 L6 5 L2 5 Q1 5 1 6 L1 15 Q1 16 2 16 L16 16 Q17 16 17 15 L17 6 Q17 5 16 5 L12 5 L11 3 Z" stroke="#F7F4F0" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
-          <circle cx="9" cy="10.5" r="2.8" stroke="#F7F4F0" stroke-width="1.3" fill="none"/>
-        </svg>
-      </view>
+        <view class="avatar-edit-badge"><text class="edit-icon">📷</text></view>
       </view>
       <view class="user-info">
         <view class="name-row">
