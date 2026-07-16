@@ -179,8 +179,15 @@ async function loadQr(uid: string) {
     const json = await new Promise<any>((resolve, reject) =>
       uni.request({ url: `${API_BASE}/pay/qr/${uid}`, method: 'GET', success: r => resolve(r.data), fail: reject })
     )
-    if (json.code === 0) qrData.value = json.data
-  } catch {} finally {
+    if (json.code === 0) {
+      qrData.value = json.data
+    } else {
+      uni.showToast({ title: '收款码加载失败', icon: 'none' })
+    }
+  } catch (e) {
+    console.error('[cashier] loadQr error', e)
+    uni.showToast({ title: '收款码请求失败，请刷新重试', icon: 'none' })
+  } finally {
     qrLoading.value = false
   }
 }
