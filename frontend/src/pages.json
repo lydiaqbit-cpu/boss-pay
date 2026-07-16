@@ -40,8 +40,9 @@
     {
       "path": "pages/pay/cashier",
       "style": {
-        "navigationBarTitleText": "老板请付牛马钱",
-        "navigationStyle": "custom"
+        "navigationBarTitleText": "加班费收款",
+        "navigationBarBackgroundColor": "#1E1A14",
+        "navigationBarTextStyle": "white"
       }
     },
     {

@@ -160,7 +160,7 @@ onMounted(async () => {
     )
     if (json.code === 0) {
       pageData.value = json.data
-      if (pkgId) selectedId.value = pkgId
+      if (lockedPackageId.value) selectedId.value = lockedPackageId.value
       initTab(json.data.user)
       // 主数据加载完后，异步拉取 QR 图片（体积大，单独请求）
       loadQr(uid)
@@ -185,13 +185,22 @@ async function loadQr(uid: string) {
   }
 }
 
+function goBack() {
+  const pages = getCurrentPages()
+  if (pages.length > 1) {
+    uni.navigateBack()
+  } else {
+    uni.switchTab({ url: '/pages/home/index' })
+  }
+}
+
 function initTab(u: any) {
   if (!u) return
   const def = u.defaultPaymentMethod
-  if (def === 'wechat' && u.wechatQrUrl) { activeTab.value = 'wechat'; return }
-  if (def === 'alipay' && u.alipayQrUrl) { activeTab.value = 'alipay'; return }
-  if (u.wechatQrUrl) activeTab.value = 'wechat'
-  else if (u.alipayQrUrl) activeTab.value = 'alipay'
+  if (def === 'wechat' && u.hasWechat) { activeTab.value = 'wechat'; return }
+  if (def === 'alipay' && u.hasAlipay) { activeTab.value = 'alipay'; return }
+  if (u.hasWechat) activeTab.value = 'wechat'
+  else if (u.hasAlipay) activeTab.value = 'alipay'
 }
 
 const displayPackages = computed(() =>
@@ -247,8 +256,12 @@ page { background: #F7F4F0; }
 
 .cashier-header {
   background: linear-gradient(160deg, #1E1A14, #3D3526);
-  padding: 80rpx 32rpx 32rpx;
+  padding: 40rpx 32rpx 32rpx;
 }
+.header-nav { position: absolute; top: 44rpx; left: 24rpx; }
+.btn-back { display: flex; align-items: center; gap: 4rpx; padding: 10rpx 16rpx; background: rgba(255,255,255,0.12); border-radius: 30rpx; }
+.btn-back-icon { font-size: 28rpx; color: #F7F4F0; line-height: 1; }
+.btn-back-text { font-size: 24rpx; color: #F7F4F0; }
 .shop-info { display: flex; align-items: center; gap: 18rpx; }
 .shop-avatar { width: 72rpx; height: 72rpx; border-radius: 36rpx; border: 2rpx solid rgba(196,168,130,0.5); }
 .shop-avatar-placeholder {

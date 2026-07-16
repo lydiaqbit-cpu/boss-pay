@@ -6,7 +6,7 @@
 
     <view v-else-if="order" class="receipt-wrap">
       <!-- 顶部提示 -->
-      <text class="screenshot-tip">📸 截图后发给老板，证明他付过血汗钱</text>
+      <text class="screenshot-tip">{{ isReadonly ? '📸 截图保存，发给对方证明你已付款' : '📸 截图后留存，是你要到血汗钱的证明' }}</text>
 
       <!-- 凭证卡 -->
       <view class="receipt-card" id="receipt-card">
@@ -70,7 +70,7 @@
       <!-- 操作按钮 -->
       <view class="actions">
         <view class="btn-share" :class="{ saving: saving }" @click="saveScreenshot">
-          <text>{{ saving ? '生成中...' : '📸 截图保存，发给老板' }}</text>
+          <text>{{ saving ? '生成中...' : (isReadonly ? '📸 截图保存，发给对方' : '📸 截图保存凭证') }}</text>
         </view>
         <view class="btn-back" @click="uni.navigateBack()">
           <text>返回记录</text>
@@ -150,7 +150,8 @@ async function saveScreenshot() {
   }
   // #endif
   // #ifdef MP-WEIXIN
-  uni.showToast({ title: '长按屏幕截图后发给老板 📸', icon: 'none', duration: 3000 })
+  const tip = isReadonly.value ? '同时按音量键+电源键截图，发给对方 📸' : '同时按音量键+电源键截图保存凭证 📸'
+  uni.showToast({ title: tip, icon: 'none', duration: 3000 })
   // #endif
   saving.value = false
 }

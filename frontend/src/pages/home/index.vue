@@ -122,7 +122,7 @@
         </view>
         <view class="ready-text-wrap">
           <text class="setup-title">讨薪令已就绪，发给老板！</text>
-          <text class="ready-link-preview">{{ payLinkShort }}</text>
+          <text class="ready-link-preview">点击复制，粘贴到微信发给老板 💌</text>
         </view>
       </view>
       <view class="ready-copy-btn" :class="{ copied }" @click="copyLink">
@@ -311,7 +311,7 @@ function buildLink(pkgId?: string) {
   return `${location.origin}/#/pages/pay/cashier?userId=${uid}${pkgId ? `&packageId=${pkgId}` : ''}`
   // #endif
   // #ifdef MP-WEIXIN
-  return `/pages/pay/cashier?userId=${uid}${pkgId ? `&packageId=${pkgId}` : ''}`
+  return `https://boss-pay.vercel.app/#/pages/pay/cashier?userId=${uid}${pkgId ? `&packageId=${pkgId}` : ''}`
   // #endif
 }
 
