@@ -46,11 +46,12 @@ const packages = ref<any[]>([])
 const userStore = useUserStore()
 
 function pkgPayLink(pkg: any) {
-  // #ifdef H5
-  return `${location.origin}/#/pages/pay/cashier?userId=${userStore.userInfo?.id}&packageId=${pkg.id}`
-  // #endif
+  const uid = userStore.userInfo?.id || ''
   // #ifdef MP-WEIXIN
-  return `/pages/pay/cashier?userId=${userStore.userInfo?.id}&packageId=${pkg.id}`
+  return `https://boss-pay.vercel.app/#/pages/pay/cashier?userId=${uid}&packageId=${pkg.id}`
+  // #endif
+  // #ifdef H5
+  return `${location.origin}/#/pages/pay/cashier?userId=${uid}&packageId=${pkg.id}`
   // #endif
 }
 
