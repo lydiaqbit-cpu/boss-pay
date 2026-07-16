@@ -1,9 +1,27 @@
 import { Router, Request, Response } from 'express'
 import rateLimit from 'express-rate-limit'
+import sharp from 'sharp'
 import { authMiddleware, AuthRequest } from '../middleware/auth'
 import { prisma } from '../utils/prisma'
 import { notifyUser } from '../ws/notifier'
 import { asyncHandler } from '../utils/asyncHandler'
+
+async function compressQr(dataUrl: string): Promise<string> {
+  try {
+    const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/)
+    if (!match) return dataUrl
+    const buf = Buffer.from(match[2], 'base64')
+    // 已经够小就直接返回（小于 50KB）
+    if (buf.length < 50 * 1024) return dataUrl
+    const compressed = await sharp(buf)
+      .resize(600, 600, { fit: 'inside', withoutEnlargement: true })
+      .jpeg({ quality: 60 })
+      .toBuffer()
+    return 'data:image/jpeg;base64,' + compressed.toString('base64')
+  } catch {
+    return dataUrl
+  }
+}
 
 const router = Router()
 
@@ -52,7 +70,11 @@ router.get('/qr/:userId', asyncHandler(async (req: Request, res: Response) => {
     select: { wechatQrUrl: true, alipayQrUrl: true }
   })
   if (!user) { res.status(404).json({ code: 404, message: '用户不存在' }); return }
-  res.json({ code: 0, data: { wechatQrUrl: user.wechatQrUrl, alipayQrUrl: user.alipayQrUrl } })
+  const [wechatQrUrl, alipayQrUrl] = await Promise.all([
+    user.wechatQrUrl ? compressQr(user.wechatQrUrl) : Promise.resolve(''),
+    user.alipayQrUrl ? compressQr(user.alipayQrUrl) : Promise.resolve('')
+  ])
+  res.json({ code: 0, data: { wechatQrUrl, alipayQrUrl } })
 }))
 
 // GET /api/pay/receipt/:orderId — 公开凭证（老板付款后查看，无需登录）
