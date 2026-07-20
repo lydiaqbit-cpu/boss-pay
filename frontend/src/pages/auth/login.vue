@@ -55,7 +55,7 @@ async function handleWechatLogin() {
     userStore.setToken(data.token); userStore.setUser(data.user)
     track('login', { userId: data.user.id })
     uni.switchTab({ url: '/pages/home/index' })
-  } catch { uni.showToast({ title: '登录失败，再试一次吧 😅', icon: 'none' }) }
+  } catch (e: any) { uni.showToast({ title: e?.message || '登录失败，再试一次吧 😅', icon: 'none', duration: 3000 }) }
   finally { wxLoading.value = false }
 }
 </script>
