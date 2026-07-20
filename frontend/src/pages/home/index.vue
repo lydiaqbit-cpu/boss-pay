@@ -267,8 +267,9 @@ onMounted(async () => {
 })
 
 onShow(async () => {
+  if (!userStore.token) return
   await Promise.all([loadPackages(), loadPaymentInfo()])
-  connectWS() // ws 内部有 if(ws) return，不会重复
+  connectWS()
 })
 
 onUnmounted(() => { ws?.close() })
