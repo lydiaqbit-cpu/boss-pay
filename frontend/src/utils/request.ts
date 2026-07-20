@@ -27,7 +27,8 @@ export function request<T = any>(url: string, options: RequestOptions = {}): Pro
           resolve(body.data as T)
         } else if (body.code === 401) {
           uni.removeStorageSync('token')
-          uni.reLaunch({ url: '/pages/auth/login' })
+          // 只有带 token 发出的请求才跳登录页，避免未登录游客触发循环
+          if (getToken()) uni.reLaunch({ url: '/pages/auth/login' })
           reject(new Error(body.message))
         } else {
           const msg = body.message || '请求失败'

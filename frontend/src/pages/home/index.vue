@@ -257,11 +257,13 @@ function triggerMoneyBurst() {
 }
 
 onMounted(async () => {
-  await userStore.fetchMe()
-  if (userStore.userInfo?.hasAvatar) loadAvatar()
-  await Promise.all([loadPackages(), loadOrders(), loadPaymentInfo()])
+  if (userStore.token) {
+    await userStore.fetchMe()
+    if (userStore.userInfo?.hasAvatar) loadAvatar()
+    await Promise.all([loadPackages(), loadOrders(), loadPaymentInfo()])
+    connectWS()
+  }
   loading.value = false
-  connectWS()
 })
 
 onShow(async () => {
