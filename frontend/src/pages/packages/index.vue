@@ -64,7 +64,14 @@ function copyPkgLink(pkg: any) {
   uni.setClipboardData({
     data: link,
     success: () => uni.showToast({ title: `"${pkg.name}" 链接已复制`, icon: 'success' }),
-    fail: (e: any) => uni.showToast({ title: '复制失败: ' + (e?.errMsg || '未知错误'), icon: 'none', duration: 3000 })
+    fail: () => {
+      uni.showModal({
+        title: '复制链接',
+        content: link,
+        showCancel: false,
+        confirmText: '关闭'
+      })
+    }
   })
 }
 
