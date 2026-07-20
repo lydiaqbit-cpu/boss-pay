@@ -104,9 +104,10 @@ async function handleSave() {
       await post('/packages', payload)
     }
     track(isEdit.value ? 'edit_package' : 'create_package', { price: payload.price })
-    // 通知上一页刷新（EventChannel）
-    const eventChannel = uni.getOpenerEventChannel()
-    eventChannel.emit('refresh')
+    try {
+      const eventChannel = uni.getOpenerEventChannel()
+      eventChannel.emit('refresh')
+    } catch {}
 
     if (!isEdit.value) {
       // 新建套餐：引导去首页复制链接
@@ -129,6 +130,8 @@ async function handleSave() {
       uni.showToast({ title: '修改成功', icon: 'success' })
       setTimeout(() => uni.navigateBack(), 800)
     }
+  } catch (e: any) {
+    uni.showToast({ title: e?.message || '保存失败，请重试', icon: 'none' })
   } finally {
     loading.value = false
   }
