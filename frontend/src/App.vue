@@ -1,12 +1,71 @@
+<template>
+  <!-- #ifdef MP-WEIXIN -->
+  <view v-if="showPrivacy" class="privacy-mask">
+    <view class="privacy-box">
+      <text class="privacy-title">隐私授权</text>
+      <text class="privacy-desc">为了正常使用复制链接、上传图片等功能，需要你授权访问相册和摄像头。我们承诺仅用于核心功能，不对外分享。</text>
+      <button class="privacy-agree-btn" id="privacy-agree-btn"
+        open-type="agreePrivacyAuthorization"
+        @agreeprivacyauthorization="onAgree">同意并继续</button>
+      <button class="privacy-deny-btn" @click="onDeny">拒绝</button>
+    </view>
+  </view>
+  <!-- #endif -->
+</template>
+
 <script setup lang="ts">
+import { ref } from 'vue'
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
 
-onLaunch(() => {});
+const showPrivacy = ref(false)
+let privacyResolve: ((res: any) => void) | null = null
+
+onLaunch(() => {
+  // #ifdef MP-WEIXIN
+  wx.onNeedPrivacyAuthorization((resolve: any) => {
+    privacyResolve = resolve
+    showPrivacy.value = true
+  })
+  // #endif
+});
 onShow(() => {});
 onHide(() => {});
+
+function onAgree() {
+  showPrivacy.value = false
+  privacyResolve?.({ event: 'agree', buttonId: 'privacy-agree-btn' })
+  privacyResolve = null
+}
+
+function onDeny() {
+  showPrivacy.value = false
+  privacyResolve?.({ event: 'disagree' })
+  privacyResolve = null
+}
 </script>
 
 <style lang="scss">
+/* ── 隐私弹窗 ── */
+.privacy-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 9999;
+  display: flex; align-items: flex-end;
+}
+.privacy-box {
+  width: 100%; background: #fff; border-radius: 24rpx 24rpx 0 0;
+  padding: 48rpx 40rpx 80rpx;
+}
+.privacy-title { font-size: 34rpx; font-weight: 700; color: #1E1A14; display: block; margin-bottom: 20rpx; }
+.privacy-desc { font-size: 26rpx; color: #6B5040; line-height: 1.6; display: block; margin-bottom: 40rpx; }
+.privacy-agree-btn {
+  width: 100%; height: 96rpx; background: #07C160; color: #fff;
+  border-radius: 12rpx; font-size: 32rpx; font-weight: 700; border: none; margin-bottom: 20rpx;
+}
+.privacy-deny-btn {
+  width: 100%; height: 80rpx; background: transparent; color: #8B7355;
+  border: 1rpx solid #C8B89A; border-radius: 12rpx; font-size: 28rpx;
+}
+
 /* ── 全局重置 ── */
 /* #ifdef H5 */
 page, body, * {
