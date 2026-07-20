@@ -63,6 +63,29 @@ router.get('/page/:userId', asyncHandler(async (req: Request, res: Response) => 
   })
 }))
 
+// GET /api/pay/avatar/:userId — 公开头像（老板视角，无需登录）
+router.get('/avatar/:userId', asyncHandler(async (req: Request, res: Response) => {
+  const user = await prisma.user.findUnique({
+    where: { id: req.params.userId },
+    select: { avatar: true }
+  })
+  if (!user) { res.status(404).json({ code: 404, message: '用户不存在' }); return }
+  let avatar = user.avatar || ''
+  if (avatar && avatar.length > 50 * 1024) {
+    try {
+      const match = avatar.match(/^data:([^;]+);base64,(.+)$/)
+      if (match) {
+        const compressed = await sharp(Buffer.from(match[2], 'base64'))
+          .resize(200, 200, { fit: 'cover' })
+          .jpeg({ quality: 70 })
+          .toBuffer()
+        avatar = 'data:image/jpeg;base64,' + compressed.toString('base64')
+      }
+    } catch {}
+  }
+  res.json({ code: 0, data: { avatar } })
+}))
+
 // GET /api/pay/qr/:userId — 单独返回收款码图片（按需加载）
 router.get('/qr/:userId', asyncHandler(async (req: Request, res: Response) => {
   const user = await prisma.user.findUnique({

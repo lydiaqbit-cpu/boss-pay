@@ -162,8 +162,9 @@ onMounted(async () => {
       pageData.value = json.data
       if (lockedPackageId.value) selectedId.value = lockedPackageId.value
       initTab(json.data.user)
-      // 主数据加载完后，异步拉取 QR 图片（体积大，单独请求）
+      // 主数据加载完后，异步拉取 QR 图片和头像（体积大，单独请求）
       loadQr(uid)
+      loadAvatar(uid)
     } else {
       uni.showToast({ title: json.message || '加载失败', icon: 'none' })
     }
@@ -172,6 +173,17 @@ onMounted(async () => {
     uni.showToast({ title: '网络异常，请刷新重试', icon: 'none' })
   }
 })
+
+async function loadAvatar(uid: string) {
+  try {
+    const json = await new Promise<any>((resolve, reject) =>
+      uni.request({ url: `${API_BASE}/pay/avatar/${uid}`, method: 'GET', success: r => resolve(r.data), fail: reject })
+    )
+    if (json.code === 0 && json.data.avatar && pageData.value?.user) {
+      pageData.value = { ...pageData.value, user: { ...pageData.value.user, avatar: json.data.avatar } }
+    }
+  } catch {}
+}
 
 async function loadQr(uid: string) {
   qrLoading.value = true
