@@ -56,9 +56,15 @@ function pkgPayLink(pkg: any) {
 }
 
 function copyPkgLink(pkg: any) {
+  const link = pkgPayLink(pkg)
+  if (!link) {
+    uni.showToast({ title: '请先登录再复制链接', icon: 'none' })
+    return
+  }
   uni.setClipboardData({
-    data: pkgPayLink(pkg),
-    success: () => uni.showToast({ title: `"${pkg.name}" 链接已复制`, icon: 'success' })
+    data: link,
+    success: () => uni.showToast({ title: `"${pkg.name}" 链接已复制`, icon: 'success' }),
+    fail: (e: any) => uni.showToast({ title: '复制失败: ' + (e?.errMsg || '未知错误'), icon: 'none', duration: 3000 })
   })
 }
 
