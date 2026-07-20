@@ -21,7 +21,7 @@
         <text class="tip-item">✅ 老板直接转</text>
       </view>
 
-      <button class="btn-skip" @click="handleSkip">暂不登录</button>
+      <button class="btn-skip" @click="handleSkip">先看看长什么样 →</button>
     </view>
 
     <text class="footer-tip">已帮 2,381 位打工人成功要回加班费 💰</text>
