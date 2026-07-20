@@ -12,8 +12,8 @@ const project = new ci.Project({
 async function main() {
   await ci.upload({
     project,
-    version: '1.3.3',
-    desc: '修复跳过登录不退出，修复401重定向逻辑',
+    version: '1.3.4',
+    desc: '修复创建套餐无反应，移除问题逻辑',
     onProgressUpdate: console.log,
     setting: { es6: true, minify: true },
   })
