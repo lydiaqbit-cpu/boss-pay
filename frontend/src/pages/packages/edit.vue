@@ -104,32 +104,8 @@ async function handleSave() {
       await post('/packages', payload)
     }
     track(isEdit.value ? 'edit_package' : 'create_package', { price: payload.price })
-    try {
-      const eventChannel = uni.getOpenerEventChannel()
-      eventChannel.emit('refresh')
-    } catch {}
-
-    if (!isEdit.value) {
-      // 新建套餐：引导去首页复制链接
-      setTimeout(() => {
-        uni.showModal({
-          title: '套餐创建成功 🎉',
-          content: '现在去首页复制收款链接，发给老板让他付钱！',
-          confirmText: '去复制链接',
-          cancelText: '再建一个',
-          success: (res) => {
-            if (res.confirm) {
-              uni.switchTab({ url: '/pages/home/index' })
-            } else {
-              uni.navigateBack()
-            }
-          }
-        })
-      }, 300)
-    } else {
-      uni.showToast({ title: '修改成功', icon: 'success' })
-      setTimeout(() => uni.navigateBack(), 800)
-    }
+    uni.showToast({ title: isEdit.value ? '修改成功' : '套餐创建成功 🎉', icon: 'success' })
+    setTimeout(() => uni.navigateBack(), 800)
   } catch (e: any) {
     uni.showToast({ title: e?.message || '保存失败，请重试', icon: 'none' })
   } finally {
