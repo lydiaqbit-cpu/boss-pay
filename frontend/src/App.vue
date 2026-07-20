@@ -1,25 +1,7 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
 
-onLaunch(() => {
-  // #ifdef MP-WEIXIN
-  wx.onNeedPrivacyAuthorization((resolve) => {
-    uni.showModal({
-      title: '隐私授权',
-      content: '使用前需要您授权，我们承诺仅用于核心功能，不会对外分享您的信息。',
-      confirmText: '同意',
-      cancelText: '拒绝',
-      success: (res) => {
-        if (res.confirm) {
-          resolve({ buttonId: 'agree-btn', event: 'agree' })
-        } else {
-          resolve({ buttonId: 'disagree-btn', event: 'disagree' })
-        }
-      }
-    })
-  })
-  // #endif
-});
+onLaunch(() => {});
 onShow(() => {});
 onHide(() => {});
 </script>

@@ -26,9 +26,7 @@ export function request<T = any>(url: string, options: RequestOptions = {}): Pro
         if (body.code === 0) {
           resolve(body.data as T)
         } else if (body.code === 401) {
-          const hadToken = !!getToken()
           uni.removeStorageSync('token')
-          if (hadToken) uni.reLaunch({ url: '/pages/auth/login' })
           reject(new Error(body.message))
         } else {
           const msg = body.message || '请求失败'
