@@ -38,12 +38,7 @@ const userStore = useUserStore()
 const wxLoading = ref(false)
 
 function handleSkip() {
-  // #ifdef MP-WEIXIN
-  wx.exitMiniProgram({ fail: () => uni.navigateBack() })
-  // #endif
-  // #ifdef H5
-  uni.navigateBack()
-  // #endif
+  uni.switchTab({ url: '/pages/home/index' })
 }
 
 async function handleWechatLogin() {
