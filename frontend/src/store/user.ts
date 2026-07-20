@@ -25,8 +25,10 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function fetchMe() {
+    try {
     const data = await get<UserInfo>('/auth/me')
-    userInfo.value = data
+      userInfo.value = data
+    } catch {}
   }
 
   function logout() {
